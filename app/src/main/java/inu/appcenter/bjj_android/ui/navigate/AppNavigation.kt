@@ -26,10 +26,10 @@ import inu.appcenter.bjj_android.ui.tier.TierScreen
 
 sealed class Screen(val route: String, val icon: Int, val label: String) {
     data object Login : Screen("login", R.drawable.mypage, "login")
-    data object Main : Screen("main", R.drawable.home, "Main")
-    data object Tier : Screen("tier", R.drawable.tier, "Tier")
-    data object Review : Screen("review", R.drawable.review, "Review")
-    data object MyPage : Screen("mypage", R.drawable.mypage, "My Page")
+    data object Main : Screen("main", R.drawable.home, "홈")
+    data object Tier : Screen("tier", R.drawable.tier, "티어표")
+    data object Review : Screen("review", R.drawable.review, "리뷰")
+    data object MyPage : Screen("mypage", R.drawable.mypage, "마이페이지")
 
 }
 
