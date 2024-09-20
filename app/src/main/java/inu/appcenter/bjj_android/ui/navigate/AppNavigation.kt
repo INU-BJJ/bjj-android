@@ -12,13 +12,17 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.LoginScreen
+import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.main.MainScreen
 import inu.appcenter.bjj_android.ui.main.MainViewModel
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
 import inu.appcenter.bjj_android.ui.tier.TierScreen
@@ -27,6 +31,7 @@ import inu.appcenter.bjj_android.ui.tier.TierScreen
 sealed class Screen(val route: String, val icon: Int, val label: String) {
     data object Login : Screen("login", R.drawable.mypage, "login")
     data object Main : Screen("main", R.drawable.home, "홈")
+    data object MenuDetail : Screen("menuDetail", R.drawable.mypage, "메뉴 디테일")
     data object Tier : Screen("tier", R.drawable.tier, "티어표")
     data object Review : Screen("review", R.drawable.review, "리뷰")
     data object MyPage : Screen("mypage", R.drawable.mypage, "마이페이지")
@@ -56,6 +61,12 @@ fun AppNavigation() {
         }
         composable(Screen.Main.route) {
             MainScreen(navController)
+        }
+        composable(Screen.MenuDetail.route) {
+            val menu = navController.previousBackStackEntry?.savedStateHandle?.get<MainMenu>("menu")
+            menu?.let {
+                MenuDetailScreen(menu = it, navController = navController)
+            }
         }
         composable(Screen.Tier.route) { TierScreen(navController) }
         composable(Screen.Review.route) { ReviewScreen(navController) }

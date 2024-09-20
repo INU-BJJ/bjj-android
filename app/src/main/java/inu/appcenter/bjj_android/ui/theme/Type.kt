@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -87,5 +88,111 @@ data class AppTypography(
         fontSize = 13.sp,
         letterSpacing = 0.13.sp,
         lineHeight = 17.sp
+    ),
+    val menuDetail_menuName: TextStyle = TextStyle(
+        fontFamily = pretendard_semibold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        letterSpacing = 0.13.sp,
+    ),
+    val menuDetail_menuPrice: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        letterSpacing = 0.13.sp,
+    ),
+    val menuDetail_menuStructure: TextStyle = TextStyle(
+        fontFamily = pretendard_semibold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 15.sp
+    ),
+    val menuDetail_menuStructureDetail: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp
+    ),
+    val menuDetail_review: TextStyle = TextStyle(
+        fontFamily = pretendard_semibold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp
+    ),
+    val menuDetail_reviewMoreImages: TextStyle = TextStyle(
+        fontFamily = pretendard_semibold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 15.sp
+    ),
+    val menuDetail_reviewCount: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+        color = Color(0xFF999999)
+    ),
+    val menuDetail_reviewStar: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+    ),
+    val menuDetail_onlyPhotoReview: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+        color = Color(0xFF999999)
+    ),
+    val menuDetail_sortingRule: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+    ),
+    val menuDetail_reviewUserName: TextStyle = TextStyle(
+        fontFamily = pretendard_bold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 15.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 15.sp,
+    ),
+    val menuDetail_reviewDate: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+        color = Color(0xFF999999)
+    ),
+    val menuDetail_reviewGoodCount: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 15.sp,
+    ),
+    val menuDetail_reviewDescription: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+    ),
+    val menuDetail_reviewTag: TextStyle = TextStyle(
+        fontFamily = pretendard_regular,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        letterSpacing = 0.13.sp,
+        lineHeight = 15.sp,
     ),
 )

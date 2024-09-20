@@ -2,6 +2,7 @@ package inu.appcenter.bjj_android.ui.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.Parcelable
 import android.view.Surface
 import android.view.Window
 import androidx.compose.foundation.BorderStroke
@@ -75,6 +76,7 @@ import inu.appcenter.bjj_android.ui.common.AppBottomBar
 import inu.appcenter.bjj_android.ui.common.MainCardNews
 import inu.appcenter.bjj_android.ui.common.MainMenuItem
 import inu.appcenter.bjj_android.ui.common.MainRestaurantButton
+import inu.appcenter.bjj_android.ui.navigate.Screen
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Background
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -82,17 +84,21 @@ import inu.appcenter.bjj_android.ui.theme.Gray_F8F8F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
+@Parcelize
 data class MainMenu(
     val menu: String,
     val price: Int,
     val reviewStar: Float,
     val menuRestaurant: String,
     val menuImage: Int,
-    val isLiked: Boolean
-)
+    val isLiked: Boolean,
+    val menuStructure : List<String>,
+    val reviewImages : List<Int>
+) : Parcelable
 
 @SuppressLint("InvalidColorHexValue")
 @Composable
@@ -114,7 +120,20 @@ fun MainScreen(
             reviewStar = 4.4f,
             menuRestaurant = "학생식당 2코너",
             menuImage = R.drawable.example_menu_1,
-            isLiked = false
+            isLiked = false,
+            menuStructure = listOf(
+                "돼지불고기카레",
+                "우동국물",
+                "찹쌀탕수육",
+                "짜장떡볶이",
+                "깍둑단무지무침",
+                "배추김치",
+                "기장밥"
+            ),
+            reviewImages = listOf(
+                R.drawable.example_menu_1,
+                R.drawable.example_menu_2
+            )
         ),
         MainMenu(
             menu = "우삼겹떡볶이*핫도그",
@@ -122,7 +141,20 @@ fun MainScreen(
             reviewStar = 4.2f,
             menuRestaurant = "학생식당 2코너",
             menuImage = R.drawable.example_menu_2,
-            isLiked = true
+            isLiked = true,
+            menuStructure = listOf(
+                "돼지불고기카레",
+                "우동국물",
+                "찹쌀탕수육",
+                "짜장떡볶이",
+                "깍둑단무지무침",
+                "배추김치",
+                "기장밥"
+            ),
+            reviewImages = listOf(
+                R.drawable.example_menu_1,
+                R.drawable.example_menu_2
+            )
         ),
         MainMenu(
             menu = "짜장면*짬뽕국",
@@ -130,7 +162,20 @@ fun MainScreen(
             reviewStar = 4.3f,
             menuRestaurant = "학생식당 2코너",
             menuImage = R.drawable.example_menu_3,
-            isLiked = false
+            isLiked = false,
+            menuStructure = listOf(
+                "돼지불고기카레",
+                "우동국물",
+                "찹쌀탕수육",
+                "짜장떡볶이",
+                "깍둑단무지무침",
+                "배추김치",
+                "기장밥"
+            ),
+            reviewImages = listOf(
+                R.drawable.example_menu_1,
+                R.drawable.example_menu_2
+            )
         ),
         MainMenu(
             menu = "우삼겹떡볶이*핫도그",
@@ -138,7 +183,20 @@ fun MainScreen(
             reviewStar = 4.2f,
             menuRestaurant = "학생식당 2코너",
             menuImage = R.drawable.example_menu_4,
-            isLiked = true
+            isLiked = true,
+            menuStructure = listOf(
+                "돼지불고기카레",
+                "우동국물",
+                "찹쌀탕수육",
+                "짜장떡볶이",
+                "깍둑단무지무침",
+                "배추김치",
+                "기장밥"
+            ),
+            reviewImages = listOf(
+                R.drawable.example_menu_1,
+                R.drawable.example_menu_2
+            )
         ),
 
         )
@@ -176,7 +234,7 @@ fun MainScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-    ){
+    ) {
         Scaffold(
             bottomBar = { AppBottomBar(navController) },
         ) { innerPadding ->
@@ -219,7 +277,13 @@ fun MainScreen(
                 }
 
                 items(menus) { menu ->
-                    MainMenuItem(menu = menu)
+                    MainMenuItem(
+                        menu = menu,
+                        clickMenuDetail = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("menu", menu)
+                            navController.navigate(Screen.MenuDetail.route)
+                        }
+                    )
                 }
 
                 item {
@@ -246,7 +310,7 @@ fun MainScreen(
                         )
                         Spacer(modifier = Modifier.width(7.4.dp))
                         Icon(
-                            imageVector = if (restaurantInfo) Icons.Default.KeyboardArrowUp  else Icons.Default.KeyboardArrowDown,
+                            imageVector = if (restaurantInfo) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "식당정보 더보기",
                             tint = Color.Unspecified,
                             modifier = Modifier
@@ -262,7 +326,7 @@ fun MainScreen(
                         )
                     }
                 }
-                if (restaurantInfo){
+                if (restaurantInfo) {
                     item {
                         Spacer(modifier = Modifier.height(300.dp))
                     }
