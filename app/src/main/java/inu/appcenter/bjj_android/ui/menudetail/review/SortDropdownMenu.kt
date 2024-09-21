@@ -1,16 +1,13 @@
-package inu.appcenter.bjj_android.ui.common
+package inu.appcenter.bjj_android.ui.menudetail.review
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -30,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Background
-import inu.appcenter.bjj_android.ui.theme.Gray_A9A9A9
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 
 @Composable
@@ -45,8 +41,7 @@ fun SortDropdownMenu() {
     ) {
         Row(
             modifier = Modifier
-                .clickable { expanded = true }
-                .padding(8.dp),
+                .clickable { expanded = true },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(

@@ -1,10 +1,9 @@
-package inu.appcenter.bjj_android.ui.common
+package inu.appcenter.bjj_android.ui.menudetail.review
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,21 +16,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
-import inu.appcenter.bjj_android.ui.theme.Gray_F8F8F8
 
 
 @Composable
-fun ReviewImagesSection(reviewImages: List<Int>) {
+fun ReviewImagesSection(
+    reviewImages: List<Int>,
+    modifier: Modifier = Modifier
+) {
     val totalSlots = 3
     val filledSlots = reviewImages.size.coerceAtMost(totalSlots)
     val emptySlots = (totalSlots - filledSlots).coerceAtLeast(0)
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 29.5.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = modifier
     ) {
         items(filledSlots) { index ->
             ReviewImageItem(image = reviewImages[index])
