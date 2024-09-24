@@ -46,6 +46,7 @@ fun SingleImage(imageRes: Int) {
 fun DoubleImages(images: List<Int>) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
+        userScrollEnabled = false
     ) {
         itemsIndexed(images) {index, imageRes ->
             ReviewImage(
