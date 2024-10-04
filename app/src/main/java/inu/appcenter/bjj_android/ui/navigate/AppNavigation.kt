@@ -12,11 +12,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.LoginScreen
 import inu.appcenter.bjj_android.ui.main.MainMenu
@@ -35,7 +35,6 @@ sealed class Screen(val route: String, val icon: Int, val label: String) {
     data object Tier : Screen("tier", R.drawable.tier, "티어표")
     data object Review : Screen("review", R.drawable.review, "리뷰")
     data object MyPage : Screen("mypage", R.drawable.mypage, "마이페이지")
-
 }
 
 
@@ -47,10 +46,6 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = Screen.Login.route,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
     ) {
         composable(Screen.Login.route) {
             LoginScreen(onLoginSuccess = {

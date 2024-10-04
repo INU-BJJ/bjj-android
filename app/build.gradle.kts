@@ -75,7 +75,7 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
 
     // Retrofit2
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

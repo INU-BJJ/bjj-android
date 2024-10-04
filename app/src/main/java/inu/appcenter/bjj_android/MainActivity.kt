@@ -26,6 +26,7 @@ import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             Bjj_androidTheme {

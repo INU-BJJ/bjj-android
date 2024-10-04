@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
@@ -38,7 +39,10 @@ fun ReviewStarRating(rating: Float) {
         Spacer(modifier = Modifier.width(5.dp))
         Text(
             text = rating.toString(),
-            style = LocalTypography.current.menuDetail_reviewStar,
+            style = LocalTypography.current.regular13.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 17.sp,
+            ),
             color = Color.Black
         )
     }

@@ -41,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
@@ -102,7 +103,10 @@ fun ReviewItem(
             ) {
                 Text(
                     text = review.userName,
-                    style = LocalTypography.current.menuDetail_reviewUserName,
+                    style = LocalTypography.current.bold15.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp,
+                    ),
                     color = Color.Black
                 )
                 Spacer(Modifier.height(5.dp))
@@ -113,7 +117,11 @@ fun ReviewItem(
                     Spacer(Modifier.width(10.dp))
                     Text(
                         text = review.writtenTime.format(),
-                        style = LocalTypography.current.menuDetail_reviewDate
+                        style = LocalTypography.current.regular13.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 17.sp,
+                            color = Color(0xFF999999)
+                        )
                     )
                 }
             }
@@ -130,7 +138,10 @@ fun ReviewItem(
                 )
                 Text(
                     text = review.goodCount.toString(),
-                    style = LocalTypography.current.menuDetail_reviewGoodCount,
+                    style = LocalTypography.current.regular11.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp,
+                    ),
                     color = Color.Black
                 )
             }
@@ -140,7 +151,11 @@ fun ReviewItem(
         ExpandableText(
             text = review.description,
             maxLines = 3,
-            style = LocalTypography.current.menuDetail_reviewDescription.copy(color = Color.Black)
+            style = LocalTypography.current.regular13.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 17.sp,
+                color = Color.Black
+            )
         )
 
 
@@ -165,7 +180,10 @@ fun ReviewItem(
                 ) {
                     Text(
                         text = tag,
-                        style = LocalTypography.current.menuDetail_reviewTag,
+                        style = LocalTypography.current.regular11.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 15.sp,
+                        ),
                         color = Color.Black
                     )
                 }
@@ -181,7 +199,10 @@ fun ReviewItem(
 fun ExpandableText(
     text: String,
     maxLines: Int = 3,
-    style: TextStyle = LocalTypography.current.menuDetail_reviewDescription
+    style: TextStyle = LocalTypography.current.regular13.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 17.sp,
+    )
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var needsExpansion by rememberSaveable { mutableStateOf(false) }

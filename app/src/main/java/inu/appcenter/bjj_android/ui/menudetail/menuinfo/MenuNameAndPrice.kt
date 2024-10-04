@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.menudetail.common.IconWithShadow
+import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
 
 
 @Composable
@@ -30,7 +32,7 @@ fun MenuNameAndPrice(menu: MainMenu) {
     ) {
         Text(
             text = menu.menu,
-            style = LocalTypography.current.menuDetail_menuName,
+            style = LocalTypography.current.semibold24.copy(letterSpacing = 0.13.sp),
             color = Color.Black
         )
         Spacer(Modifier.height(12.dp))
@@ -40,8 +42,10 @@ fun MenuNameAndPrice(menu: MainMenu) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${menu.price}원",
-                style = LocalTypography.current.menuDetail_menuPrice,
+                text = "${menu.price.numberFormatter()}원",
+                style = LocalTypography.current.regular20.copy(
+                    letterSpacing = 0.13.sp,
+                ),
                 color = Color.Black
             )
             IconWithShadow(

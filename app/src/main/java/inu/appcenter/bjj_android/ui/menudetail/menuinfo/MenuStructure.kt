@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
@@ -26,7 +27,10 @@ fun MenuStructure(menu: MainMenu) {
     ) {
         Text(
             text = "메뉴 구성",
-            style = LocalTypography.current.menuDetail_menuStructure,
+            style = LocalTypography.current.semibold18.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 15.sp
+            ),
             color = Color.Black
         )
         Spacer(Modifier.height(22.dp))
@@ -39,7 +43,10 @@ fun MenuStructure(menu: MainMenu) {
             menu.menuStructure.forEach { menuDetail ->
                 Text(
                     text = menuDetail,
-                    style = LocalTypography.current.menuDetail_menuStructureDetail,
+                    style = LocalTypography.current.regular13.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 17.sp
+                    ),
                     color = Color.Black,
                 )
             }

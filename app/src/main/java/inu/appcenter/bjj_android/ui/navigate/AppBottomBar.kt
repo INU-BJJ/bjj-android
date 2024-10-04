@@ -1,33 +1,25 @@
-package inu.appcenter.bjj_android.ui.common
+package inu.appcenter.bjj_android.ui.navigate
 
-import android.annotation.SuppressLint
 import android.graphics.BlurMaskFilter
-import android.graphics.Typeface.NORMAL
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -39,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import inu.appcenter.bjj_android.ui.navigate.Screen
+import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.SelectedBottomBarIconColor
 import inu.appcenter.bjj_android.ui.theme.UnselectedBottomBarIconColor
 
@@ -50,13 +42,11 @@ fun AppBottomBar(
 ) {
     val screens = listOf(Screen.Main, Screen.Tier, Screen.Review, Screen.MyPage)
 
-
-
     NavigationBar(
         containerColor = Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .height(65.dp)
+            .height(71.dp)
             .shadowCustom(
                 color = Color(0xff190000).copy(alpha = 0.1f),
                 offsetX = (-3).dp,
@@ -69,8 +59,22 @@ fun AppBottomBar(
 
         screens.forEach { screen ->
             NavigationBarItem(
-                icon = { Icon(painter = painterResource(screen.icon), contentDescription = null) },
-                label = { Text(screen.label) },
+                icon = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp) // 여기서 간격을 조절합니다
+                    ) {
+                        Icon(
+                            painter = painterResource(screen.icon),
+                            contentDescription = null,
+                            modifier = Modifier.size(21.dp)
+                        )
+                        Text(
+                            text = screen.label,
+                            style = LocalTypography.current.medium10
+                        )
+                    }
+                },
                 selected = currentDestination?.route == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {
@@ -88,7 +92,8 @@ fun AppBottomBar(
                     unselectedTextColor = UnselectedBottomBarIconColor,
                     indicatorColor = Color.Transparent
                 ),
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() },
+                label = {},
             )
         }
     }

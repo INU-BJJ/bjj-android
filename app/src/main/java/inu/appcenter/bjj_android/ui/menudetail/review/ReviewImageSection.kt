@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 
@@ -78,7 +79,10 @@ fun MoreImagesButton() {
     ) {
         Text(
             text = "+",
-            style = LocalTypography.current.menuDetail_reviewMoreImages,
+            style = LocalTypography.current.semibold18.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 15.sp
+            ),
             color = Color.Black
         )
     }

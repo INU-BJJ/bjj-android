@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
 
@@ -24,13 +25,20 @@ fun ReviewHeaderInfo(
     ) {
         Text(
             text = "리뷰",
-            style = LocalTypography.current.menuDetail_review,
+            style = LocalTypography.current.semibold18.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 17.sp
+            ),
             color = Color.Black
         )
         Spacer(Modifier.width(3.dp))
         Text(
             text = "(605)",
-            style = LocalTypography.current.menuDetail_reviewCount
+            style = LocalTypography.current.regular13.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 17.sp,
+                color = Color(0xFF999999)
+            )
         )
         Spacer(Modifier.width(16.dp))
         ReviewStarRating(menu.reviewStar)

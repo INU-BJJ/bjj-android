@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Background
@@ -46,7 +47,10 @@ fun SortDropdownMenu() {
         ) {
             Text(
                 text = items[selectedIndex],
-                style = LocalTypography.current.menuDetail_sortingRule,
+                style = LocalTypography.current.regular13.copy(
+                    letterSpacing = 0.13.sp,
+                    lineHeight = 17.sp,
+                ),
                 color = Color.Black
             )
             Spacer(modifier = Modifier.width(5.dp))
@@ -65,7 +69,14 @@ fun SortDropdownMenu() {
             ) {
                 items.forEachIndexed { index, item ->
                     DropdownMenuItem(
-                        text = { Text(item, style = LocalTypography.current.menuDetail_sortingRule, color = if (index == selectedIndex) Color.Black else Gray_B9B9B9) },
+                        text = {
+                            Text(
+                                item, style = LocalTypography.current.regular13.copy(
+                                    letterSpacing = 0.13.sp,
+                                    lineHeight = 17.sp,
+                                ), color = if (index == selectedIndex) Color.Black else Gray_B9B9B9
+                            )
+                        },
                         onClick = {
                             selectedIndex = index
                             expanded = false

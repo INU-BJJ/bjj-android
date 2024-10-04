@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -61,6 +62,7 @@ fun DoubleImages(images: List<Int>) {
 
 @Composable
 fun MultipleImages(images: List<Int>) {
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {

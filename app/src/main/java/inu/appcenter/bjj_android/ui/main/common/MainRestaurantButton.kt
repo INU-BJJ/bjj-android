@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
@@ -38,7 +39,10 @@ fun MainRestaurantButton(
     ) {
         Text(
             text = restaurant,
-            style = LocalTypography.current.main_restaurantButton
+            style = LocalTypography.current.medium15.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 15.sp
+            )
         )
     }
 }

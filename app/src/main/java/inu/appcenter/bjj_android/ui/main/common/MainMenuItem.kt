@@ -21,17 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.common.shadowCustom
+import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
+import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 
 @Composable
 fun MainMenuItem(
     menu: MainMenu,
     clickMenuDetail: () -> Unit
-){
+) {
 
 
     Row(
@@ -75,13 +77,19 @@ fun MainMenuItem(
                 Column {
                     Text(
                         text = menu.menu,
-                        style = LocalTypography.current.main_menuName,
+                        style = LocalTypography.current.bold15.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 15.sp
+                        ),
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${menu.price}원",
-                        style = LocalTypography.current.main_menuPrice,
+                        text = "${menu.price.numberFormatter()}원",
+                        style = LocalTypography.current.regular13.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 17.sp
+                        ),
                         color = Color.Black
                     )
                 }
@@ -116,13 +124,19 @@ fun MainMenuItem(
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = menu.reviewStar.toString(),
-                        style = LocalTypography.current.main_menuReviewStar,
+                        style = LocalTypography.current.regular13.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 17.sp
+                        ),
                         color = Color.Black
                     )
                 }
                 Text(
                     text = menu.menuRestaurant,
-                    style = LocalTypography.current.main_menuRestaurant,
+                    style = LocalTypography.current.regular11.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
                     color = Color.Black.copy(alpha = 0.5f)
                 )
             }

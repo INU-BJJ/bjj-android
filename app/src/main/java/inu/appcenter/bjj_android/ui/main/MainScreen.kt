@@ -43,7 +43,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.common.AppBottomBar
+import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
 import inu.appcenter.bjj_android.ui.main.common.MainRestaurantButton
@@ -63,8 +63,8 @@ data class MainMenu(
     val menuRestaurant: String,
     val menuImage: Int,
     val isLiked: Boolean,
-    val menuStructure : List<String>,
-    val reviewImages : List<Int>
+    val menuStructure: List<String>,
+    val reviewImages: List<Int>
 ) : Parcelable
 
 @SuppressLint("InvalidColorHexValue")
@@ -218,7 +218,7 @@ fun MainScreen(
                     ) {
                         Text(
                             text = "오늘의 인기 메뉴를 \n알아볼까요?",
-                            style = LocalTypography.current.main_headline,
+                            style = LocalTypography.current.semibold24,
                             color = Color.Black,
                             lineHeight = 35.sp
                         )
@@ -272,7 +272,10 @@ fun MainScreen(
                     ) {
                         Text(
                             text = "식당 정보",
-                            style = LocalTypography.current.main_menuInfo,
+                            style = LocalTypography.current.semibold18.copy(
+                                letterSpacing = 0.13.sp,
+                                lineHeight = 15.sp
+                            ),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.width(7.4.dp))
