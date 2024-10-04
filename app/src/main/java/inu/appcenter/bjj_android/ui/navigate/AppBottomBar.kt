@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import inu.appcenter.bjj_android.ui.main.LocalTypography
+import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.SelectedBottomBarIconColor
 import inu.appcenter.bjj_android.ui.theme.UnselectedBottomBarIconColor
 
@@ -40,7 +40,7 @@ import inu.appcenter.bjj_android.ui.theme.UnselectedBottomBarIconColor
 fun AppBottomBar(
     navController: NavHostController
 ) {
-    val screens = listOf(Screen.Main, Screen.Tier, Screen.Review, Screen.MyPage)
+    val screens = listOf(AllDestination.Main, AllDestination.Tier, AllDestination.Review, AllDestination.MyPage)
 
     NavigationBar(
         containerColor = Color.White,
@@ -66,7 +66,7 @@ fun AppBottomBar(
                     ) {
                         Icon(
                             painter = painterResource(screen.icon),
-                            contentDescription = null,
+                            contentDescription = screen.route,
                             modifier = Modifier.size(21.dp)
                         )
                         Text(

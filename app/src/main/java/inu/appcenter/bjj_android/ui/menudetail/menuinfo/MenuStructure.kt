@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.appcenter.bjj_android.ui.main.LocalTypography
+import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 

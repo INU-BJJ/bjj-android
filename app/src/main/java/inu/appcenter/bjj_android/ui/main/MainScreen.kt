@@ -42,18 +42,18 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
+import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
 import inu.appcenter.bjj_android.ui.main.common.MainRestaurantButton
-import inu.appcenter.bjj_android.ui.navigate.Screen
+import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Background
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
-internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
 @Parcelize
 data class MainMenu(
@@ -248,7 +248,7 @@ fun MainScreen(
                         menu = menu,
                         clickMenuDetail = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("menu", menu)
-                            navController.navigate(Screen.MenuDetail.route)
+                            navController.navigate(AllDestination.MenuDetail.route)
                         }
                     )
                 }

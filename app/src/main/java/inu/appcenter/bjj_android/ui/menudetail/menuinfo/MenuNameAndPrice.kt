@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.main.LocalTypography
 import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.menudetail.common.IconWithShadow
 import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
