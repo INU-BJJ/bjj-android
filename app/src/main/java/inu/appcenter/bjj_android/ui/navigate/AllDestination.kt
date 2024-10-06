@@ -4,6 +4,7 @@ import inu.appcenter.bjj_android.R
 
 sealed class AllDestination(val route: String, val icon: Int, val label: String) {
     data object Login : AllDestination("login", R.drawable.mypage, "login")
+    data object Signup : AllDestination("signup", R.drawable.mypage, "signup")
     data object Main : AllDestination("main", R.drawable.home, "홈")
     data object MenuDetail : AllDestination("menuDetail", R.drawable.mypage, "메뉴 디테일")
     data object Tier : AllDestination("tier", R.drawable.tier, "티어표")

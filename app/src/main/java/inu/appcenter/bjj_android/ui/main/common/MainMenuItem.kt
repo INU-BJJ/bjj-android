@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.main.MainMenu
 import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
@@ -31,7 +33,7 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 
 @Composable
 fun MainMenuItem(
-    menu: MainMenu,
+    menu: TodayDietRes,
     clickMenuDetail: () -> Unit
 ) {
 
@@ -54,7 +56,7 @@ fun MainMenuItem(
         horizontalArrangement = Arrangement.Start
     ) {
         Image(
-            painter = painterResource(menu.menuImage),
+            painter = painterResource(R.drawable.example_menu_2),
             contentDescription = "메뉴 이미지",
             modifier = Modifier
                 .padding(start = 8.dp, top = 6.4.dp, bottom = 6.4.dp)
@@ -76,7 +78,7 @@ fun MainMenuItem(
             ) {
                 Column {
                     Text(
-                        text = menu.menu,
+                        text = menu.mainMenuName,
                         style = LocalTypography.current.bold15.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -85,7 +87,7 @@ fun MainMenuItem(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${menu.price.numberFormatter()}원",
+                        text = "${menu.price}원",
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
@@ -94,7 +96,7 @@ fun MainMenuItem(
                     )
                 }
                 Icon(
-                    painter = painterResource(id = if (menu.isLiked) R.drawable.filled_heart else R.drawable.unfilled_heart),
+                    painter = painterResource(id = if (menu.likedMenu) R.drawable.filled_heart else R.drawable.unfilled_heart),
                     contentDescription = "좋아요 유무",
                     tint = Color.Unspecified,
                     modifier = Modifier
@@ -123,7 +125,7 @@ fun MainMenuItem(
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = menu.reviewStar.toString(),
+                        text = menu.reviewRatingAverage.toString(),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
@@ -132,7 +134,7 @@ fun MainMenuItem(
                     )
                 }
                 Text(
-                    text = menu.menuRestaurant,
+                    text = "${menu.cafeteriaName} ${menu.cafeteriaCorner}",
                     style = LocalTypography.current.regular11.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp

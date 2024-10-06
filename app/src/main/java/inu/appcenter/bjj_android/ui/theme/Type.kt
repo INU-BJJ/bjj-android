@@ -80,6 +80,11 @@ data class AppTypography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
     ),
+    val semibold15: TextStyle = TextStyle(
+        fontFamily = pretendard_semibold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+    ),
     val regular20: TextStyle = TextStyle(
         fontFamily = pretendard_regular,
         fontWeight = FontWeight.Medium,

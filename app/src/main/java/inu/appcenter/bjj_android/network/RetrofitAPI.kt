@@ -3,40 +3,35 @@ package inu.appcenter.bjj_android.network
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import inu.appcenter.bjj_android.local.DataStoreManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
-object RetrofitAPI : KoinComponent {
+class RetrofitAPI(private val dataStoreManager: DataStoreManager) : KoinComponent {
 
-    private const val BASE_URL = "https://bjj.inuappcenter.kr/"
+    private val BASE_URL = "https://bjj.inuappcenter.kr/"
 
-    //    private val tokenManager: TokenManager by inject()
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
-//    private val okHttpClient: OkHttpClient by lazy {
-////        val context: Context = get()
-//
-//        OkHttpClient.Builder()
-//            .addInterceptor(ErrorResponseInterceptor())
-//            .addInterceptor(AuthInterceptor(dataStoreManager))
-////            .addInterceptor(TokenInterceptor(tokenManager))
-////            .addInterceptor(TokenExpirationInterceptor(context = context))
-//            .build()
-//    }
-
-//    private val gson: Gson by lazy {
-//        GsonProvider.getGson()
-//    }
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor(dataStoreManager))
+        .addInterceptor(loggingInterceptor)
+        .build()
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-//            .client(okHttpClient)
             .build()
     }
 
