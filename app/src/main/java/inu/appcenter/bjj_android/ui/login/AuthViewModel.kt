@@ -53,7 +53,7 @@ class AuthViewModel(private val memberRepository: MemberRepository, private val 
     private val _socialName = MutableStateFlow("")
     val socialName = _socialName.asStateFlow()
 
-    fun setSignupEmail(
+     fun setSignupEmail(
         email: String
     ){
         _signupEmail.update {
