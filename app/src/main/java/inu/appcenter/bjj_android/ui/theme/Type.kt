@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -56,13 +55,11 @@ data class AppTypography(
         fontFamily = pretendard_medium,
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
-
     ),
     val bold15: TextStyle = TextStyle(
         fontFamily = pretendard_bold,
         fontWeight = FontWeight.Bold,
         fontSize = 15.sp,
-
     ),
     val regular13: TextStyle = TextStyle(
         fontFamily = pretendard_regular,
@@ -73,7 +70,6 @@ data class AppTypography(
         fontFamily = pretendard_regular,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
-
     ),
     val semibold18: TextStyle = TextStyle(
         fontFamily = pretendard_semibold,

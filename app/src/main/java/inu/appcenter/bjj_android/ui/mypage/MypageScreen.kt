@@ -3,24 +3,20 @@ package inu.appcenter.bjj_android.ui.mypage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -30,14 +26,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import inu.appcenter.bjj_android.ui.login.LogoutState
+import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
-import inu.appcenter.bjj_android.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPageScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    authViewModel: AuthViewModel
 ) {
+    val logoutState by authViewModel.logoutState.collectAsState()
+
+    // 로그아웃 상태 관찰
+    LaunchedEffect(logoutState) {
+        when (logoutState) {
+            is LogoutState.Success -> {
+                // 로그아웃 성공 시 로그인 화면으로 이동하고 백스택 클리어
+                navController.navigate(AllDestination.Login.route) {
+                    popUpTo(navController.graph.id) { inclusive = true }
+                }
+                // 로그아웃 상태 초기화
+                authViewModel.resetLogoutState()
+            }
+            is LogoutState.Error -> {
+                // 에러 처리가 필요한 경우 여기에 추가
+                authViewModel.resetLogoutState()
+            }
+            else -> {}
+        }
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -63,6 +83,19 @@ fun MyPageScreen(
                             }
                     )
                 },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            authViewModel.logout()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.logout),
+                            contentDescription = "logout",
+                            tint = Color.Black
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
@@ -75,9 +108,8 @@ fun MyPageScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(innerPadding)
-                .background(color = Color.White)
         ) {
         }
     }

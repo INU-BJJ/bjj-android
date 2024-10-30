@@ -16,20 +16,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,15 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.member.SignupDTO
-import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
@@ -57,13 +57,21 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 @Composable
 fun SignupScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    successSignup: () -> Unit,
 ){
     val userEmail by authViewModel.signupEmail.collectAsState()
+    val signupState by authViewModel.signupState.collectAsState()
+    val checkNicknameState by authViewModel.checkNicknameState.collectAsState()
+    val socialLogin by authViewModel.socialName.collectAsState()
+
 
     var nickname by remember { mutableStateOf("") }
-    var isNotDuplicated by remember { mutableStateOf(false) }
-
+    LaunchedEffect(signupState) {
+        if (signupState == SignupState.Success) {
+            successSignup()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -200,12 +208,15 @@ fun SignupScreen(
                         ),
                         modifier = Modifier
                             .weight(1f),
-                        maxLines = 1
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        )
                     )
                     Spacer(Modifier.width(6.5.dp))
                     OutlinedButton(
                         onClick = {
-                            isNotDuplicated = true
+                            authViewModel.checkNickname(nickname = nickname)
                         },
                         border = BorderStroke(width = 1.dp, color = Orange_FF7800),
                         shape = RoundedCornerShape(100.dp),
@@ -228,37 +239,69 @@ fun SignupScreen(
                     }
                 }
                 Spacer(Modifier.height(7.5.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.success_with_background),
-                        tint = Color.Unspecified,
-                        contentDescription = "available nickname"
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Text(
-                        text = "사용 가능한 닉네임입니다.",
-                        style = LocalTypography.current.regular11.copy(
-                            lineHeight = 15.sp,
-                            letterSpacing = 0.13.sp,
-                            color = Color.Black
-                        )
-                    )
+                when(checkNicknameState){
+                    CheckNicknameState.Success->{
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.success_with_background),
+                                tint = Color.Unspecified,
+                                contentDescription = "available nickname"
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                text = "사용 가능한 닉네임입니다.",
+                                style = LocalTypography.current.regular11.copy(
+                                    lineHeight = 15.sp,
+                                    letterSpacing = 0.13.sp,
+                                    color = Color.Black
+                                )
+                            )
+                        }
+                    }
+                    CheckNicknameState.Error(message = "중복") -> {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.fail_with_background),
+                                tint = Color.Unspecified,
+                                contentDescription = "unavailable nickname"
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                text = "사용 불가능한 닉네임입니다.",
+                                style = LocalTypography.current.regular11.copy(
+                                    lineHeight = 15.sp,
+                                    letterSpacing = 0.13.sp,
+                                    color = Color.Black
+                                )
+                            )
+                        }
+                    }
+                    CheckNicknameState.Idle->{
+                    }
+                    else->{
+
+                    }
                 }
+
             }
             Button(
                 onClick = {
-                    authViewModel.signup(
-                        signupDTO = SignupDTO(
-                            nickname = nickname,
-                            email = userEmail,
-                            provider = "naver"
+                    if (checkNicknameState == CheckNicknameState.Success){
+                        authViewModel.signup(
+                            signupDTO = SignupDTO(
+                                nickname = nickname,
+                                email = userEmail,
+                                provider = socialLogin
+                            )
                         )
-                    )
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isNotDuplicated) Orange_FF7800 else Gray_B9B9B9,
+                    containerColor = if (checkNicknameState == CheckNicknameState.Success) Orange_FF7800 else Gray_B9B9B9,
                     contentColor = Color.White
                 ),
                 modifier = Modifier

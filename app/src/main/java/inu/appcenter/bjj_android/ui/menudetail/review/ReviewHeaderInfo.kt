@@ -11,12 +11,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
-import inu.appcenter.bjj_android.ui.main.MainMenu
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 
 
 @Composable
 fun ReviewHeaderInfo(
-    menu: MainMenu,
+    menu: TodayDietRes,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -33,7 +33,7 @@ fun ReviewHeaderInfo(
         )
         Spacer(Modifier.width(3.dp))
         Text(
-            text = "(605)",
+            text = "(${menu.reviewCount})",
             style = LocalTypography.current.regular13.copy(
                 letterSpacing = 0.13.sp,
                 lineHeight = 17.sp,
@@ -41,6 +41,6 @@ fun ReviewHeaderInfo(
             )
         )
         Spacer(Modifier.width(16.dp))
-        ReviewStarRating(menu.reviewStar)
+        ReviewStarRating(menu.reviewRatingAverage)
     }
 }

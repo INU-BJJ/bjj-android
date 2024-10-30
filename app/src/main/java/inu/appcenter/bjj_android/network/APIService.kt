@@ -1,16 +1,17 @@
 package inu.appcenter.bjj_android.network
 
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
-import inu.appcenter.bjj_android.model.review.ReviewPost
-import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.member.SignupDTO
 import inu.appcenter.bjj_android.model.member.SignupRes
+import inu.appcenter.bjj_android.model.review.ReviewPost
+import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -32,6 +33,7 @@ interface APIService {
         @Query("memberId") memberId: Long,
         @Body reviewPost: ReviewPost
     ) : Response<Void>
+
 
     @DELETE("/api/reviews/{reviewId}")
     suspend fun deleteReview(
@@ -74,4 +76,14 @@ interface APIService {
     suspend fun signup(
         @Body signupDTO: SignupDTO
     ) : Response<SignupRes>
+
+    @POST("/api/member/check-nickname")
+    suspend fun checkNickname(
+        @Query("nickname") nickname : String
+    ) : Response<Boolean>
+
+    @PATCH("/api/member/check-nickname")
+    suspend fun modifyNickname(
+        @Query("nickname") nickname : String
+    ) : Response<Void>
 }

@@ -32,8 +32,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import inu.appcenter.bjj_android.LocalTypography
-import inu.appcenter.bjj_android.ui.theme.SelectedBottomBarIconColor
-import inu.appcenter.bjj_android.ui.theme.UnselectedBottomBarIconColor
+import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
 
 @Composable
@@ -86,10 +86,10 @@ fun AppBottomBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = SelectedBottomBarIconColor,
-                    selectedTextColor = SelectedBottomBarIconColor,
-                    unselectedIconColor = UnselectedBottomBarIconColor,
-                    unselectedTextColor = UnselectedBottomBarIconColor,
+                    selectedIconColor = Orange_FF7800,
+                    selectedTextColor = Orange_FF7800,
+                    unselectedIconColor = Gray_B9B9B9,
+                    unselectedTextColor = Gray_B9B9B9,
                     indicatorColor = Color.Transparent
                 ),
                 interactionSource = remember { MutableInteractionSource() },

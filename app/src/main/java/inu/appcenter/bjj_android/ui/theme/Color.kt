@@ -20,8 +20,7 @@ val Gray_D9D9D9 = Color(0xFFD9D9D9)
 val Gray_B9B9B9 = Color(0xFFB9B9B9)
 val Gray_F6F8F8 = Color(0xFFF6F8F8)
 val Gray_F6F6F8 = Color(0xFFF6F6F8)
+val Yellow_FFEB02 = Color(0xFFFFEB02)
+val Green_27D34A = Color(0xFF27D34A)
+val White_FFFFFF = Color(0xFFFFFFFF)
 
-
-
-val UnselectedBottomBarIconColor = Color(0xFFB9B9B9)
-val SelectedBottomBarIconColor = Color(0xFFFF7800)

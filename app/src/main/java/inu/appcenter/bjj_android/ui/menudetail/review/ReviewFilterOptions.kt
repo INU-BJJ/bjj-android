@@ -14,11 +14,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
+import inu.appcenter.bjj_android.ui.menudetail.SortingRules
 import inu.appcenter.bjj_android.ui.menudetail.common.CheckBox
 
 
 @Composable
-fun ReviewFilterOptions(onlyPhoto: Boolean, onOnlyPhotoChanged: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun ReviewFilterOptions(
+    modifier: Modifier = Modifier,
+    onlyPhoto: Boolean,
+    onOnlyPhotoChanged: (Boolean) -> Unit,
+    selectedSortingRule: SortingRules,
+    onSortingRuleChanged: (SortingRules) -> Unit
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -43,6 +50,9 @@ fun ReviewFilterOptions(onlyPhoto: Boolean, onOnlyPhotoChanged: (Boolean) -> Uni
                 )
             )
         }
-        SortDropdownMenu()
+        SortDropdownMenu(
+            selectedSortingRule = selectedSortingRule,
+            onSortingRuleChanged = onSortingRuleChanged
+        )
     }
 }

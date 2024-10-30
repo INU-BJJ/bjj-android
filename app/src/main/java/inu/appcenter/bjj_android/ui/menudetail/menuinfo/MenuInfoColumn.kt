@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import inu.appcenter.bjj_android.ui.main.MainMenu
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
 
 
 @Composable
-fun MenuInfoColumn(menu: MainMenu) {
+fun MenuInfoColumn(menu: TodayDietRes) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

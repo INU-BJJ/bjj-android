@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,20 +19,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.main.MainMenu
-import inu.appcenter.bjj_android.ui.menudetail.common.IconWithShadow
-import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 
 
 @Composable
-fun MenuNameAndPrice(menu: MainMenu) {
+fun MenuNameAndPrice(menu: TodayDietRes) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 39.dp, start = 29.5.dp, end = 29.5.dp)
     ) {
         Text(
-            text = menu.menu,
+            text = menu.mainMenuName,
             style = LocalTypography.current.semibold24.copy(letterSpacing = 0.13.sp),
             color = Color.Black
         )
@@ -42,19 +41,19 @@ fun MenuNameAndPrice(menu: MainMenu) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${menu.price.numberFormatter()}원",
+                text = "${menu.price}",
                 style = LocalTypography.current.regular20.copy(
                     letterSpacing = 0.13.sp,
                 ),
                 color = Color.Black
             )
-            IconWithShadow(
-                painter = painterResource(R.drawable.filled_heart),
+            Icon(
+                painter = painterResource(if(menu.likedMenu) R.drawable.filled_heart else R.drawable.unfilled_heart),
                 modifier = Modifier.size(25.dp),
                 contentDescription = "상세 메뉴 좋아요",
                 tint = Color.Unspecified,
-                shadowOffset = Pair(4f, 4f),
-                shadowRadius = 20f
+//                shadowOffset = Pair(4f, 4f),
+//                shadowRadius = 20f
             )
         }
     }

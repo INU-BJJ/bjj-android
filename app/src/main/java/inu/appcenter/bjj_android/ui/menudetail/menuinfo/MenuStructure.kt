@@ -14,12 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
-import inu.appcenter.bjj_android.ui.main.MainMenu
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 
 
 @Composable
-fun MenuStructure(menu: MainMenu) {
+fun MenuStructure(menu: TodayDietRes) {
+    val menuItems = menu.restMenu.split(" ")
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,15 +42,18 @@ fun MenuStructure(menu: MainMenu) {
                 .background(color = Orange_FFF4DF, shape = RoundedCornerShape(10.dp))
                 .padding(vertical = 10.dp, horizontal = 15.dp)
         ) {
-            menu.menuStructure.forEach { menuDetail ->
+            menuItems.forEach { menuItem ->
                 Text(
-                    text = menuDetail,
+                    text = menuItem,
                     style = LocalTypography.current.regular13.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 17.sp
                     ),
                     color = Color.Black,
                 )
+                if (menuItem != menuItems.last()) {
+                    Spacer(Modifier.height(4.dp))
+                }
             }
         }
     }

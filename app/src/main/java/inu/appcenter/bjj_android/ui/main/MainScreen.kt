@@ -1,8 +1,6 @@
 package inu.appcenter.bjj_android.ui.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.os.Parcelable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -25,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,37 +33,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
-import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
-import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
 import inu.appcenter.bjj_android.ui.main.common.MainRestaurantButton
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.theme.Background
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 
-
-@Parcelize
-data class MainMenu(
-    val menu: String,
-    val price: Int,
-    val reviewStar: Float,
-    val menuRestaurant: String,
-    val menuImage: Int,
-    val isLiked: Boolean,
-    val menuStructure: List<String>,
-    val reviewImages: List<Int>
-) : Parcelable
 
 @SuppressLint("InvalidColorHexValue")
 @Composable
@@ -74,132 +56,37 @@ fun MainScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
+    menuDetailViewModel: MenuDetailViewModel,
     onTokenExpired : () -> Unit
 ) {
 
 
     val uiState by mainViewModel.uiState.collectAsState()
+    val hasToken by authViewModel.hasToken.collectAsState()
 
-    LaunchedEffect(Unit) {
-        mainViewModel.getCafeterias()
+    // hasToken 상태를 관찰하여 API 호출
+    LaunchedEffect(hasToken) {
+        if (hasToken == true) {
+            delay(300) // 토큰 저장이 완전히 완료될 때까지 잠시 대기
+            mainViewModel.getCafeterias()
+        }
     }
 
-//    val menus = listOf(
-//        MainMenu(
-//            menu = "차슈 덮밥",
-//            price = 7500,
-//            reviewStar = 4.4f,
-//            menuRestaurant = "학생식당 2코너",
-//            menuImage = R.drawable.example_menu_1,
-//            isLiked = false,
-//            menuStructure = listOf(
-//                "돼지불고기카레",
-//                "우동국물",
-//                "찹쌀탕수육",
-//                "짜장떡볶이",
-//                "깍둑단무지무침",
-//                "배추김치",
-//                "기장밥"
-//            ),
-//            reviewImages = listOf(
-//                R.drawable.example_menu_1,
-//                R.drawable.example_menu_2
-//            )
-//        ),
-//        MainMenu(
-//            menu = "우삼겹떡볶이*핫도그",
-//            price = 5500,
-//            reviewStar = 4.2f,
-//            menuRestaurant = "학생식당 2코너",
-//            menuImage = R.drawable.example_menu_2,
-//            isLiked = true,
-//            menuStructure = listOf(
-//                "돼지불고기카레",
-//                "우동국물",
-//                "찹쌀탕수육",
-//                "짜장떡볶이",
-//                "깍둑단무지무침",
-//                "배추김치",
-//                "기장밥"
-//            ),
-//            reviewImages = listOf(
-//                R.drawable.example_menu_1,
-//                R.drawable.example_menu_2
-//            )
-//        ),
-//        MainMenu(
-//            menu = "짜장면*짬뽕국",
-//            price = 7500,
-//            reviewStar = 4.3f,
-//            menuRestaurant = "학생식당 2코너",
-//            menuImage = R.drawable.example_menu_3,
-//            isLiked = false,
-//            menuStructure = listOf(
-//                "돼지불고기카레",
-//                "우동국물",
-//                "찹쌀탕수육",
-//                "짜장떡볶이",
-//                "깍둑단무지무침",
-//                "배추김치",
-//                "기장밥"
-//            ),
-//            reviewImages = listOf(
-//                R.drawable.example_menu_1,
-//                R.drawable.example_menu_2
-//            )
-//        ),
-//        MainMenu(
-//            menu = "우삼겹떡볶이*핫도그",
-//            price = 5500,
-//            reviewStar = 4.2f,
-//            menuRestaurant = "학생식당 2코너",
-//            menuImage = R.drawable.example_menu_4,
-//            isLiked = true,
-//            menuStructure = listOf(
-//                "돼지불고기카레",
-//                "우동국물",
-//                "찹쌀탕수육",
-//                "짜장떡볶이",
-//                "깍둑단무지무침",
-//                "배추김치",
-//                "기장밥"
-//            ),
-//            reviewImages = listOf(
-//                R.drawable.example_menu_1,
-//                R.drawable.example_menu_2
-//            )
-//        ),
-//
-//        )
 
 
     var restaurantInfo by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    //시스템 UI 설정
-//    val view = LocalView.current
-//    val window = (view.context as Activity).window
-//    if (!view.isInEditMode) {
-//        DisposableEffect(Unit) {
-//
-//            val insetsController = WindowCompat.getInsetsController(window, view)
-//
-////            window.statusBarColor = Color.Transparent.toArgb()
-//
-//            WindowCompat.setDecorFitsSystemWindows(window, false)
-//            insetsController.apply {
-//                hide(WindowInsetsCompat.Type.navigationBars())
-//                systemBarsBehavior =
-//                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-//                isAppearanceLightStatusBars = true
-//            }
-//
-//            onDispose {
-////                WindowCompat.setDecorFitsSystemWindows(window, false)
+//    LaunchedEffect(uiState.error) {
+//        uiState.error?.let { error ->
+//            if (error.contains("BEGIN_ARRAY")) {
+//                delay(1000)
+//                mainViewModel.getCafeterias() // 에러 발생시 재시도
 //            }
 //        }
 //    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -216,6 +103,7 @@ fun MainScreen(
             ) {
                 item {
                     MainCardNews(
+                        backgroundColor = Orange_FF7800,
                         innerPadding = innerPadding
                     ) {
                         Text(
@@ -249,7 +137,7 @@ fun MainScreen(
                     MainMenuItem(
                         menu = menu,
                         clickMenuDetail = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("menu", menu)
+                            menuDetailViewModel.selectMenu(menu = menu)
                             navController.navigate(AllDestination.MenuDetail.route)
                         }
                     )

@@ -8,6 +8,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -15,12 +18,29 @@ import androidx.compose.ui.window.DialogProperties
 
 
 @Composable
-fun NaverLoginDialog(
+fun SocialLoginDialog(
     onLoginSuccessAlreadySignup : () -> Unit,
     onLoginSuccessFirst : () -> Unit,
     onLoginFailure: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    socialLogin: String
 ) {
+    val saveTokenState by authViewModel.saveTokenState.collectAsState()
+
+    LaunchedEffect(saveTokenState) {
+        when (saveTokenState) {
+            true -> {
+                onLoginSuccessAlreadySignup()
+                authViewModel.resetSaveTokenState()
+            }
+            false -> {
+                onLoginFailure()
+                authViewModel.resetSaveTokenState()
+            }
+            null -> {} // 초기 상태나 리셋 상태
+        }
+    }
+
     Dialog(
         onDismissRequest = { onLoginFailure() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -33,6 +53,16 @@ fun NaverLoginDialog(
                         domStorageEnabled = true
                         loadWithOverviewMode = true
                         useWideViewPort = true
+                        if (socialLogin.lowercase() == "google") {
+                            userAgentString = "Mozilla/5.0 AppleWebKit/535.19 Chrome/56.0.0 Mobile Safari/535.19"
+                        }
+                        if (socialLogin.lowercase() == "kakao") {
+                            layoutParams = android.view.ViewGroup.LayoutParams(
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                        }
+
                     }
                     webViewClient = object : WebViewClient() {
                         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -78,7 +108,7 @@ fun NaverLoginDialog(
                             onLoginFailure()
                         }
                     }
-                    loadUrl("https://bjj.inuappcenter.kr/oauth2/authorization/naver")
+                    loadUrl("https://bjj.inuappcenter.kr/oauth2/authorization/${socialLogin}")
                 }
             },
             modifier = Modifier.fillMaxSize()

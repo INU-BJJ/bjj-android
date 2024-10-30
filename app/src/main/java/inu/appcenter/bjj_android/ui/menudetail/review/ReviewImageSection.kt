@@ -18,12 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
+import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 
 
 @Composable
 fun ReviewImagesSection(
-    reviewImages: List<Int>,
+    reviewImages: List<String>,
     modifier: Modifier = Modifier
 ) {
     val totalSlots = 3
@@ -47,9 +48,9 @@ fun ReviewImagesSection(
 }
 
 @Composable
-fun ReviewImageItem(image: Int) {
+fun ReviewImageItem(image: String) {
     Image(
-        painter = painterResource(image),
+        painter = painterResource(R.drawable.example_menu_big_1),
         contentDescription = "리뷰 이미지",
         modifier = Modifier
             .size(68.dp)

@@ -14,4 +14,12 @@ class MemberRepositoryImpl(private val apiService: APIService) : MemberRepositor
     override suspend fun signup(signupDTO: SignupDTO): Response<SignupRes> {
         return apiService.signup(signupDTO = signupDTO)
     }
+
+    override suspend fun checkNickname(nickname: String): Response<Boolean> {
+        return apiService.checkNickname(nickname = nickname)
+    }
+
+    override suspend fun modifyNickname(nickname: String): Response<Void> {
+        return apiService.modifyNickname(nickname = nickname)
+    }
 }

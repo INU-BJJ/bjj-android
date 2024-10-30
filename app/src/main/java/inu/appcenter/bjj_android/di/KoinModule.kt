@@ -1,13 +1,13 @@
 package inu.appcenter.bjj_android.di
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.network.RetrofitAPI
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepositoryImpl
 import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.repository.member.MemberRepositoryImpl
+import inu.appcenter.bjj_android.repository.review.ReviewRepository
+import inu.appcenter.bjj_android.repository.review.ReviewRepositoryImpl
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepositoryImpl
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
@@ -28,11 +28,11 @@ val viewModelModule = module {
     single<MemberRepository> { MemberRepositoryImpl(get()) }
     single<TodayDietRepository> { TodayDietRepositoryImpl(get()) }
     single<CafeteriasRepository> { CafeteriasRepositoryImpl(get()) }
-
+    single<ReviewRepository> { ReviewRepositoryImpl(get()) }
 
     viewModel{ AuthViewModel(get(), get()) }
-    viewModel{ MainViewModel(get(), get()) }
-    viewModel{ MenuDetailViewModel() }
+    viewModel{ MainViewModel(get(), get(), get()) }
+    viewModel{ MenuDetailViewModel(get(), get()) }
     viewModel{ MypageViewModel() }
     viewModel{ ReviewViewModel() }
     viewModel{ TierViewModel() }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,18 +24,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.menudetail.SortingRules
 import inu.appcenter.bjj_android.ui.theme.Background
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 
 @Composable
-fun SortDropdownMenu() {
+fun SortDropdownMenu(
+    selectedSortingRule: SortingRules,
+    onSortingRuleChanged: (SortingRules) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableStateOf(0) }
-    val items = listOf("메뉴일치순", "좋아요순", "최신순")
+    val items = listOf(SortingRules.BEST_MATCH, SortingRules.MOST_LIKED, SortingRules.NEWEST_FIRST)
 
     Box(
         modifier = Modifier
@@ -46,7 +51,7 @@ fun SortDropdownMenu() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = items[selectedIndex],
+                text = selectedSortingRule.toKorean(),
                 style = LocalTypography.current.regular13.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 17.sp,
@@ -69,16 +74,21 @@ fun SortDropdownMenu() {
             ) {
                 items.forEachIndexed { index, item ->
                     DropdownMenuItem(
+                        modifier = Modifier
+                            .height(32.dp),
                         text = {
                             Text(
-                                item, style = LocalTypography.current.regular13.copy(
+                                text = item.toKorean(),
+                                style = LocalTypography.current.regular13.copy(
                                     letterSpacing = 0.13.sp,
                                     lineHeight = 17.sp,
-                                ), color = if (index == selectedIndex) Color.Black else Gray_B9B9B9
+                                    textAlign = TextAlign.Start
+                                ),
+                                color = if (item == selectedSortingRule) Color.Black else Gray_B9B9B9
                             )
                         },
                         onClick = {
-                            selectedIndex = index
+                            onSortingRuleChanged(item)
                             expanded = false
                         }
                     )

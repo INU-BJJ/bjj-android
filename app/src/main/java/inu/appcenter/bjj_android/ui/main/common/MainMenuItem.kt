@@ -25,11 +25,9 @@ import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
-import inu.appcenter.bjj_android.ui.main.MainMenu
-import inu.appcenter.bjj_android.ui.menudetail.common.numberFormatter
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
+import kotlin.math.round
 
 @Composable
 fun MainMenuItem(
@@ -87,7 +85,7 @@ fun MainMenuItem(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${menu.price}원",
+                        text = "${menu.price}",
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
@@ -125,7 +123,7 @@ fun MainMenuItem(
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = menu.reviewRatingAverage.toString(),
+                        text = (round(menu.reviewRatingAverage*10)/10).toString(),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp

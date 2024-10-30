@@ -1,30 +1,22 @@
 package inu.appcenter.bjj_android
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AppNavigation
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
@@ -40,6 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val authViewModel : AuthViewModel by viewModel()
             val mainViewModel : MainViewModel by viewModel()
+            val menuDetailViewModel : MenuDetailViewModel by viewModel()
 
             //하단 바 제거
             val view = LocalView.current
@@ -62,7 +55,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     AppNavigation(
                         authViewModel = authViewModel,
-                        mainViewModel = mainViewModel
+                        mainViewModel = mainViewModel,
+                        menuDetailViewModel = menuDetailViewModel
                     )
                 }
             }

@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
+import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,7 +21,11 @@ data class MainUiState(
     val error: String? = null
 )
 
-class MainViewModel(private val cafeteriasRepository: CafeteriasRepository, private val todayDietRepository: TodayDietRepository) : ViewModel() {
+class MainViewModel(
+    private val cafeteriasRepository: CafeteriasRepository,
+    private val todayDietRepository: TodayDietRepository,
+    private val authViewModel: AuthViewModel
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState = _uiState.asStateFlow()
@@ -31,13 +36,25 @@ class MainViewModel(private val cafeteriasRepository: CafeteriasRepository, priv
         getMenusByCafeteria(cafeteria)
     }
 
-    fun getCafeterias(){
+    init {
+        viewModelScope.launch {
+            authViewModel.hasToken.collect { hasToken ->
+                if (hasToken == true) {
+                    delay(300) // 토큰 저장 완료 대기
+                    getCafeterias()
+                }
+            }
+        }
+    }
+
+    fun getCafeterias() {
         viewModelScope.launch {
             try {
+                _uiState.update { it.copy(isLoading = true) }
                 val response = cafeteriasRepository.getCafeterias()
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     val cafeterias = response.body() ?: throw Exception("식당 정보가 비어있습니다.")
-                    Log.d("getCafeterias",cafeterias.toString() )
+                    Log.d("getCafeterias", cafeterias.toString())
                     _uiState.update {
                         it.copy(
                             cafeterias = cafeterias,
@@ -54,25 +71,30 @@ class MainViewModel(private val cafeteriasRepository: CafeteriasRepository, priv
                 }
             } catch (e: Exception) {
                 Log.e("getCafeterias 실패 원인", e.message.toString())
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "카페테리아 정보를 불러오는데 실패했습니다: ${e.message}"
-                    )
+                if (e.message?.contains("BEGIN_ARRAY") == true) {
+                    delay(1000)
+                    getCafeterias() // 재시도
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = "카페테리아 정보를 불러오는데 실패했습니다: ${e.message}"
+                        )
+                    }
                 }
             }
         }
     }
 
     fun getMenusByCafeteria(
-        cafeteriaName : String
-    ){
+        cafeteriaName: String
+    ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val response = todayDietRepository.getTodayDiet(cafeteriaName = cafeteriaName)
 
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     val menus = response.body() ?: throw Exception("식당 메뉴 정보가 비어있습니다.")
                     _uiState.update { it.copy(menus = menus, isLoading = false) }
                 } else {

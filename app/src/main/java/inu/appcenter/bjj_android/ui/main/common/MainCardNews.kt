@@ -9,17 +9,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
 @Composable
 fun MainCardNews(
+    backgroundColor : Color,
     innerPadding : PaddingValues,
     content : @Composable () -> Unit
 ){
     Column(
         modifier = Modifier
-            .background(color = Orange_FF7800)
+            .background(color = backgroundColor)
             .fillMaxWidth()
             .height(168.dp)
             .padding(horizontal = 20.dp, vertical = 18.dp),

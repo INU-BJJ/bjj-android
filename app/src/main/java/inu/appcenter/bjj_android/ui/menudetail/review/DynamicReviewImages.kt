@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -18,10 +17,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import inu.appcenter.bjj_android.R
 
 
 @Composable
-fun DynamicReviewImages(reviewImages: List<Int>) {
+fun DynamicReviewImages(reviewImages: List<String>) {
     when (reviewImages.size) {
         1 -> SingleImage(reviewImages.first())
         2 -> DoubleImages(reviewImages)
@@ -30,9 +30,9 @@ fun DynamicReviewImages(reviewImages: List<Int>) {
 }
 
 @Composable
-fun SingleImage(imageRes: Int) {
+fun SingleImage(imageRes: String) {
     Image(
-        painter = painterResource(imageRes),
+        painter = painterResource(R.drawable.example_menu_big_1),
         contentDescription = "단일 리뷰 이미지",
         modifier = Modifier
             .height(250.dp)
@@ -44,14 +44,14 @@ fun SingleImage(imageRes: Int) {
 
 
 @Composable
-fun DoubleImages(images: List<Int>) {
+fun DoubleImages(images: List<String>) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         userScrollEnabled = false
     ) {
         itemsIndexed(images) {index, imageRes ->
             ReviewImage(
-                imageRes = imageRes,
+                imageRes = R.drawable.example_menu_big_1,
                 isFirst = index == 0,
                 isLast = index == images.size - 1,
                 width = 149.5.dp
@@ -61,14 +61,14 @@ fun DoubleImages(images: List<Int>) {
 }
 
 @Composable
-fun MultipleImages(images: List<Int>) {
+fun MultipleImages(images: List<String>) {
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         itemsIndexed(images) { index, imageRes ->
             ReviewImage(
-                imageRes = imageRes,
+                imageRes = R.drawable.example_menu_big_1,
                 isFirst = index == 0,
                 isLast = index == images.size - 1,
                 width = 140.7.dp

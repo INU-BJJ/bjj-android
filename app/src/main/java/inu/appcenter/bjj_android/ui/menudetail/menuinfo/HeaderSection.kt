@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import inu.appcenter.bjj_android.ui.main.MainMenu
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 
 
 @Composable
-fun HeaderSection(menu: MainMenu, navController: NavHostController) {
+fun HeaderSection(menu: TodayDietRes, navController: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth()) {
         HeaderImage()
         NavigationButtons(navController)
