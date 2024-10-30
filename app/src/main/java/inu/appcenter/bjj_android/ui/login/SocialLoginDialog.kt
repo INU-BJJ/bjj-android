@@ -9,8 +9,6 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -23,19 +21,18 @@ fun SocialLoginDialog(
     onLoginSuccessFirst : () -> Unit,
     onLoginFailure: () -> Unit,
     authViewModel: AuthViewModel,
-    socialLogin: String
+    authUiState: AuthUiState
 ) {
-    val saveTokenState by authViewModel.saveTokenState.collectAsState()
 
-    LaunchedEffect(saveTokenState) {
-        when (saveTokenState) {
+    LaunchedEffect(authUiState.saveTokenState) {
+        when (authUiState.saveTokenState) {
             true -> {
                 onLoginSuccessAlreadySignup()
-                authViewModel.resetSaveTokenState()
+                authViewModel.resetState()
             }
             false -> {
                 onLoginFailure()
-                authViewModel.resetSaveTokenState()
+                authViewModel.resetState()
             }
             null -> {} // 초기 상태나 리셋 상태
         }
@@ -53,10 +50,10 @@ fun SocialLoginDialog(
                         domStorageEnabled = true
                         loadWithOverviewMode = true
                         useWideViewPort = true
-                        if (socialLogin.lowercase() == "google") {
+                        if (authUiState.socialName.lowercase() == "google") {
                             userAgentString = "Mozilla/5.0 AppleWebKit/535.19 Chrome/56.0.0 Mobile Safari/535.19"
                         }
-                        if (socialLogin.lowercase() == "kakao") {
+                        if (authUiState.socialName.lowercase() == "kakao") {
                             layoutParams = android.view.ViewGroup.LayoutParams(
                                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                                 android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -108,7 +105,7 @@ fun SocialLoginDialog(
                             onLoginFailure()
                         }
                     }
-                    loadUrl("https://bjj.inuappcenter.kr/oauth2/authorization/${socialLogin}")
+                    loadUrl("https://bjj.inuappcenter.kr/oauth2/authorization/${authUiState.socialName}")
                 }
             },
             modifier = Modifier.fillMaxSize()

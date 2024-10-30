@@ -61,12 +61,12 @@ fun MainScreen(
 ) {
 
 
-    val uiState by mainViewModel.uiState.collectAsState()
-    val hasToken by authViewModel.hasToken.collectAsState()
+    val mainUiState by mainViewModel.uiState.collectAsState()
+    val authUiState by authViewModel.uiState.collectAsState()
 
     // hasToken 상태를 관찰하여 API 호출
-    LaunchedEffect(hasToken) {
-        if (hasToken == true) {
+    LaunchedEffect(authUiState.hasToken) {
+        if (authUiState.hasToken == true) {
             delay(300) // 토큰 저장이 완전히 완료될 때까지 잠시 대기
             mainViewModel.getCafeterias()
         }
@@ -78,14 +78,7 @@ fun MainScreen(
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-//    LaunchedEffect(uiState.error) {
-//        uiState.error?.let { error ->
-//            if (error.contains("BEGIN_ARRAY")) {
-//                delay(1000)
-//                mainViewModel.getCafeterias() // 에러 발생시 재시도
-//            }
-//        }
-//    }
+
 
     Surface(
         modifier = Modifier
@@ -120,11 +113,11 @@ fun MainScreen(
                         modifier = Modifier
                             .padding(top = 18.dp, bottom = 10.dp)
                     ) {
-                        items(uiState.cafeterias) { restaurant ->
+                        items(mainUiState.cafeterias) { restaurant ->
                             MainRestaurantButton(
                                 restaurant = restaurant,
-                                restaurants = uiState.cafeterias,
-                                selectedButton = uiState.selectedCafeteria ?: "",
+                                restaurants = mainUiState.cafeterias,
+                                selectedButton = mainUiState.selectedCafeteria ?: "",
                                 onClick = {
                                     mainViewModel.selectCafeteria(it)
                                 }
@@ -133,7 +126,7 @@ fun MainScreen(
                     }
                 }
 
-                items(uiState.menus) { menu ->
+                items(mainUiState.menus) { menu ->
                     MainMenuItem(
                         menu = menu,
                         clickMenuDetail = {

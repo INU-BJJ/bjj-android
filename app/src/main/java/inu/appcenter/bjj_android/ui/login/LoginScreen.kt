@@ -35,18 +35,17 @@ fun LoginScreen(
 ){
     var showLoginDialog by remember { mutableStateOf(false) }
 
-    val signupState by authViewModel.signupState.collectAsState()
+    val authUiState by authViewModel.uiState.collectAsState()
 
-    val socialLogin by authViewModel.socialName.collectAsState()
 
     // 회원가입 상태 처리
-    LaunchedEffect(signupState) {
-        when (signupState) {
-            is SignupState.Success -> {
+    LaunchedEffect(authUiState.signupState) {
+        when (authUiState.signupState) {
+            is AuthState.Success -> {
                 onLoginSuccessAlreadySignup()
-                authViewModel.resetSignupState() // 상태 초기화
+                authViewModel.resetState() // 상태 초기화
             }
-            is SignupState.Error -> {
+            is AuthState.Error -> {
                 // 에러 처리 (예: 스낵바 표시)
             }
             else -> {} // Loading 및 Idle 상태 처리
@@ -71,7 +70,7 @@ fun LoginScreen(
                 Log.e("LoginFailure", "Login failed")
             },
             authViewModel = authViewModel,
-            socialLogin = socialLogin
+            authUiState = authUiState
         )
     }
 

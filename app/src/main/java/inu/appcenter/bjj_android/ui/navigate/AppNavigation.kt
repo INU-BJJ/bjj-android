@@ -26,18 +26,17 @@ fun AppNavigation(
 ) {
 
     val navController = rememberNavController()
-    val hasToken by authViewModel.hasToken.collectAsState()
 
 
+    val uiState by authViewModel.uiState.collectAsState()
 
 
-
-    if (hasToken == null) {
+    if (uiState.hasToken == null) {
         LoadingScreen()
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (hasToken == true) AllDestination.Main.route else AllDestination.Login.route,
+            startDestination = if (uiState.hasToken == true) AllDestination.Main.route else AllDestination.Login.route,
         ) {
             composable(AllDestination.Login.route) {
                 LoginScreen(
@@ -64,7 +63,8 @@ fun AppNavigation(
                         navController.navigate(AllDestination.Main.route) {
                             popUpTo(AllDestination.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    uiState = uiState
                 )
             }
             composable(AllDestination.Main.route) {

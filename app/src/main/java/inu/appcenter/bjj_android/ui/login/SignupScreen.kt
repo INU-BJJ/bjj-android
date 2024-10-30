@@ -59,16 +59,13 @@ fun SignupScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel,
     successSignup: () -> Unit,
+    uiState: AuthUiState
 ){
-    val userEmail by authViewModel.signupEmail.collectAsState()
-    val signupState by authViewModel.signupState.collectAsState()
-    val checkNicknameState by authViewModel.checkNicknameState.collectAsState()
-    val socialLogin by authViewModel.socialName.collectAsState()
 
 
     var nickname by remember { mutableStateOf("") }
-    LaunchedEffect(signupState) {
-        if (signupState == SignupState.Success) {
+    LaunchedEffect(uiState.signupState) {
+        if (uiState.signupState == AuthState.Success) {
             successSignup()
         }
     }
@@ -139,7 +136,7 @@ fun SignupScreen(
                         .padding(horizontal = 11.dp)
                 ){
                     Text(
-                        text = userEmail,
+                        text = uiState.signupEmail,
                         style = LocalTypography.current.regular13.copy(
                             lineHeight = 17.sp,
                             letterSpacing = 0.13.sp,
@@ -239,8 +236,8 @@ fun SignupScreen(
                     }
                 }
                 Spacer(Modifier.height(7.5.dp))
-                when(checkNicknameState){
-                    CheckNicknameState.Success->{
+                when(uiState.checkNicknameState){
+                    AuthState.Success->{
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -260,7 +257,7 @@ fun SignupScreen(
                             )
                         }
                     }
-                    CheckNicknameState.Error(message = "중복") -> {
+                    AuthState.Error(message = "중복") -> {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -280,7 +277,7 @@ fun SignupScreen(
                             )
                         }
                     }
-                    CheckNicknameState.Idle->{
+                    AuthState.Idle->{
                     }
                     else->{
 
@@ -290,18 +287,18 @@ fun SignupScreen(
             }
             Button(
                 onClick = {
-                    if (checkNicknameState == CheckNicknameState.Success){
+                    if (uiState.checkNicknameState == AuthState.Success){
                         authViewModel.signup(
                             signupDTO = SignupDTO(
                                 nickname = nickname,
-                                email = userEmail,
-                                provider = socialLogin
+                                email = uiState.signupEmail,
+                                provider = uiState.socialName
                             )
                         )
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (checkNicknameState == CheckNicknameState.Success) Orange_FF7800 else Gray_B9B9B9,
+                    containerColor = if (uiState.checkNicknameState == AuthState.Success) Orange_FF7800 else Gray_B9B9B9,
                     contentColor = Color.White
                 ),
                 modifier = Modifier

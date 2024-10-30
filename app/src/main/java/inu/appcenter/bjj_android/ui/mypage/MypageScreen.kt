@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
-import inu.appcenter.bjj_android.ui.login.LogoutState
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 
@@ -37,22 +37,22 @@ fun MyPageScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    val logoutState by authViewModel.logoutState.collectAsState()
+    val uiState by authViewModel.uiState.collectAsState()
 
     // 로그아웃 상태 관찰
-    LaunchedEffect(logoutState) {
-        when (logoutState) {
-            is LogoutState.Success -> {
+    LaunchedEffect(uiState.logoutState) {
+        when (uiState.logoutState) {
+            is AuthState.Success -> {
                 // 로그아웃 성공 시 로그인 화면으로 이동하고 백스택 클리어
                 navController.navigate(AllDestination.Login.route) {
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
                 // 로그아웃 상태 초기화
-                authViewModel.resetLogoutState()
+                authViewModel.resetState()
             }
-            is LogoutState.Error -> {
+            is AuthState.Error -> {
                 // 에러 처리가 필요한 경우 여기에 추가
-                authViewModel.resetLogoutState()
+                authViewModel.resetState()
             }
             else -> {}
         }

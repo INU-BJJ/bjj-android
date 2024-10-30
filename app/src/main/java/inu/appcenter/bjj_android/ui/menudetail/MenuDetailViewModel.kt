@@ -11,6 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.Response
+
+private const val DEFAULT_PAGE_SIZE = 10
+private const val DEFAULT_PAGE_NUMBER = 0
+
+sealed class ReviewError : Exception() {
+    data class EmptyResponse(override val message: String = "리뷰 정보가 비어있습니다.") : ReviewError()
+    data class ApiError(override val message: String) : ReviewError()
+    data class NetworkError(override val message: String) : ReviewError()
+}
 
 data class MenuDetailUiState(
     val selectedMenu: TodayDietRes? = null,
@@ -26,147 +36,171 @@ enum class SortingRules {
     MOST_LIKED,
     NEWEST_FIRST;
 
-    override fun toString(): String {
-        return name
-    }
-    fun toKorean(): String {
-        return when(name){
-            BEST_MATCH.name->{
-                "메뉴일치순"
-            }
-            MOST_LIKED.name->{
-                "좋아요순"
-            }
-            NEWEST_FIRST.name->{
-                "최신순"
-            }
-            else->{
-                ""
-            }
-        }
+    override fun toString() = name
+
+    fun toKorean() = when(this) {
+        BEST_MATCH -> "메뉴일치순"
+        MOST_LIKED -> "좋아요순"
+        NEWEST_FIRST -> "최신순"
     }
 }
 
-class MenuDetailViewModel(private val todayDietRepository: TodayDietRepository, private val reviewRepository: ReviewRepository): ViewModel() {
+class MenuDetailViewModel(
+    private val todayDietRepository: TodayDietRepository,
+    private val reviewRepository: ReviewRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MenuDetailUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun selectMenu(menu: TodayDietRes){
-        _uiState.update { it.copy(selectedMenu = menu)}
+    fun selectMenu(menu: TodayDietRes) {
+        _uiState.update {
+            it.copy(
+                selectedMenu = menu,
+                error = null,
+                isWithImages = false,  // 초기화
+                sort = SortingRules.BEST_MATCH  // 초기화
+            )
+        }
         getReviewsByMenu(menu.menuPairId)
-
-
     }
 
-    fun selectIsWithImages(
-        isWithImages: Boolean
-    ) {
-        _uiState.update {
-            it.copy(isWithImages = isWithImages).also { newState ->
-                getReviewsByMenu(
-                    menuPairId = newState.selectedMenu?.menuPairId ?: return,
-                    isWithImages = newState.isWithImages,
-                    sort = newState.sort
-                )
-            }
+    fun selectIsWithImages(isWithImages: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isWithImages = isWithImages,
+                error = null
+            )
         }
     }
 
     fun selectSortingRule(sort: SortingRules) {
         _uiState.update { currentState ->
-            currentState.copy(sort = sort).also { newState ->
-                getReviewsByMenu(
-                    menuPairId = newState.selectedMenu?.menuPairId ?: return,
-                    isWithImages = newState.isWithImages,
-                    sort = sort
-                )
-            }
+            currentState.copy(
+                sort = sort,
+                error = null
+            )
         }
     }
 
-    fun getMoreReviewsByMenu(
-        menuPairId : Long,
-        pageNumber : Int = 0,
-        pageSize: Int = 10,
+//    fun selectIsWithImages(
+//        isWithImages: Boolean
+//    ) {
+//        _uiState.update { currentState ->
+//            currentState.copy(
+//                isWithImages = isWithImages,
+//                error = null
+//            ).also { newState ->
+//                newState.selectedMenu?.menuPairId?.let { menuPairId ->
+//                    getReviewsByMenu(
+//                        menuPairId = menuPairId,
+//                        isWithImages = newState.isWithImages,
+//                        sort = newState.sort
+//                    )
+//                }
+//            }
+//        }
+//    }
+//
+//    fun selectSortingRule(sort: SortingRules) {
+//        _uiState.update { currentState ->
+//            currentState.copy(
+//                sort = sort,
+//                error = null
+//            ).also { newState ->
+//                newState.selectedMenu?.menuPairId?.let { menuPairId ->
+//                    getReviewsByMenu(
+//                        menuPairId = menuPairId,
+//                        isWithImages = newState.isWithImages,
+//                        sort = sort
+//                    )
+//                }
+//            }
+//        }
+//    }
+
+    private suspend fun fetchReviews(
+        menuPairId: Long,
+        pageNumber: Int = DEFAULT_PAGE_NUMBER,
+        pageSize: Int = DEFAULT_PAGE_SIZE,
         sort: SortingRules = SortingRules.BEST_MATCH,
         isWithImages: Boolean = false
-    ){
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                val response = reviewRepository.getReviews(
-                    menuPairId = menuPairId,
-                    pageNumber = pageNumber,
-                    pageSize = pageSize,
-                    sort = sort.toString(),
-                    isWithImages = isWithImages
-                )
+    ): Response<ReviewRes> {
+        return reviewRepository.getReviews(
+            menuPairId = menuPairId,
+            pageNumber = pageNumber,
+            pageSize = pageSize,
+            sort = sort.toString(),
+            isWithImages = isWithImages
+        )
+    }
 
-                if (response.isSuccessful){
-                    val moreReviews = response.body() ?: throw Exception("더보기 리뷰 정보가 비어있습니다.")
+    private fun handleReviewError(e: Exception) {
+        val errorMessage = when (e) {
+            is ReviewError.EmptyResponse -> e.message
+            is ReviewError.ApiError -> "API 오류: ${e.message}"
+            is ReviewError.NetworkError -> "네트워크 오류: ${e.message}"
+            else -> "알 수 없는 오류: ${e.message}"
+        }
+        Log.e("ReviewError", errorMessage)
+        _uiState.update { it.copy(isLoading = false, error = errorMessage) }
+    }
+
+    fun getMoreReviewsByMenu(
+        menuPairId: Long,
+        pageNumber: Int = DEFAULT_PAGE_NUMBER,
+        pageSize: Int = DEFAULT_PAGE_SIZE,
+        sort: SortingRules = SortingRules.BEST_MATCH,
+        isWithImages: Boolean = false
+    ) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = fetchReviews(menuPairId, pageNumber, pageSize, sort, isWithImages)
+                if (response.isSuccessful) {
+                    val moreReviews = response.body() ?: throw ReviewError.EmptyResponse()
                     _uiState.update { currentState ->
-                        Log.d("currentState", currentState.reviews.toString())
                         currentState.copy(
                             reviews = ReviewRes(
                                 reviewDetailList = (currentState.reviews?.reviewDetailList ?: emptyList()) + moreReviews.reviewDetailList,
                                 lastPage = moreReviews.lastPage
                             ),
-                            isLoading = moreReviews.lastPage
+                            isLoading = false
                         )
                     }
                 } else {
-                    throw Exception(response.errorBody()?.string())
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
                 }
             } catch (e: Exception) {
-                Log.e("getMoreReviewsByMenu 실패 원인", e.message.toString())
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "더보기 리뷰를 불러오는데 실패했습니다: ${e.message}"
-                    )
-                }
+                handleReviewError(e)
             }
         }
     }
 
     fun getReviewsByMenu(
-        menuPairId : Long,
-        pageNumber : Int = 0,
-        pageSize: Int = 10,
+        menuPairId: Long,
+        pageNumber: Int = DEFAULT_PAGE_NUMBER,
+        pageSize: Int = DEFAULT_PAGE_SIZE,
         sort: SortingRules = SortingRules.BEST_MATCH,
         isWithImages: Boolean = false
-    ){
+    ) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val response = reviewRepository.getReviews(
-                    menuPairId = menuPairId,
-                    pageNumber = pageNumber,
-                    pageSize = pageSize,
-                    sort = sort.toString(),
-                    isWithImages = isWithImages
-                )
-
-                if (response.isSuccessful){
-                    val reviews = response.body() ?: throw Exception("리뷰 정보가 비어있습니다.")
+                val response = fetchReviews(menuPairId, pageNumber, pageSize, sort, isWithImages)
+                if (response.isSuccessful) {
+                    val reviews = response.body() ?: throw ReviewError.EmptyResponse()
                     _uiState.update { it.copy(reviews = reviews, isLoading = false) }
                 } else {
-                    throw Exception(response.errorBody()?.string())
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
                 }
             } catch (e: Exception) {
-                Log.e("getReviewsByMenu 실패 원인", e.message.toString())
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "리뷰를 불러오는데 실패했습니다: ${e.message}"
-                    )
-                }
+                handleReviewError(e)
             }
         }
     }
 
-
-
-
+    fun resetState() {
+        _uiState.update { MenuDetailUiState() }
+    }
 }

@@ -10,8 +10,22 @@ import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private const val TOKEN_DELAY = 300L
+private const val RETRY_DELAY = 1000L
+private const val MAX_RETRIES = 3
+
+sealed class MainError : Exception() {
+    data class EmptyResponse(override val message: String = "데이터가 비어있습니다.") : MainError()
+    data class ApiError(override val message: String) : MainError()
+    data class NetworkError(override val message: String) : MainError()
+}
 
 data class MainUiState(
     val cafeterias: List<String> = emptyList(),
@@ -30,85 +44,110 @@ class MainViewModel(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        observeAuthToken()
+    }
+
+    private fun observeAuthToken() {
+        viewModelScope.launch {
+            authViewModel.uiState
+                .map { it.hasToken }
+                .filterNotNull()
+                .filter { it }
+                .onEach { delay(TOKEN_DELAY) }
+                .collect { getCafeterias() }
+        }
+    }
 
     fun selectCafeteria(cafeteria: String) {
-        _uiState.update { it.copy(selectedCafeteria = cafeteria, isLoading = true) }
+        _uiState.update {
+            it.copy(
+                selectedCafeteria = cafeteria,
+                isLoading = true,
+                error = null
+            )
+        }
         getMenusByCafeteria(cafeteria)
     }
 
-    init {
-        viewModelScope.launch {
-            authViewModel.hasToken.collect { hasToken ->
-                if (hasToken == true) {
-                    delay(300) // 토큰 저장 완료 대기
-                    getCafeterias()
+    private suspend fun fetchCafeterias(retryCount: Int = 0) {
+        try {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+
+            val response = cafeteriasRepository.getCafeterias()
+
+            if (response.isSuccessful) {
+                val cafeterias = response.body() ?: throw MainError.EmptyResponse("식당 정보가 비어있습니다.")
+
+                _uiState.update {
+                    it.copy(
+                        cafeterias = cafeterias,
+                        selectedCafeteria = cafeterias.firstOrNull(),
+                        isLoading = false
+                    )
                 }
+
+                cafeterias.firstOrNull()?.let { firstCafeteria ->
+                    getMenusByCafeteria(firstCafeteria)
+                }
+            } else {
+                throw MainError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
             }
+        } catch (e: Exception) {
+            handleError(e, retryCount) { fetchCafeterias(it) }
         }
     }
 
     fun getCafeterias() {
         viewModelScope.launch {
+            fetchCafeterias()
+        }
+    }
+
+    fun getMenusByCafeteria(cafeteriaName: String) {
+        viewModelScope.launch {
             try {
-                _uiState.update { it.copy(isLoading = true) }
-                val response = cafeteriasRepository.getCafeterias()
+                _uiState.update { it.copy(isLoading = true, error = null) }
+
+                val response = todayDietRepository.getTodayDiet(cafeteriaName)
+
                 if (response.isSuccessful) {
-                    val cafeterias = response.body() ?: throw Exception("식당 정보가 비어있습니다.")
-                    Log.d("getCafeterias", cafeterias.toString())
-                    _uiState.update {
-                        it.copy(
-                            cafeterias = cafeterias,
-                            selectedCafeteria = cafeterias.firstOrNull(),
-                            isLoading = false
-                        )
-                    }
-                    // 첫 번째 카페테리아의 메뉴를 자동으로 로드
-                    cafeterias.firstOrNull()?.let { firstCafeteria ->
-                        getMenusByCafeteria(firstCafeteria)
-                    }
+                    val menus = response.body() ?: throw MainError.EmptyResponse("식당 메뉴 정보가 비어있습니다.")
+                    _uiState.update { it.copy(menus = menus, isLoading = false) }
                 } else {
-                    throw Exception(response.errorBody()?.string())
+                    throw MainError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
                 }
             } catch (e: Exception) {
-                Log.e("getCafeterias 실패 원인", e.message.toString())
-                if (e.message?.contains("BEGIN_ARRAY") == true) {
-                    delay(1000)
-                    getCafeterias() // 재시도
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = "카페테리아 정보를 불러오는데 실패했습니다: ${e.message}"
-                        )
-                    }
-                }
+                handleError(e)
             }
         }
     }
 
-    fun getMenusByCafeteria(
-        cafeteriaName: String
+    private suspend fun handleError(
+        e: Exception,
+        retryCount: Int = 0,
+        retryOperation: suspend (Int) -> Unit = {}
     ) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                val response = todayDietRepository.getTodayDiet(cafeteriaName = cafeteriaName)
+        Log.e("MainViewModel", "Error: ${e.message}", e)
 
-                if (response.isSuccessful) {
-                    val menus = response.body() ?: throw Exception("식당 메뉴 정보가 비어있습니다.")
-                    _uiState.update { it.copy(menus = menus, isLoading = false) }
-                } else {
-                    throw Exception(response.errorBody()?.string())
+        when {
+            e.message?.contains("BEGIN_ARRAY") == true && retryCount < MAX_RETRIES -> {
+                delay(RETRY_DELAY)
+                retryOperation(retryCount + 1)
+            }
+            else -> {
+                val errorMessage = when (e) {
+                    is MainError.EmptyResponse -> e.message
+                    is MainError.ApiError -> "API 오류: ${e.message}"
+                    is MainError.NetworkError -> "네트워크 오류: ${e.message}"
+                    else -> "알 수 없는 오류: ${e.message}"
                 }
-            } catch (e: Exception) {
-                Log.e("getMenusByCafeteria 실패 원인", e.message.toString())
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "메뉴를 불러오는데 실패했습니다: ${e.message}"
-                    )
-                }
+                _uiState.update { it.copy(isLoading = false, error = errorMessage) }
             }
         }
+    }
+
+    fun resetState() {
+        _uiState.update { MainUiState() }
     }
 }
