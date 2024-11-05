@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.local.DataStoreManager
-import inu.appcenter.bjj_android.model.member.SignupDTO
+import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
@@ -76,12 +76,12 @@ class AuthViewModel(
         }
     }
 
-    fun signup(signupDTO: SignupDTO) {
+    fun signup(signupReq: SignupReq) {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(signupState = AuthState.Loading) }
 
-                val response = memberRepository.signup(signupDTO)
+                val response = memberRepository.signup(signupReq)
                 if (response.isSuccessful) {
                     val tokenResponse = response.body() ?: throw Exception("회원가입 정보가 비어있습니다.")
                     dataStoreManager.saveToken(tokenResponse.token)

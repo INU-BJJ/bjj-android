@@ -11,7 +11,7 @@ import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 @Composable
 fun HeaderSection(menu: TodayDietRes, navController: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        HeaderImage()
+        HeaderImage(menu)
         NavigationButtons(navController)
         MenuInfoColumn(menu)
     }

@@ -1,7 +1,7 @@
 package inu.appcenter.bjj_android.network
 
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
-import inu.appcenter.bjj_android.model.member.SignupDTO
+import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
@@ -32,13 +32,13 @@ interface APIService {
     suspend fun postReview(
         @Query("memberId") memberId: Long,
         @Body reviewPost: ReviewPost
-    ) : Response<Void>
+    ) : Response<Unit>
 
 
     @DELETE("/api/reviews/{reviewId}")
     suspend fun deleteReview(
         @Path("reviewId") reviewId: Long
-    ) : Response<Void>
+    ) : Response<Unit>
 
     @GET("api/reviews/my")
     suspend fun getMyReviews(
@@ -69,21 +69,21 @@ interface APIService {
     suspend fun getCafeterias() : Response<List<String>>
 
     //Member API
-    @GET("/api/member")
+    @GET("/api/members")
     suspend fun getAllMembers() : Response<MemberResponseDTO>
 
-    @POST("/api/member/sign-up")
+    @POST("/api/members/sign-up")
     suspend fun signup(
-        @Body signupDTO: SignupDTO
+        @Body signupReq: SignupReq
     ) : Response<SignupRes>
 
-    @POST("/api/member/check-nickname")
+    @POST("/api/members/check-nickname")
     suspend fun checkNickname(
         @Query("nickname") nickname : String
     ) : Response<Boolean>
 
-    @PATCH("/api/member/check-nickname")
+    @PATCH("/api/members/check-nickname")
     suspend fun modifyNickname(
         @Query("nickname") nickname : String
-    ) : Response<Void>
+    ) : Response<Unit>
 }

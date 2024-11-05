@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,7 +30,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.model.member.SignupDTO
+import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
@@ -289,7 +287,7 @@ fun SignupScreen(
                 onClick = {
                     if (uiState.checkNicknameState == AuthState.Success){
                         authViewModel.signup(
-                            signupDTO = SignupDTO(
+                            signupReq = SignupReq(
                                 nickname = nickname,
                                 email = uiState.signupEmail,
                                 provider = uiState.socialName

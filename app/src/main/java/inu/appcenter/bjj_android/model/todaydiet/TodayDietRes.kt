@@ -17,6 +17,6 @@ data class TodayDietRes(
     @SerializedName("cafeteriaCorner") val cafeteriaCorner: String,
     @SerializedName("reviewCount") val reviewCount: Int,
     @SerializedName("reviewRatingAverage") val reviewRatingAverage: Float,
-    @SerializedName("reviewImagePath") val reviewImagePath: String,
+    @SerializedName("reviewImageName") val reviewImageName: String,
     @SerializedName("likedMenu") val likedMenu: Boolean
 )
