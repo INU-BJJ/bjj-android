@@ -12,5 +12,5 @@ interface MemberRepository {
 
     suspend fun checkNickname(nickname : String) : Response<Boolean>
 
-    suspend fun modifyNickname(nickname : String) : Response<Void>
+    suspend fun modifyNickname(nickname : String) : Response<Unit>
 }

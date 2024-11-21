@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.repository.review
 
+import inu.appcenter.bjj_android.model.review.MyReviewRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import retrofit2.Response
@@ -15,17 +16,18 @@ interface ReviewRepository {
     ) : Response<ReviewRes>
 
     suspend fun postReview(
-        memberId: Long,
         reviewPost: ReviewPost
-    ) : Response<Void>
+    ) : Response<Unit>
 
     suspend fun deleteReview(
         reviewId: Long
-    ) : Response<Void>
+    ) : Response<Unit>
 
-    suspend fun getMyReviews(
-        memberId: Long,
-        pageNumber: Long,
-        pageSize: Long
+    suspend fun getMyReviews() : Response<MyReviewRes>
+
+    suspend fun getMyReviewsByCafeteria(
+        cafeteriaName: String,
+        pageNumber: Int,
+        pageSize: Int
     ) : Response<ReviewRes>
 }

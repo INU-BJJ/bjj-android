@@ -19,7 +19,7 @@ class MemberRepositoryImpl(private val apiService: APIService) : MemberRepositor
         return apiService.checkNickname(nickname = nickname)
     }
 
-    override suspend fun modifyNickname(nickname: String): Response<Void> {
+    override suspend fun modifyNickname(nickname: String): Response<Unit> {
         return apiService.modifyNickname(nickname = nickname)
     }
 }

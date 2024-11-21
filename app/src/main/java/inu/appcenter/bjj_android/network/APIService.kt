@@ -3,6 +3,7 @@ package inu.appcenter.bjj_android.network
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
+import inu.appcenter.bjj_android.model.review.MyReviewRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
@@ -30,7 +31,6 @@ interface APIService {
 
     @POST("/api/reviews")
     suspend fun postReview(
-        @Query("memberId") memberId: Long,
         @Body reviewPost: ReviewPost
     ) : Response<Unit>
 
@@ -41,10 +41,13 @@ interface APIService {
     ) : Response<Unit>
 
     @GET("api/reviews/my")
-    suspend fun getMyReviews(
-        @Query("memberId") memberId: Long,
-        @Query("pageNumber") pageNumber: Long,
-        @Query("pageSize") pageSize: Long
+    suspend fun getMyReviews() : Response<MyReviewRes>
+
+    @GET("api/reviews/my/cafeteria")
+    suspend fun getMyReviewsByCafeteria(
+        @Query("cafeteriaName") cafeteriaName: String,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
     ) : Response<ReviewRes>
 
     // Image API

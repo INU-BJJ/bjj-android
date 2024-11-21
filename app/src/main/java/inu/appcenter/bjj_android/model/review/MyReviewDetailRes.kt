@@ -2,7 +2,7 @@ package inu.appcenter.bjj_android.model.review
 
 import com.google.gson.annotations.SerializedName
 
-data class ReviewDetailRes(
+data class MyReviewDetailRes(
     @SerializedName("reviewId") val reviewId: Long,
     @SerializedName("comment") val comment: String,
     @SerializedName("rating") val rating: Int,
@@ -14,6 +14,5 @@ data class ReviewDetailRes(
     @SerializedName("subMenuName") val subMenuName: String,
     @SerializedName("memberId") val memberId: Long,
     @SerializedName("memberNickname") val memberNickname: String,
-    @SerializedName("memberImageName") val memberImageName: String?,
-    @SerializedName("liked") val liked: Boolean
+    @SerializedName("memberImageName") val memberImageName: String?
 )

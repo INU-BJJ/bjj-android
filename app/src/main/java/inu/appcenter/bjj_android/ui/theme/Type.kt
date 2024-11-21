@@ -86,4 +86,20 @@ data class AppTypography(
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
     ),
+    val bold18: TextStyle = TextStyle(
+        fontFamily = pretendard_bold,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+    ),
+    val medium13: TextStyle = TextStyle(
+        fontFamily = pretendard_medium,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+    ),
+    val medium11: TextStyle = TextStyle(
+        fontFamily = pretendard_medium,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+    ),
+
 )

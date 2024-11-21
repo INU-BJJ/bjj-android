@@ -34,7 +34,7 @@ val viewModelModule = module {
     viewModel{ MainViewModel(get(), get(), get()) }
     viewModel{ MenuDetailViewModel(get(), get()) }
     viewModel{ MypageViewModel() }
-    viewModel{ ReviewViewModel() }
+    viewModel{ ReviewViewModel(get(), get(), get()) }
     viewModel{ TierViewModel() }
 
 }
