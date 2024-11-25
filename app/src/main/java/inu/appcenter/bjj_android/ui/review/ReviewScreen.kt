@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -129,15 +128,6 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                         reviewViewModel
                     )
                 }
-//                reviewUiState.restaurants.forEach{restaurantName ->
-//                    if ((reviewUiState.reviews?.myReviewDetailList?.filter { reviews -> reviews.key == restaurantName}?.values)?.isNotEmpty() == true){
-//                        ReviewFrameScreen(
-//                            navController,
-//                            restaurantName,
-//                            reviewViewModel
-//                        )
-//                    }
-//                }
 
             }
 

@@ -4,6 +4,8 @@ import inu.appcenter.bjj_android.model.review.MyReviewRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.network.APIService
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 
 class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepository {
@@ -23,10 +25,11 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
         )
     }
 
-    override suspend fun postReview(reviewPost: ReviewPost): Response<Unit> {
-        return apiService.postReview(
-            reviewPost = reviewPost
-        )
+    override suspend fun postReview(
+        reviewPost: RequestBody,
+        files: List<MultipartBody.Part>?
+    ): Response<Unit> {
+        return apiService.postReview(reviewPost = reviewPost, files = files)
     }
 
     override suspend fun deleteReview(reviewId: Long): Response<Unit> {

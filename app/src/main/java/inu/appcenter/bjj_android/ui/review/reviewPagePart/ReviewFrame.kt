@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -88,7 +89,10 @@ fun ReviewFrameScreen(
                         .fillMaxWidth()
                         .height(63.dp)
                         .border(0.5.dp, Gray_B9B9B9, shape = RoundedCornerShape(3.dp))
-                        .clickable { navController.navigate(AllDestination.ReviewDetail.route)}
+                        .clickable {
+                            reviewViewModel.setSelectedReviewDetail(item)
+                            navController.navigate(AllDestination.ReviewDetail.route)
+                        }
                 ) {
                     Column(
                         modifier = Modifier
