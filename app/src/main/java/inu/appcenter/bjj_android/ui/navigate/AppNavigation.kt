@@ -15,6 +15,12 @@ import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
+import inu.appcenter.bjj_android.ui.review.page.PushReviewDetailScreen
+import inu.appcenter.bjj_android.ui.review.page.ReviewDetailScreen
+import inu.appcenter.bjj_android.ui.review.page.ReviewWriteScreen
+import inu.appcenter.bjj_android.ui.review.reviewPagePart.tempReviews
 import inu.appcenter.bjj_android.ui.tier.TierScreen
 
 
@@ -22,12 +28,11 @@ import inu.appcenter.bjj_android.ui.tier.TierScreen
 fun AppNavigation(
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
-    menuDetailViewModel: MenuDetailViewModel
+    menuDetailViewModel: MenuDetailViewModel,
+    reviewViewModel: ReviewViewModel
 ) {
 
     val navController = rememberNavController()
-
-
     val uiState by authViewModel.uiState.collectAsState()
 
 
@@ -84,7 +89,17 @@ fun AppNavigation(
                 MenuDetailScreen(navController = navController, menuDetailViewModel = menuDetailViewModel)
             }
             composable(AllDestination.Tier.route) { TierScreen(navController) }
-            composable(AllDestination.Review.route) { ReviewScreen(navController) }
+            composable(AllDestination.Review.route) {
+                ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
+            }
+            composable(AllDestination.ReviewMore.route){
+                MoreReadScreen(navController = navController, reviewViewModel = reviewViewModel)
+            }
+            composable(AllDestination.ReviewWrite.route){
+                ReviewWriteScreen(navController = navController, reviewViewModel = reviewViewModel)
+            }
+            composable(AllDestination.ReviewDetail.route){ReviewDetailScreen(navController = navController) }
+            composable(AllDestination.ReviewDetailPush.route) { PushReviewDetailScreen(navController) }
             composable(AllDestination.MyPage.route) { MyPageScreen(navController = navController, authViewModel = authViewModel) }
         }
     }

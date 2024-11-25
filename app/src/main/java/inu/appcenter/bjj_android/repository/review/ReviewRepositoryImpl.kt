@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.repository.review
 
+import inu.appcenter.bjj_android.model.review.MyReviewRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.network.APIService
@@ -22,24 +23,29 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
         )
     }
 
-    override suspend fun postReview(memberId: Long, reviewPost: ReviewPost): Response<Void> {
+    override suspend fun postReview(reviewPost: ReviewPost): Response<Unit> {
         return apiService.postReview(
-            memberId = memberId,
             reviewPost = reviewPost
         )
     }
 
-    override suspend fun deleteReview(reviewId: Long): Response<Void> {
+    override suspend fun deleteReview(reviewId: Long): Response<Unit> {
         return apiService.deleteReview(reviewId = reviewId)
     }
 
-    override suspend fun getMyReviews(
-        memberId: Long,
-        pageNumber: Long,
-        pageSize: Long
-    ): Response<ReviewRes> {
-        return apiService.getMyReviews(memberId = memberId, pageNumber = pageNumber, pageSize = pageSize)
+    override suspend fun getMyReviews(): Response<MyReviewRes> {
+        return apiService.getMyReviews()
     }
 
-
+    override suspend fun getMyReviewsByCafeteria(
+        cafeteriaName: String,
+        pageNumber: Int,
+        pageSize: Int
+    ): Response<ReviewRes> {
+        return apiService.getMyReviewsByCafeteria(
+            cafeteriaName = cafeteriaName,
+            pageNumber = pageNumber,
+            pageSize = pageSize
+        )
+    }
 }

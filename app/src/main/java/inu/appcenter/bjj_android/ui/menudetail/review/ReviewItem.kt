@@ -19,9 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,9 +38,6 @@ import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 
 
 @Composable
@@ -63,7 +58,7 @@ fun ReviewItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (review.memberImagePath != null) {
+            if (review.memberImageName != null) {
                 Image(
                     painter = painterResource(R.drawable.mypage),
                     contentDescription = "리뷰 이미지",
@@ -115,7 +110,7 @@ fun ReviewItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    painter = painterResource( if (review.likedMenu) R.drawable.filled_good else R.drawable.unfilled_good),
+                    painter = painterResource( if (review.liked) R.drawable.filled_good else R.drawable.unfilled_good),
                     contentDescription = "리뷰 별 좋아요 수",
                     tint = Color.Unspecified
                 )
@@ -143,8 +138,8 @@ fun ReviewItem(
 
 
         Spacer(Modifier.height(12.dp))
-        if (!review.imagePaths.isNullOrEmpty()){
-            DynamicReviewImages(reviewImages = review.imagePaths)
+        if (!review.imageNames.isNullOrEmpty()){
+            DynamicReviewImages(reviewImages = review.imageNames)
             Spacer(Modifier.height(12.dp))
         }
 //        LazyRow(
