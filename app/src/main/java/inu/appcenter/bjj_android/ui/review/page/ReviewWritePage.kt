@@ -23,8 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,15 +35,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import inu.appcenter.bjj_android.ui.review.tool.ReviewTextField
-import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.tool.DashedBorderBox
 import inu.appcenter.bjj_android.ui.review.tool.DropdownMenuBox
+import inu.appcenter.bjj_android.ui.review.tool.DropdownType
+import inu.appcenter.bjj_android.ui.review.tool.ReviewTextField
 import inu.appcenter.bjj_android.ui.review.tool.StarRatingCalculatorBig
+import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
@@ -51,6 +51,9 @@ import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 @Composable
 fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
     var cautionExpanded by remember { mutableStateOf(false) }
+    var reviewComment by remember { mutableStateOf("") }
+    var currentRating by remember { mutableIntStateOf(4) }
+
 
     DisposableEffect(Unit) {
         onDispose {
@@ -80,7 +83,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.navigate(AllDestination.Review.route) },
+                        .clickable { navController.popBackStack() },
                     painter = painterResource(id = R.drawable.leftarrow),
                     contentDescription = "뒤로 가기",
                     tint = Color.Black
@@ -93,11 +96,19 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 .fillMaxWidth(),
         ) {
             // 식당 위치 드롭다운
-            DropdownMenuBox(reviewViewModel, label = "식당 위치")
+            DropdownMenuBox(
+                reviewViewModel,
+                dropdownType = DropdownType.RESTAURANT,
+                labelText = "식당 위치"
+            )
             Spacer(modifier = Modifier.height(10.dp))
 
             // 메뉴 선택 드롭다운
-            DropdownMenuBox(reviewViewModel, label = "메뉴 선택")
+            DropdownMenuBox(
+                reviewViewModel,
+                dropdownType = DropdownType.MENU,
+                labelText = "메뉴 선택"
+            )
             Spacer(modifier = Modifier.height(13.8.dp))
 
             HorizontalDivider(
@@ -119,7 +130,12 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                StarRatingCalculatorBig(initialRating = 4f)
+                StarRatingCalculatorBig(
+                    initialRating = 5f,
+                    onRatingChanged = { newRating ->
+                        currentRating = newRating
+                        //reviewViewModel.setRating(newRating)
+                    })
             }
             Spacer(modifier = Modifier.height(25.dp))
 
@@ -132,12 +148,10 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            var text by remember { mutableStateOf("") }
-
             ReviewTextField(
-                text,
+                reviewComment,
                 onTextChange = { newText ->
-                    text = newText // 상태 업데이트
+                    reviewComment = newText // 상태 업데이트
                 }
             )
             Spacer(modifier = Modifier.height(15.dp))
@@ -206,7 +220,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             }
             Spacer(modifier = Modifier.height(32.dp))
 
-            WriteComplete(text)
+            WriteComplete(reviewComment, currentRating, reviewViewModel,  onSuccess = { navController.popBackStack() })
         }
     }
 }

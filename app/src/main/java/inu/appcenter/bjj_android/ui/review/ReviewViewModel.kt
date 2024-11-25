@@ -3,7 +3,10 @@ package inu.appcenter.bjj_android.ui.review
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.model.review.MyReviewRes
+import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
@@ -15,7 +18,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import java.io.File
 
 private const val DEFAULT_PAGE_SIZE = 10
 private const val DEFAULT_PAGE_NUMBER = 0
@@ -28,6 +36,7 @@ data class ReviewUiState(
     val restaurants : List<String> = emptyList(),
     val selectedMenu: TodayDietRes? = null,
     val menus: List<TodayDietRes> = emptyList(),
+    val selectedReviewDetail: MyReviewDetailRes? = null,
     val isWithImages: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
@@ -49,11 +58,12 @@ class ReviewViewModel(
         getMyReviews()
     }
 
+    // 더보기
     fun setSelectedRestaurant(restaurant: String) {
         _uiState.update {
             it.copy(
                 selectedRestaurant = restaurant,
-                reviewsChoiceByRestaurant = null //
+                reviewsChoiceByRestaurant = null
             )
         }
         getMoreReviewsByCafeteria(restaurant)
@@ -67,10 +77,13 @@ class ReviewViewModel(
         }
     }
 
+    // 리뷰 작성
     fun setSelectedReviewRestaurant(restaurant: String) {
         _uiState.update {
             it.copy(
                 selectedRestaurantAtReviewWrite = restaurant,
+                selectedMenu = null, // 선택된 메뉴 초기화
+                menus = emptyList()  // 메뉴 리스트 초기화
             )
         }
     }
@@ -94,12 +107,20 @@ class ReviewViewModel(
     fun resetSelectedMenu() {
         _uiState.update {
             it.copy(
-                selectedRestaurantAtReviewWrite = null
+                selectedMenu = null,
+                menus = emptyList()
             )
         }
     }
 
+    // 선택된 리뷰 상세 정보를 관리하는 변수 추가
+    fun setSelectedReviewDetail(reviewDetail: MyReviewDetailRes) {
+        _uiState.update { it.copy(selectedReviewDetail = reviewDetail) }
+    }
 
+    fun resetSelectedReviewDetail() {
+        _uiState.update { it.copy(selectedReviewDetail = null) }
+    }
 
     private fun getMyReviews() {
         viewModelScope.launch {
@@ -178,7 +199,7 @@ class ReviewViewModel(
                         )
                     }
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Restaurant API Error")
                 }
             }catch (e: Exception){
                 handleReviewError(e)
@@ -186,7 +207,7 @@ class ReviewViewModel(
         }
     }
 
-
+    // 식당에 대한 메뉴 불러오기(리뷰 작성 드롭다운 메뉴부분)
     fun getMenusByCafeteria(cafeteriaName: String) {
         viewModelScope.launch {
             try {
@@ -198,7 +219,7 @@ class ReviewViewModel(
                     val menus = response.body() ?: throw MainError.EmptyResponse("식당 메뉴 정보가 비어있습니다.")
                     _uiState.update { it.copy(menus = menus, isLoading = false) }
                 } else {
-                    throw MainError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -206,6 +227,59 @@ class ReviewViewModel(
         }
     }
 
+    // 리뷰 작성하기
+    fun reviewComplete(reviewPost: ReviewPost, images: List<String>, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+
+                val gson = Gson()
+                val reviewPostJson = gson.toJson(reviewPost)
+                val reviewPostRequestBody = reviewPostJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+                val files: List<MultipartBody.Part>? = if (images.isNotEmpty()) {
+                    images.map { imagePath ->
+                        val imageFile = File(imagePath)
+                        val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+                        MultipartBody.Part.createFormData("files", imageFile.name, requestFile)
+                    }
+                } else {
+                    null
+                }
+
+                val response = reviewRepository.postReview(reviewPostRequestBody, files)
+
+                if (response.isSuccessful) {
+                    getMyReviews()
+                    _uiState.update { it.copy(isLoading = false) }
+                    onSuccess()
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "reviewWrite API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
+
+    // 리뷰 삭제하기
+    fun deleteReview(reviewId: Long, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = reviewRepository.deleteReview(reviewId)
+                if (response.isSuccessful) {
+                    getMyReviews()
+                    _uiState.update { it.copy(isLoading = false) }
+                    onSuccess()
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "deleteReview API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
 
     private fun handleReviewError(e: Exception) {
         val errorMessage = when (e) {

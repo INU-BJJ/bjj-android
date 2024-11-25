@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.review.page
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,11 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,32 +40,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
-
-
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-fun LocalDateTime.format(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
-    return this.format(formatter)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(navController: NavHostController) {
-    var expanded by remember { mutableStateOf(false) }
-    var likeCount by remember { mutableIntStateOf(15004) }
+fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : ReviewViewModel) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+    val reviewUiState by reviewViewModel.uiState.collectAsState()
+    val reviewDetail = reviewUiState.selectedReviewDetail
+
     Column(
         modifier = Modifier
             .background(color = Color.White)
@@ -87,7 +80,10 @@ fun ReviewDetailScreen(navController: NavHostController) {
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.navigate(AllDestination.Review.route) },
+                        .clickable {
+                            //reviewViewModel.resetSelectedReviewDetail() // 상태 초기화
+                            navController.popBackStack()
+                        },
                     painter = painterResource(id = R.drawable.leftarrow),
                     contentDescription = "뒤로 가기",
                     tint = Color.Black
@@ -100,14 +96,16 @@ fun ReviewDetailScreen(navController: NavHostController) {
                         .offset(x = -(26).dp)
                         .clickable { showBottomSheet = true },
                     painter = painterResource(id = R.drawable.pencil),
-                    contentDescription = "뒤로 가기",
+                    contentDescription = "삭제 하기",
                     tint = Color.Black
                 )
             })
         if (showBottomSheet) {
-            ModalBottomSheet(containerColor = Color.White, onDismissRequest = {
-                showBottomSheet = false
-            }, sheetState = sheetState, dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }) {
+            ModalBottomSheet(
+                containerColor = Color.White,
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }) {
                 // Sheet content
                 Column(
                     modifier = Modifier
@@ -116,7 +114,16 @@ fun ReviewDetailScreen(navController: NavHostController) {
                     Text(text = "삭제하기",
                         color = Red_FF3916,
                         modifier = Modifier
-                            .clickable {/*삭제로직*/ }
+                            .clickable {
+                                reviewViewModel.deleteReview(
+                                    reviewId = reviewDetail?.reviewId ?: -1, // null 일때 -1을 주어 지워지지 않게함
+                                    onSuccess = {
+                                        // 삭제 성공 후 처리 (예: 이전 화면으로 이동)
+                                        navController.popBackStack()
+                                    }
+                                )
+                                showBottomSheet = false
+                            }
                             .fillMaxWidth()
                             .padding(horizontal = 31.dp))
                     Spacer(modifier = Modifier.height(64.5.dp))
@@ -150,7 +157,7 @@ fun ReviewDetailScreen(navController: NavHostController) {
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "떡볶이킬러나는최고야룰루",
+                        text = reviewDetail?.memberNickname ?: "잘못된 닉네임",
                         style = LocalTypography.current.bold15.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -162,10 +169,10 @@ fun ReviewDetailScreen(navController: NavHostController) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        StarRatingCalculator(rating = 5f)
+                        StarRatingCalculator(rating = reviewDetail?.rating?.toFloat() ?: 0f)
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = "2024.08.20".format(),
+                            text = reviewDetail?.createdDate ?: "2024-00-00",
                             style = LocalTypography.current.regular13.copy(
                                 letterSpacing = 0.13.sp,
                                 lineHeight = 17.sp,
@@ -183,20 +190,14 @@ fun ReviewDetailScreen(navController: NavHostController) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        modifier = Modifier.clickable {
-                            expanded = !expanded
-                            when (expanded) {
-                                true -> likeCount += 1 // 좋아요 추가
-                                false -> likeCount -= 1 // 좋아요 제거
-                            }
-                        },
+                        modifier = Modifier,
                         painter = painterResource(id = R.drawable.thumbs),
                         contentDescription = "좋아요",
                         tint = Orange_FF7800
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = likeCount.toString(),
+                        text = reviewDetail?.likeCount.toString(),
                         style = LocalTypography.current.regular11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -213,7 +214,7 @@ fun ReviewDetailScreen(navController: NavHostController) {
             ) {
                 // 텍스트 영역
                 Text(
-                    text = "핫도그는 냉동인데\n떡볶이는 맛있음\n맛도 있고 가격도 착해서 떡볶이 땡길 때 추천",
+                    text = reviewDetail?.comment ?: "잘못된 코멘트",
                     style = LocalTypography.current.medium13.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 17.sp
@@ -244,7 +245,7 @@ fun ReviewDetailScreen(navController: NavHostController) {
                         .padding(horizontal = 7.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = "우삼겹떡볶이*핫도그",
+                        text = reviewDetail?.mainMenuName ?: "잘못된 메인메뉴 이름",
                         style = LocalTypography.current.medium11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -262,7 +263,7 @@ fun ReviewDetailScreen(navController: NavHostController) {
                         .padding(horizontal = 7.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = "오뎅국",
+                        text = reviewDetail?.subMenuName ?: "잘못된 서브메뉴 이름",
                         style = LocalTypography.current.medium11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp

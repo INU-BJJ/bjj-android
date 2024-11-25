@@ -4,16 +4,19 @@ import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
 import inu.appcenter.bjj_android.model.review.MyReviewRes
-import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -29,10 +32,12 @@ interface APIService {
         @Query("isWithImages") isWithImages: Boolean
     ) : Response<ReviewRes>
 
+    @Multipart
     @POST("/api/reviews")
     suspend fun postReview(
-        @Body reviewPost: ReviewPost
-    ) : Response<Unit>
+        @Part("reviewPost") reviewPost: RequestBody,
+        @Part files: List<MultipartBody.Part>?
+    ): Response<Unit>
 
 
     @DELETE("/api/reviews/{reviewId}")

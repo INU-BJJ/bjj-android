@@ -14,12 +14,12 @@ import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import kotlin.math.roundToInt
 
 @Composable
-fun StarRatingCalculator(rating: Float, modifier: Modifier = Modifier) {
+fun StarRatingCalculator(rating: Float) {
     val roundedRating = rating.roundToInt() // 가장 가까운 정수로 반올림
     val fullStars = roundedRating
     val emptyStars = 5 - fullStars
 
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         repeat(fullStars) {
             Icon(
                 painter = painterResource(R.drawable.star),
