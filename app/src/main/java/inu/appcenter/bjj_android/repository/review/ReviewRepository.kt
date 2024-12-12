@@ -3,6 +3,8 @@ package inu.appcenter.bjj_android.repository.review
 import inu.appcenter.bjj_android.model.review.MyReviewRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.review.ReviewRes
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 
 interface ReviewRepository {
@@ -16,8 +18,9 @@ interface ReviewRepository {
     ) : Response<ReviewRes>
 
     suspend fun postReview(
-        reviewPost: ReviewPost
-    ) : Response<Unit>
+        reviewPost: RequestBody,
+        files: List<MultipartBody.Part>?
+    ): Response<Unit>
 
     suspend fun deleteReview(
         reviewId: Long

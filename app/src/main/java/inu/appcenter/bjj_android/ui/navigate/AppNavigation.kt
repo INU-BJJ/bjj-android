@@ -20,7 +20,6 @@ import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
 import inu.appcenter.bjj_android.ui.review.page.PushReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewWriteScreen
-import inu.appcenter.bjj_android.ui.review.reviewPagePart.tempReviews
 import inu.appcenter.bjj_android.ui.tier.TierScreen
 
 
@@ -98,7 +97,9 @@ fun AppNavigation(
             composable(AllDestination.ReviewWrite.route){
                 ReviewWriteScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
-            composable(AllDestination.ReviewDetail.route){ReviewDetailScreen(navController = navController) }
+            composable(AllDestination.ReviewDetail.route){
+                ReviewDetailScreen(navController = navController, reviewViewModel = reviewViewModel)
+            }
             composable(AllDestination.ReviewDetailPush.route) { PushReviewDetailScreen(navController) }
             composable(AllDestination.MyPage.route) { MyPageScreen(navController = navController, authViewModel = authViewModel) }
         }

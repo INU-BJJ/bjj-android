@@ -103,7 +103,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                                 .fillMaxWidth()
                                 .height(63.dp)
                                 .border(0.5.dp, Gray_B9B9B9, shape = RoundedCornerShape(3.dp))
-                                .clickable {navController.navigate(AllDestination.ReviewDetail.route)}
+                                .clickable { navController.navigate(AllDestination.ReviewDetail.route)}
                         ) {
                             Column(
                                 modifier = Modifier

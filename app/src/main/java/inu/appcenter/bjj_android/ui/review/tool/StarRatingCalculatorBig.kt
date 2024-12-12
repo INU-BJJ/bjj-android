@@ -19,10 +19,11 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import kotlin.math.roundToInt
 
 @Composable
-fun StarRatingCalculatorBig(initialRating: Float, modifier: Modifier = Modifier) {
+fun StarRatingCalculatorBig(initialRating: Float,  onRatingChanged: (Int) -> Unit) {
     var currentRating by remember { mutableIntStateOf(initialRating.roundToInt()) }
 
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(11.5.dp)) {
+
+    Row(horizontalArrangement = Arrangement.spacedBy(11.5.dp)) {
         for (i in 1..5) {
             Icon(
                 painter = painterResource(R.drawable.bigstar),
@@ -32,6 +33,7 @@ fun StarRatingCalculatorBig(initialRating: Float, modifier: Modifier = Modifier)
                     .size(33.dp)
                     .clickable {
                         currentRating = i // 클릭한 별의 인덱스까지 MainColor로 설정
+                        onRatingChanged(i)
                     }
             )
         }

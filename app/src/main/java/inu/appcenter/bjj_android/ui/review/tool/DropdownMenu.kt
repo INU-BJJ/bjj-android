@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
@@ -34,12 +35,24 @@ import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 
+enum class DropdownType {
+    RESTAURANT,
+    MENU
+}
+
 @Composable
 fun DropdownMenuBox(
-    reviewViewModel: ReviewViewModel, label: String
+    reviewViewModel: ReviewViewModel,
+    dropdownType: DropdownType, // 드롭다운 타입 추가
+    labelText: String // 초기 라벨 텍스트
 ) {
     var expanded by remember { mutableStateOf(false) }
     val reviewUiState by reviewViewModel.uiState.collectAsState()
+
+    val selectedText = when (dropdownType) {
+        DropdownType.RESTAURANT -> reviewUiState.selectedRestaurantAtReviewWrite ?: labelText
+        DropdownType.MENU -> reviewUiState.selectedMenu?.mainMenuName ?: labelText
+    }
 
 
     Box(
@@ -58,7 +71,8 @@ fun DropdownMenuBox(
         ) {
             // 라벨 텍스트 (예: "식당 위치")
             Text(
-                text = reviewUiState.selectedRestaurantAtReviewWrite ?: "식당 위치", style = LocalTypography.current.semibold15.copy(
+                text = selectedText,
+                style = LocalTypography.current.semibold15.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 18.sp,
                     color = Color.Black
@@ -81,31 +95,35 @@ fun DropdownMenuBox(
                 .width(319.dp)
                 .background(color = Gray_F6F6F8)
         ) {
-            // 라벨에 따라 다른 리스트 표시
-            if (label == "식당 위치") {
-                reviewUiState.restaurants.forEach { restaurant ->
-                    DropdownMenuItem(text = {
-                        Text(
-                            text = restaurant,
-                            color = Color.Black
-                        )
-                    }, onClick = {
-                        reviewViewModel.setSelectedReviewRestaurant(restaurant)
-                        reviewViewModel.getMenusByCafeteria(restaurant)
-                        expanded = false  // 메뉴 닫기
-                    })
-                }
-            } else if (label == "메뉴 선택") {
-                reviewUiState.menus.forEach { menu ->
-                    DropdownMenuItem(
-                        text = { Text(menu.mainMenuName, color = Color.Black) },
-                        onClick = {
-                            reviewViewModel.setSelectedMenu(menu)
+            when (dropdownType) {
+                DropdownType.RESTAURANT -> {
+                    reviewUiState.restaurants.forEach { restaurant ->
+                        DropdownMenuItem(text = {
+                            Text(
+                                text = restaurant,
+                                color = Color.Black
+                            )
+                        }, onClick = {
+                            reviewViewModel.setSelectedReviewRestaurant(restaurant)
+                            reviewViewModel.getMenusByCafeteria(restaurant)
                             expanded = false  // 메뉴 닫기
+
+                            // 메뉴 선택 초기화
+                            reviewViewModel.resetSelectedMenu()
                         })
+                    }
+                }
+                DropdownType.MENU -> {
+                    reviewUiState.menus.forEach { menu ->
+                        DropdownMenuItem(
+                            text = { Text(menu.mainMenuName, color = Color.Black) },
+                            onClick = {
+                                reviewViewModel.setSelectedMenu(menu)
+                                expanded = false  // 메뉴 닫기
+                            })
+                    }
                 }
             }
         }
     }
 }
-
