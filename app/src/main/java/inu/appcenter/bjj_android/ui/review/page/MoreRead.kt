@@ -96,14 +96,17 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
             LazyColumn(
                 userScrollEnabled = true
             ) {
-                reviewUiState.reviewsChoiceByRestaurant?.reviewDetailList?.let {
+                reviewUiState.reviewsChoiceByRestaurant?.myReviewDetailList?.let {
                     items(it) { item ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(63.dp)
                                 .border(0.5.dp, Gray_B9B9B9, shape = RoundedCornerShape(3.dp))
-                                .clickable { navController.navigate(AllDestination.ReviewDetail.route)}
+                                .clickable {
+                                    reviewViewModel.setSelectedReviewDetail(item)
+                                    navController.navigate(AllDestination.ReviewDetail.route)
+                                }
                         ) {
                             Column(
                                 modifier = Modifier

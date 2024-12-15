@@ -10,6 +10,7 @@ import okhttp3.Response
 class AuthInterceptor(private val dataStoreManager: DataStoreManager) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking { dataStoreManager.token.first() }
+        Log.d("AuthInterceptor", "Using token: $token") // 토큰 로그 출력
         val request = chain.request().newBuilder()
             .apply {
                 token?.let {

@@ -1,7 +1,7 @@
 package inu.appcenter.bjj_android.repository.review
 
-import inu.appcenter.bjj_android.model.review.MyReviewRes
-import inu.appcenter.bjj_android.model.review.ReviewPost
+import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
+import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.network.APIService
 import okhttp3.MultipartBody
@@ -36,7 +36,7 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
         return apiService.deleteReview(reviewId = reviewId)
     }
 
-    override suspend fun getMyReviews(): Response<MyReviewRes> {
+    override suspend fun getMyReviews(): Response<MyReviewsGroupedRes> {
         return apiService.getMyReviews()
     }
 
@@ -44,7 +44,7 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
         cafeteriaName: String,
         pageNumber: Int,
         pageSize: Int
-    ): Response<ReviewRes> {
+    ): Response<MyReviewsPagedRes> {
         return apiService.getMyReviewsByCafeteria(
             cafeteriaName = cafeteriaName,
             pageNumber = pageNumber,

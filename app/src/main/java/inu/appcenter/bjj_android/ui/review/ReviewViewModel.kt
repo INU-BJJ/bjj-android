@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
-import inu.appcenter.bjj_android.model.review.MyReviewRes
+import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
+import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
-import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.review.ReviewRepository
@@ -30,8 +30,8 @@ private const val DEFAULT_PAGE_NUMBER = 0
 
 data class ReviewUiState(
     val selectedRestaurant : String? = null,
-    val reviews: MyReviewRes? = null,
-    val reviewsChoiceByRestaurant: ReviewRes? = null,
+    val reviews: MyReviewsGroupedRes? = null,
+    val reviewsChoiceByRestaurant: MyReviewsPagedRes? = null,
     val selectedRestaurantAtReviewWrite : String? = null,
     val restaurants : List<String> = emptyList(),
     val selectedMenu: TodayDietRes? = null,
@@ -148,7 +148,7 @@ class ReviewViewModel(
         cafeteriaName: String,
         pageNumber: Int = DEFAULT_PAGE_NUMBER,
         pageSize: Int = DEFAULT_PAGE_SIZE,
-    ): Response<ReviewRes> {
+    ): Response<MyReviewsPagedRes> {
         return reviewRepository.getMyReviewsByCafeteria(
             cafeteriaName = cafeteriaName,
             pageNumber = pageNumber,
@@ -169,8 +169,8 @@ class ReviewViewModel(
                     val moreReadReviews = response.body() ?: throw ReviewError.EmptyResponse()
                     _uiState.update { currentState ->
                         currentState.copy(
-                            reviewsChoiceByRestaurant = ReviewRes(
-                                reviewDetailList = moreReadReviews.reviewDetailList,
+                            reviewsChoiceByRestaurant = MyReviewsPagedRes(
+                                myReviewDetailList = moreReadReviews.myReviewDetailList,
                                 lastPage = moreReadReviews.lastPage
                             ),
                             isLoading = false

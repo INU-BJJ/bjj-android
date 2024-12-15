@@ -1,7 +1,7 @@
 package inu.appcenter.bjj_android.repository.review
 
-import inu.appcenter.bjj_android.model.review.MyReviewRes
-import inu.appcenter.bjj_android.model.review.ReviewPost
+import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
+import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -26,11 +26,11 @@ interface ReviewRepository {
         reviewId: Long
     ) : Response<Unit>
 
-    suspend fun getMyReviews() : Response<MyReviewRes>
+    suspend fun getMyReviews() : Response<MyReviewsGroupedRes>
 
     suspend fun getMyReviewsByCafeteria(
         cafeteriaName: String,
         pageNumber: Int,
         pageSize: Int
-    ) : Response<ReviewRes>
+    ) : Response<MyReviewsPagedRes>
 }
