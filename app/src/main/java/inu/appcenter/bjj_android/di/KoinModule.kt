@@ -36,5 +36,4 @@ val viewModelModule = module {
     viewModel{ MypageViewModel() }
     viewModel{ ReviewViewModel(get(), get(), get()) }
     viewModel{ TierViewModel() }
-
 }

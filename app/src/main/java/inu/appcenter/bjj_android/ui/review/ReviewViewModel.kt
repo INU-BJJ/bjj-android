@@ -29,14 +29,16 @@ private const val DEFAULT_PAGE_SIZE = 10
 private const val DEFAULT_PAGE_NUMBER = 0
 
 data class ReviewUiState(
-    val selectedRestaurant : String? = null,
+    val selectedRestaurant: String? = null,
     val reviews: MyReviewsGroupedRes? = null,
     val reviewsChoiceByRestaurant: MyReviewsPagedRes? = null,
-    val selectedRestaurantAtReviewWrite : String? = null,
-    val restaurants : List<String> = emptyList(),
+    val selectedRestaurantAtReviewWrite: String? = null,
+    val restaurants: List<String> = emptyList(),
     val selectedMenu: TodayDietRes? = null,
     val menus: List<TodayDietRes> = emptyList(),
     val selectedReviewDetail: MyReviewDetailRes? = null,
+    val imageNames: List<String> = emptyList(),
+    val selectedImageName: String? = null,
     val isWithImages: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
@@ -115,11 +117,51 @@ class ReviewViewModel(
 
     // 선택된 리뷰 상세 정보를 관리하는 변수 추가
     fun setSelectedReviewDetail(reviewDetail: MyReviewDetailRes) {
-        _uiState.update { it.copy(selectedReviewDetail = reviewDetail) }
+        _uiState.update {
+            it.copy(
+                selectedReviewDetail = reviewDetail
+            )
+        }
     }
 
     fun resetSelectedReviewDetail() {
-        _uiState.update { it.copy(selectedReviewDetail = null) }
+        _uiState.update {
+            it.copy(
+                selectedReviewDetail = null
+            )
+        }
+    }
+
+    // 이미지 파일
+    fun setImageNames(imageNames: List<String>) {
+        _uiState.update {
+            it.copy(
+                imageNames = imageNames,
+                isWithImages = imageNames.isNotEmpty()
+            )
+        }
+    }
+
+    fun resetImageNames() {
+        _uiState.update {
+            it.copy(
+                imageNames = emptyList(),
+                isWithImages = false
+            )
+        }
+    }
+
+    // 리뷰 상세에서 고른 이미지에 대한 설정
+    fun selectImageName(imageName: String) {
+        _uiState.update {
+            it.copy(selectedImageName = imageName)
+        }
+    }
+
+    fun clearSelectedImageName() {
+        _uiState.update {
+            it.copy(selectedImageName = null)
+        }
     }
 
     private fun getMyReviews() {
@@ -136,7 +178,9 @@ class ReviewViewModel(
                         )
                     }
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "getMyReviews API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "getMyReviews API Error"
+                    )
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -177,7 +221,9 @@ class ReviewViewModel(
                         )
                     }
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "getMyReviewsByCafeteria API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "getMyReviewsByCafeteria API Error"
+                    )
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -185,10 +231,10 @@ class ReviewViewModel(
         }
     }
 
-    private fun showAllRestaurant(){
+    private fun showAllRestaurant() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            try{
+            try {
                 val response = cafeteriasRepository.getCafeterias()
                 if (response.isSuccessful) {
                     val restaurants = response.body() ?: throw ReviewError.EmptyResponse()
@@ -199,9 +245,11 @@ class ReviewViewModel(
                         )
                     }
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Restaurant API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "Restaurant API Error"
+                    )
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 handleReviewError(e)
             }
         }
@@ -216,10 +264,13 @@ class ReviewViewModel(
                 val response = todayDietRepository.getTodayDiet(cafeteriaName)
 
                 if (response.isSuccessful) {
-                    val menus = response.body() ?: throw MainError.EmptyResponse("식당 메뉴 정보가 비어있습니다.")
+                    val menus =
+                        response.body() ?: throw MainError.EmptyResponse("식당 메뉴 정보가 비어있습니다.")
                     _uiState.update { it.copy(menus = menus, isLoading = false) }
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "Unknown API Error"
+                    )
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -228,7 +279,7 @@ class ReviewViewModel(
     }
 
     // 리뷰 작성하기
-    fun reviewComplete(reviewPost: ReviewPost, images: List<String>, onSuccess: () -> Unit) {
+    fun reviewComplete(reviewPost: ReviewPost, images: List<String?>, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true, error = null) }
@@ -240,6 +291,7 @@ class ReviewViewModel(
                 val files: List<MultipartBody.Part>? = if (images.isNotEmpty()) {
                     images.map { imagePath ->
                         val imageFile = File(imagePath)
+                        Log.e("image", "$imagePath")
                         val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
                         MultipartBody.Part.createFormData("files", imageFile.name, requestFile)
                     }
@@ -254,7 +306,9 @@ class ReviewViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "reviewWrite API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "reviewWrite API Error"
+                    )
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -273,7 +327,9 @@ class ReviewViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 } else {
-                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "deleteReview API Error")
+                    throw ReviewError.ApiError(
+                        response.errorBody()?.string() ?: "deleteReview API Error"
+                    )
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
@@ -291,7 +347,6 @@ class ReviewViewModel(
         Log.e("ReviewError", errorMessage)
         _uiState.update { it.copy(isLoading = false, error = errorMessage) }
     }
-
 
 
 }
