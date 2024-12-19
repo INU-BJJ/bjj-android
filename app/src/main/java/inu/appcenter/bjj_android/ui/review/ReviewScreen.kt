@@ -121,7 +121,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                     )
                 }
             } else {
-                reviewUiState.reviews?.myReviewDetailList?.forEach { (restaurantName, reviews) ->
+                reviewUiState.reviews?.myReviewDetailList?.forEach { (restaurantName) ->
                     ReviewFrameScreen(
                         navController,
                         restaurantName,

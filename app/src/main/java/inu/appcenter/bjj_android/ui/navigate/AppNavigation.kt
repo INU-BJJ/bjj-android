@@ -100,7 +100,8 @@ fun AppNavigation(
             composable(AllDestination.ReviewDetail.route){
                 ReviewDetailScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
-            composable(AllDestination.ReviewDetailPush.route) { PushReviewDetailScreen(navController) }
+            composable(AllDestination.ReviewDetailPush.route) {
+                PushReviewDetailScreen(navController, reviewViewModel = reviewViewModel) }
             composable(AllDestination.MyPage.route) { MyPageScreen(navController = navController, authViewModel = authViewModel) }
         }
     }

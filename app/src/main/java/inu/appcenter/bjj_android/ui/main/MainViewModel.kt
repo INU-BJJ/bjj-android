@@ -104,7 +104,7 @@ class MainViewModel(
         }
     }
 
-    fun getMenusByCafeteria(cafeteriaName: String) {
+    private fun getMenusByCafeteria(cafeteriaName: String) {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true, error = null) }

@@ -3,7 +3,8 @@ package inu.appcenter.bjj_android.network
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
-import inu.appcenter.bjj_android.model.review.MyReviewRes
+import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
+import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
@@ -46,14 +47,14 @@ interface APIService {
     ) : Response<Unit>
 
     @GET("api/reviews/my")
-    suspend fun getMyReviews() : Response<MyReviewRes>
+    suspend fun getMyReviews() : Response<MyReviewsGroupedRes>
 
     @GET("api/reviews/my/cafeteria")
     suspend fun getMyReviewsByCafeteria(
         @Query("cafeteriaName") cafeteriaName: String,
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int
-    ) : Response<ReviewRes>
+    ) : Response<MyReviewsPagedRes>
 
     // Image API
     @GET("/api/images")

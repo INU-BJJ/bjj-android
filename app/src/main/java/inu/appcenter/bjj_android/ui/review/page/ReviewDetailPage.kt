@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.ui.review.page
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +15,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,10 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
@@ -58,6 +62,12 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : Revie
     val sheetState = rememberModalBottomSheetState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
     val reviewDetail = reviewUiState.selectedReviewDetail
+
+    LaunchedEffect(reviewDetail) {
+        reviewDetail?.imageNames?.let {
+            reviewViewModel.setImageNames(it)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -223,16 +233,29 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : Revie
                 )
 
                 Spacer(Modifier.height(12.dp))
+
                 // 이미지 영역
-                Image(
-                    painter = painterResource(id = R.drawable.sample_food), // 이미지 리소스
-                    contentDescription = "Food Image",
-                    modifier = Modifier
-                        .height(250.dp)
-                        .width(301.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { navController.navigate(AllDestination.ReviewDetailPush.route) },
-                )
+                if (reviewUiState.imageNames.isNotEmpty()) {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(reviewUiState.imageNames) { imageName ->
+                            AsyncImage(
+                                model = "https://bjj.inuappcenter.kr/images/review/$imageName",
+                                contentDescription = "Food Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .height(250.dp)
+                                    .width(301.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        reviewViewModel.selectImageName(imageName)
+                                        navController.navigate(AllDestination.ReviewDetailPush.route) }
+                            )
+                        }
+                    }
+                }
             }
             Spacer(Modifier.height(12.dp))
 

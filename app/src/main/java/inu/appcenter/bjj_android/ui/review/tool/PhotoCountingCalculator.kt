@@ -2,15 +2,20 @@ package inu.appcenter.bjj_android.ui.review.tool
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
+import kotlin.math.roundToInt
 
 @Composable
-fun PhotoCountingCalculator(photoCounting: Int, modifier: Modifier = Modifier) {
+fun PhotoCountingCalculator(photoCounting: Int) {
     Text(
-        text = "$photoCounting/5",
+        text = "$photoCounting/4",
         style = LocalTypography.current.regular13.copy(
             letterSpacing = 0.13.sp,
             lineHeight = 17.sp,

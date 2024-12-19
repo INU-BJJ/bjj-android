@@ -19,20 +19,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PushReviewDetailScreen(navController: NavController) {
+fun PushReviewDetailScreen(navController: NavController, reviewViewModel : ReviewViewModel) {
+    val reviewUiState by reviewViewModel.uiState.collectAsState()
+    val imageName = reviewUiState.selectedImageName
+
     Column(
         modifier = Modifier
             .background(color = Color.Black)
@@ -73,9 +81,9 @@ fun PushReviewDetailScreen(navController: NavController) {
             })
         Spacer(Modifier.height(76.1.dp))
 
-        Image(
-            painter = painterResource(id = R.drawable.full_sample_food), // 이미지 리소스
-            contentDescription = "Food Image",
+        AsyncImage(
+            model = "https://bjj.inuappcenter.kr/images/review/${imageName ?: ""}",
+            contentDescription = "Selected Food Image",
             modifier = Modifier
                 .height(480.dp)
                 .width(360.dp)

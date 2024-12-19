@@ -24,7 +24,13 @@ import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
 @Composable
-fun WriteComplete(reviewComment: String, currentRating: Int, reviewViewModel: ReviewViewModel, onSuccess: () -> Unit) {
+fun WriteComplete(
+    reviewComment: String,
+    currentRating: Int,
+    reviewViewModel: ReviewViewModel,
+    selectedImages: List<String?>, // 추가된 파라미터
+    onSuccess: () -> Unit
+) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
 
     // "작성 완료" 버튼 활성화 조건
@@ -49,7 +55,7 @@ fun WriteComplete(reviewComment: String, currentRating: Int, reviewViewModel: Re
                                 rating = currentRating,
                                 menuPairId = reviewUiState.selectedMenu?.menuPairId ?: -1
                             ),
-                            emptyList(), //이미지리스트넣어주자
+                            images = selectedImages,
                             onSuccess = onSuccess
                         )
                     }

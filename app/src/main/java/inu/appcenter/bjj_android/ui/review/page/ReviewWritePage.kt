@@ -1,6 +1,11 @@
 package inu.appcenter.bjj_android.ui.review.page
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,12 +31,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +52,8 @@ import inu.appcenter.bjj_android.ui.review.tool.DropdownType
 import inu.appcenter.bjj_android.ui.review.tool.ReviewTextField
 import inu.appcenter.bjj_android.ui.review.tool.StarRatingCalculatorBig
 import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
+import inu.appcenter.bjj_android.ui.review.tool.addImageToList
+import inu.appcenter.bjj_android.ui.review.tool.getAbsolutePathFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
@@ -52,8 +62,42 @@ import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
     var cautionExpanded by remember { mutableStateOf(false) }
     var reviewComment by remember { mutableStateOf("") }
-    var currentRating by remember { mutableIntStateOf(4) }
+    var currentRating by remember { mutableIntStateOf(5) }
+    val photos = remember { mutableStateListOf<Uri?>(null) }
+    var currentCounting by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val imagePaths = photos.filterNotNull().map { uri ->
+        getAbsolutePathFromUri(context, uri)
+    }
 
+    // 갤러리에서 이미지 선택을 처리하는 런처
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            data?.let {
+                // 복수 선택 처리
+                if (it.clipData != null) {
+                    val clipData = it.clipData!!
+                    for (i in 0 until clipData.itemCount) {
+                        val uri = clipData.getItemAt(i).uri
+                        addImageToList(uri, photos) {
+                            currentCounting = it
+                        }
+                        if (currentCounting == 4) break
+                    }
+                } else {
+                    val uri: Uri? = it.data
+                    if (uri != null) {
+                        addImageToList(uri, photos) { count ->
+                            currentCounting = count
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -156,7 +200,45 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             )
             Spacer(modifier = Modifier.height(15.dp))
 
-            DashedBorderBox()
+            val arrangement =
+                if (currentCounting == 4) Arrangement.SpaceBetween else Arrangement.Start
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = arrangement,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                photos.forEachIndexed { index, uri ->
+                    DashedBorderBox(
+                        imageUri = uri,
+                        onClickAddImage = {
+                            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                type = "image/*"
+                                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // 멀티 선택 허용
+                            }
+                            galleryLauncher.launch(intent)
+                        },
+                        showRemoveButton = (uri != null),
+                        onRemoveImage = {
+                            // 해당 이미지 박스를 제거
+                            photos.removeAt(index)
+                            currentCounting = photos.count { it != null }
+
+                            // 4개 미만인데 null 없다면 null 하나 추가
+                            if (currentCounting < 4 && photos.lastOrNull() != null) {
+                                photos.add(null)
+                            }
+
+                            // 모두 제거되어 아무것도 없으면 null 하나 추가 (초기 상태 복원)
+                            if (photos.isEmpty()) {
+                                photos.add(null)
+                            }
+                        },
+                        currentCounting = currentCounting
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                }
+            }
             Spacer(modifier = Modifier.height((44.7.dp)))
 
             Row(
@@ -220,7 +302,12 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             }
             Spacer(modifier = Modifier.height(32.dp))
 
-            WriteComplete(reviewComment, currentRating, reviewViewModel,  onSuccess = { navController.popBackStack() })
+            WriteComplete(
+                reviewComment,
+                currentRating,
+                reviewViewModel,
+                selectedImages = imagePaths,
+                onSuccess = { navController.popBackStack() })
         }
     }
 }
