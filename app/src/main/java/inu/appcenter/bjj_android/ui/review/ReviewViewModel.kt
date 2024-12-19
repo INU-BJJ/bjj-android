@@ -286,19 +286,35 @@ class ReviewViewModel(
 
                 val gson = Gson()
                 val reviewPostJson = gson.toJson(reviewPost)
+                Log.e("ReviewViewModel", "ReviewPost JSON: $reviewPostJson")
+
+                // reviewPost를 RequestBody로 생성
                 val reviewPostRequestBody = reviewPostJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
+                Log.d("ReviewViewModel", "Number of images: ${images.size}")
+                images.forEach { imagePath ->
+                    Log.d("ReviewViewModel", "Image path: $imagePath")
+                }
+
+                // files 파트 생성
                 val files: List<MultipartBody.Part>? = if (images.isNotEmpty()) {
-                    images.map { imagePath ->
+                    images.mapNotNull { imagePath ->
                         val imageFile = File(imagePath)
-                        Log.e("image", "$imagePath")
-                        val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-                        MultipartBody.Part.createFormData("files", imageFile.name, requestFile)
+                        if (imageFile.exists()) {
+                            val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+                            MultipartBody.Part.createFormData("files", imageFile.name, requestFile)
+                        } else {
+                            Log.e("ReviewViewModel", "Image file does not exist: $imagePath")
+                            null
+                        }
                     }
                 } else {
                     null
                 }
 
+                Log.d("ReviewViewModel", "Posting review with files: $files")
+
+                // 수정된 Retrofit 인터페이스에 맞게 요청
                 val response = reviewRepository.postReview(reviewPostRequestBody, files)
 
                 if (response.isSuccessful) {
@@ -306,15 +322,17 @@ class ReviewViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 } else {
-                    throw ReviewError.ApiError(
-                        response.errorBody()?.string() ?: "reviewWrite API Error"
-                    )
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("ReviewViewModel", "API Error: $errorBody")
+                    throw ReviewError.ApiError(errorBody ?: "reviewWrite API Error")
                 }
             } catch (e: Exception) {
                 handleReviewError(e)
             }
         }
     }
+
+
 
     // 리뷰 삭제하기
     fun deleteReview(reviewId: Long, onSuccess: () -> Unit) {

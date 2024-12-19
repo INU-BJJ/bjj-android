@@ -54,6 +54,7 @@ import inu.appcenter.bjj_android.ui.review.tool.StarRatingCalculatorBig
 import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
 import inu.appcenter.bjj_android.ui.review.tool.addImageToList
 import inu.appcenter.bjj_android.ui.review.tool.getAbsolutePathFromUri
+import inu.appcenter.bjj_android.ui.review.tool.getFileFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
@@ -67,7 +68,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
     var currentCounting by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     val imagePaths = photos.filterNotNull().map { uri ->
-        getAbsolutePathFromUri(context, uri)
+        getFileFromUri(context, uri)?.absolutePath
     }
 
     // 갤러리에서 이미지 선택을 처리하는 런처
@@ -77,7 +78,6 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
             data?.let {
-                // 복수 선택 처리
                 if (it.clipData != null) {
                     val clipData = it.clipData!!
                     for (i in 0 until clipData.itemCount) {
@@ -303,11 +303,13 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             Spacer(modifier = Modifier.height(32.dp))
 
             WriteComplete(
-                reviewComment,
-                currentRating,
-                reviewViewModel,
-                selectedImages = imagePaths,
-                onSuccess = { navController.popBackStack() })
+                reviewComment = reviewComment,
+                currentRating = currentRating,
+                reviewViewModel = reviewViewModel,
+                selectedImages = imagePaths, // 수정된 파라미터
+                onSuccess = { navController.popBackStack() }
+            )
+
         }
     }
 }
