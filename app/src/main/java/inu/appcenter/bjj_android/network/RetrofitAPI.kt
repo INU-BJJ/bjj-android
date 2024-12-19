@@ -16,7 +16,7 @@ class RetrofitAPI(private val dataStoreManager: DataStoreManager) : KoinComponen
     private val BASE_URL = "https://bjj.inuappcenter.kr/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.HEADERS
     }
 
 
