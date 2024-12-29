@@ -65,7 +65,7 @@ fun SocialLoginDialog(
                         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                             url?.let {
                                 //이미 회원가입은 했고 로그인을 시도할 때
-                                if (it.startsWith("https://bjj.inuappcenter.kr/api/member/success")) {
+                                if (it.startsWith("https://bjj.inuappcenter.kr/api/members/success")) {
                                     val uri = Uri.parse(it)
                                     val token = uri.getQueryParameter("token")
                                     token?.let { token ->
@@ -75,7 +75,7 @@ fun SocialLoginDialog(
                                     return true
                                 }
                                 //새로운 회원가입에 성공했을 때
-                                if (it.startsWith("https://bjj.inuappcenter.kr/api/member/sign-up")) {
+                                if (it.startsWith("https://bjj.inuappcenter.kr/api/members/sign-up")) {
                                     // URL에서 이메일 추출
                                     val uri = Uri.parse(it)
                                     val email = uri.getQueryParameter("email")
