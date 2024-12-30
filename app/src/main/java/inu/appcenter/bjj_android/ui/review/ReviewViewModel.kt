@@ -38,7 +38,7 @@ data class ReviewUiState(
     val menus: List<TodayDietRes> = emptyList(),
     val selectedReviewDetail: MyReviewDetailRes? = null,
     val imageNames: List<String> = emptyList(),
-    val selectedImageName: String? = null,
+    val selectedImageIndex: Int = 0,
     val isWithImages: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
@@ -124,43 +124,29 @@ class ReviewViewModel(
         }
     }
 
-    fun resetSelectedReviewDetail() {
-        _uiState.update {
-            it.copy(
-                selectedReviewDetail = null
-            )
-        }
-    }
+//    fun resetSelectedReviewDetail() {
+//        _uiState.update {
+//            it.copy(
+//                selectedReviewDetail = null
+//            )
+//        }
+//    }
 
-    // 이미지 파일
+    // 이미지 목록 설정
     fun setImageNames(imageNames: List<String>) {
         _uiState.update {
             it.copy(
                 imageNames = imageNames,
-                isWithImages = imageNames.isNotEmpty()
+                selectedImageIndex = 0 // 첫 번째 이미지를 디폴트로 설정
             )
         }
     }
 
-    fun resetImageNames() {
-        _uiState.update {
-            it.copy(
-                imageNames = emptyList(),
-                isWithImages = false
-            )
-        }
-    }
-
-    // 리뷰 상세에서 고른 이미지에 대한 설정
-    fun selectImageName(imageName: String) {
-        _uiState.update {
-            it.copy(selectedImageName = imageName)
-        }
-    }
-
-    fun clearSelectedImageName() {
-        _uiState.update {
-            it.copy(selectedImageName = null)
+    // 특정 이미지를 선택했을 때 인덱스를 업데이트
+    fun selectImageIndex(index: Int) {
+        val totalImages = _uiState.value.imageNames.size
+        if (index in 0 until totalImages) {
+            _uiState.update { it.copy(selectedImageIndex = index) }
         }
     }
 
@@ -318,6 +304,8 @@ class ReviewViewModel(
                 val response = reviewRepository.postReview(reviewPostRequestBody, files)
 
                 if (response.isSuccessful) {
+                    // 이미지 목록 설정 및 인덱스 초기화
+                    setImageNames(images.filterNotNull())
                     getMyReviews()
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
@@ -331,6 +319,7 @@ class ReviewViewModel(
             }
         }
     }
+
 
 
 

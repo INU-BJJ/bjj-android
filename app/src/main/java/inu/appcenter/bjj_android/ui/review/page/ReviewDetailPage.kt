@@ -57,16 +57,15 @@ import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : ReviewViewModel) {
+fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
     val reviewDetail = reviewUiState.selectedReviewDetail
 
     LaunchedEffect(reviewDetail) {
-        reviewDetail?.imageNames?.let {
-            reviewViewModel.setImageNames(it)
-        }
+        val images = reviewDetail?.imageNames ?: emptyList()
+        reviewViewModel.setImageNames(images)
     }
 
     Column(
@@ -91,7 +90,6 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : Revie
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
                         .clickable {
-                            //reviewViewModel.resetSelectedReviewDetail() // 상태 초기화
                             navController.popBackStack()
                         },
                     painter = painterResource(id = R.drawable.leftarrow),
@@ -126,7 +124,8 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : Revie
                         modifier = Modifier
                             .clickable {
                                 reviewViewModel.deleteReview(
-                                    reviewId = reviewDetail?.reviewId ?: -1, // null 일때 -1을 주어 지워지지 않게함
+                                    reviewId = reviewDetail?.reviewId
+                                        ?: -1, // null 일때 -1을 주어 지워지지 않게함
                                     onSuccess = {
                                         // 삭제 성공 후 처리 (예: 이전 화면으로 이동)
                                         navController.popBackStack()
@@ -250,13 +249,17 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel : Revie
                                     .width(301.dp)
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable {
-                                        reviewViewModel.selectImageName(imageName)
-                                        navController.navigate(AllDestination.ReviewDetailPush.route) }
+                                        val index = reviewUiState.imageNames.indexOf(imageName)
+                                        reviewViewModel.selectImageIndex(index)
+                                        navController.navigate(AllDestination.ReviewDetailPush.route)
+                                    }
                             )
                         }
+
                     }
                 }
             }
+
             Spacer(Modifier.height(12.dp))
 
             Row {

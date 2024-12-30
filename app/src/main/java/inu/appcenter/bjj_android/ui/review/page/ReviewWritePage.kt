@@ -53,7 +53,6 @@ import inu.appcenter.bjj_android.ui.review.tool.ReviewTextField
 import inu.appcenter.bjj_android.ui.review.tool.StarRatingCalculatorBig
 import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
 import inu.appcenter.bjj_android.ui.review.tool.addImageToList
-import inu.appcenter.bjj_android.ui.review.tool.getAbsolutePathFromUri
 import inu.appcenter.bjj_android.ui.review.tool.getFileFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
@@ -249,7 +248,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "리뷰  작성 유의사항",
+                    text = "리뷰 작성 유의사항",
                     style = LocalTypography.current.semibold15.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 18.sp,

@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review.page
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,8 +37,14 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 @Composable
 fun PushReviewDetailScreen(navController: NavController, reviewViewModel : ReviewViewModel) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
-    val imageName = reviewUiState.selectedImageName
+    val imageList = reviewUiState.imageNames
+    val currentIndex = reviewUiState.selectedImageIndex
 
+    // index가 범위안에 있으면 해당 이미지, 없으면 null
+    val imageName = imageList.getOrNull(currentIndex)
+
+    val totalImages = imageList.size
+    val displayText = if (totalImages > 0) "${currentIndex + 1}/$totalImages" else "0/0"
     Column(
         modifier = Modifier
             .background(color = Color.Black)
@@ -50,7 +54,7 @@ fun PushReviewDetailScreen(navController: NavController, reviewViewModel : Revie
         CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Black),
             title = {
                 Text(
-                    text = "1/2",
+                    text = displayText,
                     style = LocalTypography.current.medium15.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
