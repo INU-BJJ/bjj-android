@@ -59,7 +59,9 @@ class MainViewModel(
         }
     }
 
-    fun selectCafeteria(cafeteria: String) {
+    fun selectCafeteria(cafeteria: String, forceRefresh: Boolean = false) {
+        if (_uiState.value.selectedCafeteria == cafeteria && !forceRefresh) return
+
         _uiState.update {
             it.copy(
                 selectedCafeteria = cafeteria,
@@ -69,26 +71,28 @@ class MainViewModel(
         }
         getMenusByCafeteria(cafeteria)
     }
-
     private suspend fun fetchCafeterias(retryCount: Int = 0) {
         try {
             _uiState.update { it.copy(isLoading = true, error = null) }
-
             val response = cafeteriasRepository.getCafeterias()
 
             if (response.isSuccessful) {
                 val cafeterias = response.body() ?: throw MainError.EmptyResponse("식당 정보가 비어있습니다.")
-
                 _uiState.update {
                     it.copy(
                         cafeterias = cafeterias,
-                        selectedCafeteria = cafeterias.firstOrNull(),
+                        selectedCafeteria = it.selectedCafeteria ?: cafeterias.firstOrNull(),
                         isLoading = false
                     )
                 }
 
-                cafeterias.firstOrNull()?.let { firstCafeteria ->
-                    getMenusByCafeteria(firstCafeteria)
+                // 선택된 식당이 없을 때만 첫 번째 식당 선택
+                if (_uiState.value.selectedCafeteria != null) {
+                    getMenusByCafeteria(_uiState.value.selectedCafeteria!!)
+                } else {
+                    cafeterias.firstOrNull()?.let { firstCafeteria ->
+                        getMenusByCafeteria(firstCafeteria)
+                    }
                 }
             } else {
                 throw MainError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")

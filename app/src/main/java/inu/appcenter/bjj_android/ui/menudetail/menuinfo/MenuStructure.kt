@@ -20,7 +20,7 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 
 @Composable
 fun MenuStructure(menu: TodayDietRes) {
-    val menuItems = menu.restMenu.split(" ")
+    val menuItems = menu.restMenu?.split(" ") ?: emptyList()
 
     Column(
         modifier = Modifier

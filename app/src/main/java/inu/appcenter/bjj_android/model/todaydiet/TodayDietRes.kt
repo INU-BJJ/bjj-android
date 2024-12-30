@@ -12,11 +12,11 @@ data class TodayDietRes(
     @SerializedName("mainMenuId") val mainMenuId: Long,
     @SerializedName("mainMenuName") val mainMenuName: String,
     @SerializedName("subMenuId") val subMenuId: Long,
-    @SerializedName("restMenu") val restMenu: String,
+    @SerializedName("restMenu") val restMenu: String?,
     @SerializedName("cafeteriaName") val cafeteriaName: String,
     @SerializedName("cafeteriaCorner") val cafeteriaCorner: String,
     @SerializedName("reviewCount") val reviewCount: Int,
     @SerializedName("reviewRatingAverage") val reviewRatingAverage: Float,
-    @SerializedName("reviewImageName") val reviewImageName: String,
+    @SerializedName("reviewImageName") val reviewImageName: String?,
     @SerializedName("likedMenu") val likedMenu: Boolean
 )

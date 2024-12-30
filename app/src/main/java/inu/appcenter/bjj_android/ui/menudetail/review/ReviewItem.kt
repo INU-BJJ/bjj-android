@@ -142,32 +142,6 @@ fun ReviewItem(
             DynamicReviewImages(reviewImages = review.imageNames)
             Spacer(Modifier.height(12.dp))
         }
-//        LazyRow(
-//            userScrollEnabled = false
-//        ) {
-//            items(review.tags) { tag ->
-//                Box(
-//                    modifier = Modifier
-//                        .background(
-//                            color = if (menu.menu.equals(tag) or menu.menuStructure.contains(
-//                                    tag
-//                                )
-//                            ) Orange_FF7800 else Gray_F6F6F8, shape = RoundedCornerShape(3.dp)
-//                        )
-//                        .padding(horizontal = 7.dp, vertical = 5.dp)
-//                ) {
-//                    Text(
-//                        text = tag,
-//                        style = LocalTypography.current.regular11.copy(
-//                            letterSpacing = 0.13.sp,
-//                            lineHeight = 15.sp,
-//                        ),
-//                        color = Color.Black
-//                    )
-//                }
-//                Spacer(Modifier.width(5.dp))
-//            }
-//        }
     }
 }
 

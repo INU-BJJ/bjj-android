@@ -23,24 +23,37 @@ import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 fun HeaderImage(
     menu: TodayDietRes
 ) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data("https://bjj.inuappcenter.kr/images/review/${menu.reviewImageName}")
-            .crossfade(true)
-            .listener(
-                onError = { _, result ->
-                    Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
-                },
-                onSuccess = { _, _ ->
-                    Log.d("ImageLoading", "Successfully loaded image")
-                }
-            )
-            .build(),
-
-        contentDescription = "상세 메뉴 대표사진",
-        contentScale = ContentScale.FillHeight,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(257.dp)
-    )
+    if (menu.reviewImageName != null){
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("https://bjj.inuappcenter.kr/images/review/${menu.reviewImageName}")
+                .memoryCacheKey(menu.reviewImageName)
+                .diskCacheKey(menu.reviewImageName)
+                .crossfade(true)
+                .listener(
+                    onError = { _, result ->
+                        Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
+                    },
+                    onSuccess = { _, _ ->
+                        Log.d("ImageLoading", "Successfully loaded image")
+                    }
+                )
+                .build(),
+            placeholder = painterResource(R.drawable.big_placeholder),
+            contentDescription = "상세 메뉴 대표사진",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(257.dp)
+        )
+    } else {
+        Image(
+            painter = painterResource(R.drawable.big_placeholder),
+            contentDescription = "상세 메뉴 대표사진 대체 이미지",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(257.dp)
+        )
+    }
 }
