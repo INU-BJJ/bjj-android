@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.review.tool
+package inu.appcenter.bjj_android.ui.review.toolsAndUtils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel

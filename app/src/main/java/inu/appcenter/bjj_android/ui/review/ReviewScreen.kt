@@ -98,12 +98,12 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                     {
                         Icon(
                             painter = painterResource(id = R.drawable.cautiontriangle),
-                            contentDescription = "좋아요",
+                            contentDescription = "리뷰 없음 경고",
                             tint = Gray_D9D9D9,
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.caution), // 위에 겹쳐지는 벡터 이미지
-                            contentDescription = "Foreground Icon",
+                            contentDescription = "리뷰 없음 경고",
                             tint = Color.White,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)

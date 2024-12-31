@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
@@ -116,7 +116,7 @@ fun ReviewFrameScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = item.createdDate,
+                                text = item.createdDate.formatter(),
                                 style = LocalTypography.current.regular13.copy(
                                     letterSpacing = 0.13.sp,
                                     lineHeight = 17.sp,
