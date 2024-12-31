@@ -46,14 +46,14 @@ import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
-import inu.appcenter.bjj_android.ui.review.tool.DashedBorderBox
-import inu.appcenter.bjj_android.ui.review.tool.DropdownMenuBox
-import inu.appcenter.bjj_android.ui.review.tool.DropdownType
-import inu.appcenter.bjj_android.ui.review.tool.ReviewTextField
-import inu.appcenter.bjj_android.ui.review.tool.StarRatingCalculatorBig
-import inu.appcenter.bjj_android.ui.review.tool.WriteComplete
-import inu.appcenter.bjj_android.ui.review.tool.addImageToList
-import inu.appcenter.bjj_android.ui.review.tool.getFileFromUri
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DashedBorderBox
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DropdownMenuBox
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DropdownType
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.ReviewTextField
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.StarRatingCalculatorBig
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.WriteComplete
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.addImageToList
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.getFileFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
@@ -312,4 +312,5 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
         }
     }
 }
+
 

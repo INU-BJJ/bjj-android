@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,19 +33,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DynamicReviewDetailImages
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
@@ -147,7 +144,6 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                 .padding(horizontal = 29.5.dp)
                 .fillMaxWidth(),
         ) {
-
             // 본문: 유저 프로필, 이름, 별점, 날짜, 좋아요 버튼 및 숫자
             Row(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
@@ -181,7 +177,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                         StarRatingCalculator(rating = reviewDetail?.rating?.toFloat() ?: 0f)
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = reviewDetail?.createdDate ?: "2024-00-00",
+                            text = reviewDetail?.createdDate?.formatter() ?: "2025.00.00",
                             style = LocalTypography.current.regular13.copy(
                                 letterSpacing = 0.13.sp,
                                 lineHeight = 17.sp,
@@ -218,50 +214,44 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
 
             Spacer(Modifier.height(12.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
+            // 텍스트 영역
+            Text(
+                text = reviewDetail?.comment ?: "잘못된 코멘트",
+                style = LocalTypography.current.medium13.copy(
+                    letterSpacing = 0.13.sp,
+                    lineHeight = 17.sp
+                ),
+                color = Color.Black
+            )
+        }   // 여기서 Column(좌우 29.5dp) 종료
+
+        Spacer(Modifier.height(12.dp))
+
+        // 이미지 영역
+        if (reviewUiState.imageNames.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 29.5.dp) // 왼쪽만 29.5dp
             ) {
-                // 텍스트 영역
-                Text(
-                    text = reviewDetail?.comment ?: "잘못된 코멘트",
-                    style = LocalTypography.current.medium13.copy(
-                        letterSpacing = 0.13.sp,
-                        lineHeight = 17.sp
-                    ),
-                    color = Color.Black
-                )
-
-                Spacer(Modifier.height(12.dp))
-
-                // 이미지 영역
-                if (reviewUiState.imageNames.isNotEmpty()) {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(reviewUiState.imageNames) { imageName ->
-                            AsyncImage(
-                                model = "https://bjj.inuappcenter.kr/images/review/$imageName",
-                                contentDescription = "Food Image",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .height(250.dp)
-                                    .width(301.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        val index = reviewUiState.imageNames.indexOf(imageName)
-                                        reviewViewModel.selectImageIndex(index)
-                                        navController.navigate(AllDestination.ReviewDetailPush.route)
-                                    }
-                            )
-                        }
-
+                DynamicReviewDetailImages(
+                    imageNames = reviewUiState.imageNames,
+                    onImageClick = { index ->
+                        // 클릭 콜백
+                        reviewViewModel.selectImageIndex(index)
+                        navController.navigate(AllDestination.ReviewDetailPush.route)
                     }
-                }
+                )
             }
+        }
 
-            Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 29.5.dp)
+        ) {
             Row {
                 Box(
                     modifier = Modifier
@@ -301,3 +291,4 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
         }
     }
 }
+

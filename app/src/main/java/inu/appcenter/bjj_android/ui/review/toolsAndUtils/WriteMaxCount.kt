@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.review.tool
+package inu.appcenter.bjj_android.ui.review.toolsAndUtils
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text

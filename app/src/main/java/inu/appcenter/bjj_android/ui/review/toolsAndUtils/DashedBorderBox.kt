@@ -1,8 +1,9 @@
-package inu.appcenter.bjj_android.ui.review.tool
+package inu.appcenter.bjj_android.ui.review.toolsAndUtils
 
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -38,24 +43,40 @@ fun DashedBorderBox(
     onRemoveImage: () -> Unit,
     currentCounting: Int
 ) {
+    // 동일한 모서리 반경 사용
+    val cornerRadius = RoundedCornerShape(3.dp)
+
     Box(
         modifier = Modifier
-            .size(75.dp) // 크기 설정
-            .drawBehind {
-                val dashWidth = 2.dp.toPx() // 점선 길이
-                val dashGap = 2.dp.toPx() // 점선 간격
-                val pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashWidth, dashGap), 0f)
+            .size(75.dp)
+            .clip(cornerRadius) // 클리핑 적용
+            .then(
+                if (imageUri == null) {
+                    Modifier.drawBehind {
+                        val strokeWidth = 1.5.dp.toPx()
+                        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(2.dp.toPx(), 2.dp.toPx()), 0f)
 
-                drawRoundRect(
-                    color = Gray_B9B9B9,
-                    style = Stroke(
-                        width = 1.5.dp.toPx(),
-                        pathEffect = pathEffect,
-                        cap = StrokeCap.Butt
-                    ),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()) // 모서리 둥글게
-                )
-            },
+                        // 인셋을 적용하여 Stroke가 Box 내부에 완전히 그려지도록 함
+                        drawRoundRect(
+                            color = Gray_B9B9B9,
+                            topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
+                            size = Size(size.width - strokeWidth, size.height - strokeWidth),
+                            cornerRadius = CornerRadius(3.dp.toPx()),
+                            style = Stroke(
+                                width = strokeWidth,
+                                pathEffect = pathEffect,
+                                cap = StrokeCap.Butt
+                            )
+                        )
+                    }
+                } else {
+                    Modifier.border(
+                        width = 1.5.dp,
+                        color = Gray_B9B9B9,
+                        shape = cornerRadius
+                    )
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         if (imageUri == null) {
@@ -80,7 +101,9 @@ fun DashedBorderBox(
                 Image(
                     painter = rememberAsyncImagePainter(model = imageUri),
                     contentDescription = "선택된 이미지",
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(cornerRadius), // 이미지에도 클리핑 적용
                     contentScale = ContentScale.Crop
                 )
 
@@ -89,19 +112,14 @@ fun DashedBorderBox(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.TopEnd
                     ) {
-                        IconButton(
-                            onClick = { onRemoveImage() },
+                        Icon(
+                            painter = painterResource(R.drawable.imagexbutton),
+                            contentDescription = "이미지 제거",
                             modifier = Modifier
-                                .padding(3.dp)
-                                .size(18.dp)
-                                .background(Color.Transparent, shape = CircleShape)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.xbutton), // X 아이콘 리소스
-                                contentDescription = "이미지 제거",
-                                tint = Color.White
-                            )
-                        }
+                                .padding(end = 5.dp, top = 3.73.dp)
+                                .background(Color.Black, shape = CircleShape)
+                                .clickable { onRemoveImage() }
+                        )
                     }
                 }
             }
