@@ -15,7 +15,7 @@ import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.MypageViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
-import inu.appcenter.bjj_android.ui.tier.TierViewModel
+import inu.appcenter.bjj_android.ui.ranking.TierViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

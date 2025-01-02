@@ -5,6 +5,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.R
 
@@ -24,7 +26,21 @@ private val pretendard_regular = FontFamily(
     Font(R.font.pretendard_regular)
 )
 
+//Google Font
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
 
+val fontName = GoogleFont("Racing Sans One")
+
+val RacingSansOne = FontFamily(
+    Font(
+        googleFont = fontName,
+        fontProvider = provider
+    )
+)
 // Set of Material typography styles to start with
 val Typography = Typography(
     headlineLarge = TextStyle(
@@ -101,5 +117,4 @@ data class AppTypography(
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
     ),
-
 )

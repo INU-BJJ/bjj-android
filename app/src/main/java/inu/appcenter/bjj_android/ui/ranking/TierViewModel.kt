@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.tier
+package inu.appcenter.bjj_android.ui.ranking
 
 import androidx.lifecycle.ViewModel
 

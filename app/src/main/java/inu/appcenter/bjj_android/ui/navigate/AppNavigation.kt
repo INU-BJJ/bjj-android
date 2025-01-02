@@ -20,7 +20,7 @@ import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
 import inu.appcenter.bjj_android.ui.review.page.PushReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewWriteScreen
-import inu.appcenter.bjj_android.ui.tier.TierScreen
+import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 
 
 @Composable
@@ -87,7 +87,7 @@ fun AppNavigation(
             composable(AllDestination.MenuDetail.route) {
                 MenuDetailScreen(navController = navController, menuDetailViewModel = menuDetailViewModel)
             }
-            composable(AllDestination.Tier.route) { TierScreen(navController) }
+            composable(AllDestination.Ranking.route) { RankingScreen(navController) }
             composable(AllDestination.Review.route) {
                 ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
             }

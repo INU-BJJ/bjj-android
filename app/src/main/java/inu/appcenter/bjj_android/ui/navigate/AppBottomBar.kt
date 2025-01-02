@@ -40,7 +40,7 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 fun AppBottomBar(
     navController: NavHostController
 ) {
-    val screens = listOf(AllDestination.Main, AllDestination.Tier, AllDestination.Review, AllDestination.MyPage)
+    val screens = listOf(AllDestination.Main, AllDestination.Ranking, AllDestination.Review, AllDestination.MyPage)
 
     NavigationBar(
         containerColor = Color.White,
