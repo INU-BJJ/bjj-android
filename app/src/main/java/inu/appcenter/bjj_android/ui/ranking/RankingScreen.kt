@@ -576,40 +576,26 @@ fun TopThreeRankingItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(8.dp))
-        Surface(
-            shape = CircleShape,
-            modifier = Modifier
-                .size(29.dp),
-            color = when (ranking) {
-                1 -> {
-                    Yellow_FFC421
-                }
-
-                2 -> {
-                    Gray_B9B9B9
-                }
-
-                3 -> {
-                    Brown_C09470
-                }
-
-                else -> {
-                    Brown_C09470
-                }
-            }
+        Box(
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = ranking.toString(),
-                    style = LocalTypography.current.bold18.copy(
-                        lineHeight = 15.sp,
-                        color = Color(0xFF000000),
-                        letterSpacing = 0.13.sp,
-                    )
-                )
-            }
+            Icon(
+                painter = painterResource(
+                    when(ranking){
+                        1 -> {
+                            R.drawable.ranking_1
+                        }
+                        2 -> {
+                            R.drawable.ranking_2
+                        }
+                        else -> {
+                            R.drawable.ranking_3
+                        }
+                    }
+                ),
+                contentDescription = "랭킹 메달",
+                tint = Color.Unspecified
+            )
         }
         Spacer(Modifier.width(8.dp))
         if (menu.reviewImageName != null) {

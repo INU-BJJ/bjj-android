@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.ranking
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,7 @@ import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
 fun BestReviewDialog(
     review: MyReviewDetailRes,
     onDismiss: () -> Unit
-){
+) {
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -132,6 +133,32 @@ fun BestReviewDialog(
                 }
 
                 Spacer(Modifier.height(12.dp))
+
+                //베스트 리뷰 로고
+                Row(
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Orange_FF7800,
+                            shape = RoundedCornerShape(size = 40.dp)
+                        )
+                        .width(75.dp)
+                        .height(18.dp)
+                        .padding(start = 4.dp, top = 1.dp, end = 4.dp, bottom = 1.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "best review",
+                        style = LocalTypography.current.medium11.copy(
+                            lineHeight = 15.sp,
+                            color = Orange_FF7800,
+                            letterSpacing = 0.13.sp,
+                        )
+                    )
+                }
+
+                Spacer(Modifier.height(7.dp))
 
                 // 텍스트 영역
                 Text(
