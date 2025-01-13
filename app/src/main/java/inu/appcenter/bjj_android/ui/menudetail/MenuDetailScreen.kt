@@ -34,6 +34,7 @@ import inu.appcenter.bjj_android.ui.menudetail.menuinfo.HeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.menuinfo.NavigationButtons
 import inu.appcenter.bjj_android.ui.menudetail.review.ReviewHeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.review.ReviewItem
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
 
 private val VERTICAL_SPACER_HEIGHT = 19.8.dp
@@ -45,7 +46,7 @@ private val BOTTOM_SPACER_HEIGHT = 28.dp
 @Composable
 fun MenuDetailScreen(
     navController: NavHostController,
-    menuDetailViewModel: MenuDetailViewModel
+    menuDetailViewModel: MenuDetailViewModel,
 ) {
     val menuDetailUiState by menuDetailViewModel.uiState.collectAsState()
     var pageNumber by remember { mutableIntStateOf(0) }
@@ -56,6 +57,9 @@ fun MenuDetailScreen(
                 menuPairId = menu.menuPairId,
                 sort = menuDetailUiState.sort,
                 isWithImages = menuDetailUiState.isWithImages
+            )
+            menuDetailViewModel.getReviewImages(
+                menuPairId = menu.menuPairId
             )
         }
     }
@@ -83,7 +87,8 @@ fun MenuDetailScreen(
                         sort = menuDetailUiState.sort
                     )
                 },
-                navController = navController
+                navController = navController,
+                menuDetailViewModel = menuDetailViewModel
             )
             else -> NoMenuSelectedUI(navController)
         }
@@ -96,18 +101,21 @@ private fun MenuContent(
     onPhotoFilterChange: (Boolean) -> Unit,
     onSortingChange: (SortingRules) -> Unit,
     onLoadMore: (TodayDietRes) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    menuDetailViewModel: MenuDetailViewModel
 ) {
     val selectedMenu = menuDetailUiState.selectedMenu ?: return
+    val reviewImages = menuDetailUiState.reviewImages ?: return
 
     LazyColumn {
-        item { HeaderSection(menuDetailUiState.selectedMenu, navController) }
+        item { HeaderSection(menuDetailUiState.selectedMenu, navController, menuDetailViewModel = menuDetailViewModel) }
         item { Spacer(Modifier.height(VERTICAL_SPACER_HEIGHT)) }
         item { GrayHorizontalDivider(Modifier.padding(horizontal = HORIZONTAL_PADDING)) }
         item { Spacer(Modifier.height(VERTICAL_SPACER_HEIGHT)) }
         item {
             ReviewHeaderSection(
                 menu = menuDetailUiState.selectedMenu,
+                reviewImages = menuDetailUiState.reviewImages,
                 onlyPhoto = menuDetailUiState.isWithImages,
                 onOnlyPhotoChanged = onPhotoFilterChange,
                 selectedSortingRule = menuDetailUiState.sort,
@@ -116,7 +124,7 @@ private fun MenuContent(
         }
 
         items(menuDetailUiState.reviews?.reviewDetailList.orEmpty()) { review ->
-            ReviewItem(review = review, menu = menuDetailUiState.selectedMenu)
+            ReviewItem(review = review, menu = menuDetailUiState.selectedMenu, menuDetailViewModel = menuDetailViewModel)
             Spacer(Modifier.height(REVIEW_SPACER_HEIGHT))
             HorizontalDivider(
                 thickness = DIVIDER_THICKNESS,

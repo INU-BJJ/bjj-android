@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.menudetail.menuinfo
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +21,11 @@ import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 
 
 @Composable
-fun MenuNameAndPrice(menu: TodayDietRes) {
+fun MenuNameAndPrice(menu: TodayDietRes, menuDetailViewModel: MenuDetailViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,11 +51,14 @@ fun MenuNameAndPrice(menu: TodayDietRes) {
             )
             Icon(
                 painter = painterResource(if(menu.likedMenu) R.drawable.filled_heart else R.drawable.unfilled_heart),
-                modifier = Modifier.size(25.dp),
+                modifier = Modifier
+                    .size(25.dp)
+                    .clickable {
+                        menuDetailViewModel.toggleMenuLiked(menu.mainMenuId)
+                    },
                 contentDescription = "상세 메뉴 좋아요",
                 tint = Color.Unspecified,
-//                shadowOffset = Pair(4f, 4f),
-//                shadowRadius = 20f
+
             )
         }
     }

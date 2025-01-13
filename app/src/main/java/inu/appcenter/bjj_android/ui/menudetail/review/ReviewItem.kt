@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.menudetail.review
 
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,17 +39,31 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
 fun ReviewItem(
     review: ReviewDetailRes,
-    menu: TodayDietRes
+    menu: TodayDietRes,
+    menuDetailViewModel: MenuDetailViewModel
 ) {
+    val context = LocalContext.current
 
-
+    LaunchedEffect(true) {
+        menuDetailViewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MenuDetailUiEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -112,7 +129,11 @@ fun ReviewItem(
                 Icon(
                     painter = painterResource( if (review.liked) R.drawable.filled_good else R.drawable.unfilled_good),
                     contentDescription = "리뷰 별 좋아요 수",
-                    tint = Color.Unspecified
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .clickable {
+                            menuDetailViewModel.toggleReviewLiked(reviewId = review.reviewId)
+                        }
                 )
                 Text(
                     text = review.likeCount.toString(),

@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +15,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +37,7 @@ import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 import kotlin.math.round
@@ -40,7 +46,8 @@ import kotlin.math.round
 @Composable
 fun MainMenuItem(
     menu: TodayDietRes,
-    clickMenuDetail: () -> Unit
+    clickMenuDetail: () -> Unit,
+    mainViewModel: MainViewModel
 ) {
 
 
@@ -131,18 +138,29 @@ fun MainMenuItem(
                         color = Color.Black
                     )
                 }
-                Icon(
-                    painter = painterResource(id = if (menu.likedMenu) R.drawable.filled_heart else R.drawable.unfilled_heart),
-                    contentDescription = "좋아요 유무",
-                    tint = Color.Unspecified,
+                Box(
                     modifier = Modifier
-                        .width(15.dp)
-                )
+                        .size(30.dp)  // Material Design의 최소 터치 타겟 사이즈
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = false),  // 물결 효과 추가
+                        ) {
+                            mainViewModel.toggleMenuLiked(mainMenuId = menu.mainMenuId)
+                        },
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    Icon(
+                        painter = painterResource(id = if (menu.likedMenu) R.drawable.filled_heart else R.drawable.unfilled_heart),
+                        contentDescription = "좋아요 유무",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.width(15.dp)
+                    )
+                }
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 13.dp),
+                    .padding(start = 13.dp, top = 7.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

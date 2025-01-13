@@ -1,9 +1,12 @@
 package inu.appcenter.bjj_android.ui.menudetail.review
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,17 +17,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.review.ReviewImageDetail
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 
 
 @Composable
 fun ReviewImagesSection(
-    reviewImages: List<String>,
+    reviewImages: List<ReviewImageDetail>,
     modifier: Modifier = Modifier
 ) {
     val totalSlots = 3
@@ -48,9 +55,23 @@ fun ReviewImagesSection(
 }
 
 @Composable
-fun ReviewImageItem(image: String) {
-    Image(
-        painter = painterResource(R.drawable.example_menu_big_1),
+fun ReviewImageItem(image: ReviewImageDetail) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data("https://bjj.inuappcenter.kr/images/review/${image.imageName}")
+            .memoryCacheKey(image.imageName)
+            .diskCacheKey(image.imageName)
+            .crossfade(true)
+            .listener(
+                onError = { _, result ->
+                    Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
+                },
+                onSuccess = { _, _ ->
+                    Log.d("ImageLoading", "Successfully loaded image")
+                }
+            )
+            .build(),
+        placeholder = painterResource(R.drawable.big_placeholder),
         contentDescription = "리뷰 이미지",
         modifier = Modifier
             .size(68.dp)

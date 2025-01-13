@@ -6,6 +6,8 @@ import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepositoryImpl
 import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.repository.member.MemberRepositoryImpl
+import inu.appcenter.bjj_android.repository.menu.MenuRepository
+import inu.appcenter.bjj_android.repository.menu.MenuRepositoryImpl
 import inu.appcenter.bjj_android.repository.review.ReviewRepository
 import inu.appcenter.bjj_android.repository.review.ReviewRepositoryImpl
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
@@ -29,10 +31,12 @@ val viewModelModule = module {
     single<TodayDietRepository> { TodayDietRepositoryImpl(get()) }
     single<CafeteriasRepository> { CafeteriasRepositoryImpl(get()) }
     single<ReviewRepository> { ReviewRepositoryImpl(get()) }
+    single<MenuRepository> { MenuRepositoryImpl(get()) }
+
 
     viewModel{ AuthViewModel(get(), get()) }
-    viewModel{ MainViewModel(get(), get(), get()) }
-    viewModel{ MenuDetailViewModel(get(), get()) }
+    viewModel{ MainViewModel(get(), get(), get(), get()) }
+    viewModel{ MenuDetailViewModel(get(), get(), get()) }
     viewModel{ MypageViewModel() }
     viewModel{ ReviewViewModel(get(), get(), get()) }
     viewModel{ RankingViewModel() }

@@ -375,7 +375,7 @@ fun RankingScreen(
                 .fillMaxSize()
                 .background(color = Gray_F6F6F8)
                 .padding(innerPadding)
-                .padding(horizontal = 27.dp, vertical = 23.dp)
+                .padding(horizontal = 20.dp, vertical = 23.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically

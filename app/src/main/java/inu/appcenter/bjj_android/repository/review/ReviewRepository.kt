@@ -2,10 +2,13 @@ package inu.appcenter.bjj_android.repository.review
 
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ReviewRepository {
 
@@ -33,4 +36,14 @@ interface ReviewRepository {
         pageNumber: Int,
         pageSize: Int
     ) : Response<MyReviewsPagedRes>
+
+    suspend fun toggleReviewLiked(
+        reviewId: Long
+    ) : Response<Boolean>
+
+    suspend fun getReviewImages(
+        menuPairId: Long,
+        pageNumber: Int,
+        pageSize: Int
+    ) : Response<ReviewImageDetailList>
 }
