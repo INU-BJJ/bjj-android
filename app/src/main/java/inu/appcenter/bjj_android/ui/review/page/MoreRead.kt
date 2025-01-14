@@ -160,7 +160,11 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                     item {
                         LoadMoreButton(
                             isVisible = reviewUiState.reviewsChoiceByRestaurant?.lastPage == false,
-                            onLoadMore = { reviewUiState.reviewsChoiceByRestaurant }
+                            onLoadMore = {
+                                if (selectedRestaurant != null) {
+                                    reviewViewModel.getMoreReviewsByCafeteria(selectedRestaurant)
+                                }
+                            }
                         )
                     }
                 }
