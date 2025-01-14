@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
+import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import inu.appcenter.bjj_android.ui.menudetail.ReviewError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +40,8 @@ data class MainUiState(
 class MainViewModel(
     private val cafeteriasRepository: CafeteriasRepository,
     private val todayDietRepository: TodayDietRepository,
-    private val authViewModel: AuthViewModel
+    private val authViewModel: AuthViewModel,
+    private val menuRepository: MenuRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
@@ -147,6 +150,45 @@ class MainViewModel(
                     else -> "알 수 없는 오류: ${e.message}"
                 }
                 _uiState.update { it.copy(isLoading = false, error = errorMessage) }
+            }
+        }
+    }
+
+    fun toggleMenuLiked(
+        mainMenuId: Long
+    ){
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = menuRepository.toggleMenuLiked(mainMenuId = mainMenuId)
+                if (response.isSuccessful) {
+                    val isSuccess = response.body() ?: throw ReviewError.EmptyResponse()
+                    if (isSuccess){
+                        if (isSuccess) {
+                            _uiState.update { currentState ->
+                                val updatedMenus = currentState.menus.map{ menu ->
+                                    if (menu.mainMenuId == mainMenuId) {
+                                        // Toggle the isLiked status and update likeCount
+                                        menu.copy(
+                                            likedMenu = !menu.likedMenu,
+                                        )
+                                    } else {
+                                        menu
+                                    }
+
+                                }
+                                currentState.copy(
+                                    menus = updatedMenus,
+                                    isLoading = false
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                }
+            } catch (e: Exception) {
+                handleError(e)
             }
         }
     }

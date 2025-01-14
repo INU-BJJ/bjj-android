@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import inu.appcenter.bjj_android.model.review.ReviewImageDetail
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.menudetail.SortingRules
 import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
@@ -17,6 +18,7 @@ import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
 fun ReviewHeaderSection(
     menu: TodayDietRes,
     onlyPhoto: Boolean,
+    reviewImages: List<ReviewImageDetail>,
     onOnlyPhotoChanged: (Boolean) -> Unit,
     selectedSortingRule: SortingRules,
     onSortingRUleChanged: (SortingRules) -> Unit
@@ -28,7 +30,7 @@ fun ReviewHeaderSection(
         ReviewHeaderInfo(menu, modifier = Modifier.padding(horizontal = 29.5.dp))
         Spacer(Modifier.height(16.dp))
         ReviewImagesSection(
-            reviewImages = emptyList(),
+            reviewImages = reviewImages,
             modifier = Modifier.padding(horizontal = 29.5.dp)
         )
         Spacer(Modifier.height(16.8.dp))

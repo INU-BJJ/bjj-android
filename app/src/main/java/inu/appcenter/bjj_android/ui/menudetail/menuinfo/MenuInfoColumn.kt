@@ -12,11 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
 
 
 @Composable
-fun MenuInfoColumn(menu: TodayDietRes) {
+fun MenuInfoColumn(menu: TodayDietRes, menuDetailViewModel: MenuDetailViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +27,7 @@ fun MenuInfoColumn(menu: TodayDietRes) {
                 shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
             )
     ) {
-        MenuNameAndPrice(menu)
+        MenuNameAndPrice(menu, menuDetailViewModel =  menuDetailViewModel)
         Spacer(Modifier.height(22.8.dp))
         GrayHorizontalDivider(Modifier.padding(horizontal = 21.3.dp))
         Spacer(Modifier.height(29.8.dp))

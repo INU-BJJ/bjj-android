@@ -2,6 +2,7 @@ package inu.appcenter.bjj_android.repository.review
 
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.network.APIService
 import okhttp3.MultipartBody
@@ -50,5 +51,17 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
             pageNumber = pageNumber,
             pageSize = pageSize
         )
+    }
+
+    override suspend fun toggleReviewLiked(reviewId: Long): Response<Boolean> {
+        return apiService.toggleReviewLiked(reviewId = reviewId)
+    }
+
+    override suspend fun getReviewImages(
+        menuPairId: Long,
+        pageNumber: Int,
+        pageSize: Int
+    ): Response<ReviewImageDetailList> {
+        return apiService.getReviewImages(menuPairId, pageNumber, pageSize)
     }
 }

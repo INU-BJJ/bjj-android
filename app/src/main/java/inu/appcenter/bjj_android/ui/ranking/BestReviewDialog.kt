@@ -114,48 +114,30 @@ fun BestReviewDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            modifier = Modifier,
-                            painter = painterResource(id = R.drawable.thumbs),
-                            contentDescription = "좋아요",
-                            tint = Orange_FF7800
-                        )
-                        Spacer(Modifier.height(3.dp))
-                        Text(
-                            text = review.likeCount.toString(),
-                            style = LocalTypography.current.regular11.copy(
-                                letterSpacing = 0.13.sp,
-                                lineHeight = 15.sp
-                            ),
-                            color = Color.Black
-                        )
+                        //베스트 리뷰 로고
+                        Row(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = Orange_FF7800,
+                                    shape = RoundedCornerShape(size = 40.dp)
+                                )
+                                .width(75.dp)
+                                .height(18.dp)
+                                .padding(start = 4.dp, top = 1.dp, end = 4.dp, bottom = 1.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "best review",
+                                style = LocalTypography.current.medium11.copy(
+                                    lineHeight = 15.sp,
+                                    color = Orange_FF7800,
+                                    letterSpacing = 0.13.sp,
+                                )
+                            )
+                        }
                     }
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                //베스트 리뷰 로고
-                Row(
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Orange_FF7800,
-                            shape = RoundedCornerShape(size = 40.dp)
-                        )
-                        .width(75.dp)
-                        .height(18.dp)
-                        .padding(start = 4.dp, top = 1.dp, end = 4.dp, bottom = 1.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "best review",
-                        style = LocalTypography.current.medium11.copy(
-                            lineHeight = 15.sp,
-                            color = Orange_FF7800,
-                            letterSpacing = 0.13.sp,
-                        )
-                    )
                 }
 
                 Spacer(Modifier.height(7.dp))

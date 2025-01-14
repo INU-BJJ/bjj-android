@@ -3,8 +3,10 @@ package inu.appcenter.bjj_android.network
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
+import inu.appcenter.bjj_android.model.menu.LikedMenu
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
@@ -56,6 +58,18 @@ interface APIService {
         @Query("pageSize") pageSize: Int
     ) : Response<MyReviewsPagedRes>
 
+    @POST("/api/reviews/{reviewId}/like")
+    suspend fun toggleReviewLiked(
+        @Path("reviewId") reviewId: Long
+    ) : Response<Boolean>
+
+    @GET("/api/reviews/images")
+    suspend fun getReviewImages(
+        @Query("menuPairId") menuPairId: Long,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ) : Response<ReviewImageDetailList>
+
     // Image API
     @GET("/api/images")
     suspend fun getImagePath(
@@ -95,4 +109,13 @@ interface APIService {
     suspend fun modifyNickname(
         @Query("nickname") nickname : String
     ) : Response<Unit>
+
+    //Menu API
+    @POST("/api/menus/{menuId}/like")
+    suspend fun toggleMenuLiked(
+        @Path("menuId") mainMenuId: Long
+    ) : Response<Boolean>
+
+    @GET("/api/menus/liked")
+    suspend fun getLikedMenus() : Response<LikedMenu>
 }

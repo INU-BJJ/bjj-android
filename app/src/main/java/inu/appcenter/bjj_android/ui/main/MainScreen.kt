@@ -132,7 +132,8 @@ fun MainScreen(
                         clickMenuDetail = {
                             menuDetailViewModel.selectMenu(menu = menu)
                             navController.navigate(AllDestination.MenuDetail.route)
-                        }
+                        },
+                        mainViewModel = mainViewModel
                     )
                 }
 

@@ -3,11 +3,15 @@ package inu.appcenter.bjj_android.ui.menudetail
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.model.review.ReviewImageDetail
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.repository.review.ReviewRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,6 +31,7 @@ data class MenuDetailUiState(
     val reviews: ReviewRes? = null,
     val isWithImages: Boolean = false,
     val sort: SortingRules = SortingRules.BEST_MATCH,
+    val reviewImages: List<ReviewImageDetail>? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -45,10 +50,19 @@ enum class SortingRules {
     }
 }
 
+// UiEvent sealed class
+sealed class MenuDetailUiEvent {
+    data class ShowToast(val message: String) : MenuDetailUiEvent()
+}
+
 class MenuDetailViewModel(
     private val todayDietRepository: TodayDietRepository,
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
+    private val menuRepository: MenuRepository
 ) : ViewModel() {
+
+    private val _eventFlow = MutableSharedFlow<MenuDetailUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private val _uiState = MutableStateFlow(MenuDetailUiState())
     val uiState = _uiState.asStateFlow()
@@ -135,16 +149,7 @@ class MenuDetailViewModel(
         )
     }
 
-    private fun handleReviewError(e: Exception) {
-        val errorMessage = when (e) {
-            is ReviewError.EmptyResponse -> e.message
-            is ReviewError.ApiError -> "API 오류: ${e.message}"
-            is ReviewError.NetworkError -> "네트워크 오류: ${e.message}"
-            else -> "알 수 없는 오류: ${e.message}"
-        }
-        Log.e("ReviewError", errorMessage)
-        _uiState.update { it.copy(isLoading = false, error = errorMessage) }
-    }
+
 
     fun getMoreReviewsByMenu(
         menuPairId: Long,
@@ -200,7 +205,132 @@ class MenuDetailViewModel(
         }
     }
 
+    fun getReviewImages(
+        menuPairId: Long,
+        pageNumber: Int = DEFAULT_PAGE_NUMBER,
+        pageSize: Int = DEFAULT_PAGE_SIZE,
+        sort: SortingRules = SortingRules.BEST_MATCH,
+    ) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = reviewRepository.getReviewImages(menuPairId, 0, 3)
+                if (response.isSuccessful) {
+                    val reviewImages = response.body() ?: throw ReviewError.EmptyResponse()
+                    _uiState.update { it.copy(reviewImages = reviewImages.reviewImageDetailList, isLoading = false) }
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
+
+    fun toggleReviewLiked(
+        reviewId: Long
+    ){
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = reviewRepository.toggleReviewLiked(reviewId = reviewId)
+                if (response.isSuccessful) {
+                    val isSuccess = response.body() ?: throw ReviewError.EmptyResponse()
+                    if (isSuccess){
+                        if (isSuccess) {
+                            _uiState.update { currentState ->
+                                val updatedReviews = currentState.reviews?.copy(
+                                    reviewDetailList = currentState.reviews.reviewDetailList.map { review ->
+                                        if (review.reviewId == reviewId) {
+                                            // Toggle the isLiked status and update likeCount
+                                            review.copy(
+                                                liked = !review.liked,
+                                                likeCount = if (!review.liked) review.likeCount + 1 else review.likeCount - 1
+                                            )
+                                        } else {
+                                            review
+                                        }
+                                    }
+                                )
+                                currentState.copy(
+                                    reviews = updatedReviews,
+                                    isLoading = false
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
+
+    fun toggleMenuLiked(
+        mainMenuId: Long
+    ){
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = menuRepository.toggleMenuLiked(mainMenuId = mainMenuId)
+                if (response.isSuccessful) {
+                    val isSuccess = response.body() ?: throw ReviewError.EmptyResponse()
+                    if (isSuccess){
+                        if (isSuccess) {
+                            _uiState.update { currentState ->
+                                val selectedMenu = currentState.selectedMenu?.copy(
+                                    likedMenu = !currentState.selectedMenu.likedMenu
+                                )
+                                currentState.copy(
+                                    selectedMenu = selectedMenu,
+                                    isLoading = false
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
+
     fun resetState() {
         _uiState.update { MenuDetailUiState() }
+    }
+
+
+
+    private fun handleReviewError(e: Exception) {
+        val errorMessage = when (e) {
+            is ReviewError.EmptyResponse -> e.message
+            is ReviewError.ApiError -> {
+                // 서버에서 온 에러 메시지를 파싱
+                try {
+                    val errorBody = e.message
+                    if (errorBody.contains("msg")) {
+                        // JSON 파싱하여 실제 메시지 추출
+                        val regex = "\"msg\":\"(.*?)\"".toRegex()
+                        val matchResult = regex.find(errorBody)
+                        matchResult?.groupValues?.get(1) ?: "서버 오류가 발생했습니다"
+                    } else {
+                        "서버 오류가 발생했습니다"
+                    }
+                } catch (e: Exception) {
+                    "서버 오류가 발생했습니다"
+                }
+            }
+            is ReviewError.NetworkError -> "네트워크 연결을 확인해주세요"
+            else -> "알 수 없는 오류가 발생했습니다"
+        }
+
+        viewModelScope.launch {
+            _eventFlow.emit(MenuDetailUiEvent.ShowToast(errorMessage))
+        }
+        _uiState.update { it.copy(isLoading = false, error = errorMessage) }
     }
 }
