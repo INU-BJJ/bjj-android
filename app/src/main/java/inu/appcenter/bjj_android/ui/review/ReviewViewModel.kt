@@ -25,8 +25,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 
-private const val DEFAULT_PAGE_SIZE = 10
-private const val DEFAULT_PAGE_NUMBER = 0
+private const val PAGE_SIZE = 10
+// private const val DEFAULT_PAGE_NUMBER = 0
 
 data class ReviewUiState(
     val selectedRestaurant: String? = null,
@@ -54,6 +54,7 @@ class ReviewViewModel(
     private val _uiState = MutableStateFlow(ReviewUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var currentPageNumber = 0
 
     init {
         showAllRestaurant()
@@ -62,6 +63,8 @@ class ReviewViewModel(
 
     // 더보기
     fun setSelectedRestaurant(restaurant: String) {
+        currentPageNumber = 0
+
         _uiState.update {
             it.copy(
                 selectedRestaurant = restaurant,
@@ -176,9 +179,10 @@ class ReviewViewModel(
 
     private suspend fun fetchReviewsByCafeteria(
         cafeteriaName: String,
-        pageNumber: Int = DEFAULT_PAGE_NUMBER,
-        pageSize: Int = DEFAULT_PAGE_SIZE,
+        pageNumber: Int,
+        pageSize: Int = PAGE_SIZE,
     ): Response<MyReviewsPagedRes> {
+        // 서버에서 pageNumber(몇 번째 페이지), pageSize(한 페이지 크기)로 데이터를 주는 구조
         return reviewRepository.getMyReviewsByCafeteria(
             cafeteriaName = cafeteriaName,
             pageNumber = pageNumber,
@@ -186,26 +190,40 @@ class ReviewViewModel(
         )
     }
 
-    fun getMoreReviewsByCafeteria(
-        cafeteriaName: String,
-        pageNumber: Int = DEFAULT_PAGE_NUMBER,
-        pageSize: Int = DEFAULT_PAGE_SIZE,
-    ) {
+    fun getMoreReviewsByCafeteria(cafeteriaName: String) {
         viewModelScope.launch {
+            // 이미 로딩중이거나 마지막 페이지면 중복 호출 방지
+            if (_uiState.value.isLoading) return@launch
+            val currentState = _uiState.value.reviewsChoiceByRestaurant
+            if (currentState?.lastPage == true) {
+                // 이미 마지막 페이지
+                return@launch
+            }
+
             _uiState.update { it.copy(isLoading = true, error = null) }
+
             try {
-                val response = fetchReviewsByCafeteria(cafeteriaName, pageNumber, pageSize)
+                val response = fetchReviewsByCafeteria(cafeteriaName, currentPageNumber, PAGE_SIZE)
                 if (response.isSuccessful) {
-                    val moreReadReviews = response.body() ?: throw ReviewError.EmptyResponse()
-                    _uiState.update { currentState ->
-                        currentState.copy(
+                    val newPageData = response.body() ?: throw ReviewError.EmptyResponse()
+
+                    _uiState.update { state ->
+                        val oldList = state.reviewsChoiceByRestaurant?.myReviewDetailList ?: emptyList()
+                        val newList = newPageData.myReviewDetailList
+                        val combinedList = oldList + newList
+
+                        state.copy(
                             reviewsChoiceByRestaurant = MyReviewsPagedRes(
-                                myReviewDetailList = moreReadReviews.myReviewDetailList,
-                                lastPage = moreReadReviews.lastPage
+                                myReviewDetailList = combinedList,
+                                lastPage = newPageData.lastPage
                             ),
                             isLoading = false
                         )
                     }
+
+                    // 한 번 호출 끝났으니 페이지 번호 +1
+                    currentPageNumber++
+
                 } else {
                     throw ReviewError.ApiError(
                         response.errorBody()?.string() ?: "getMyReviewsByCafeteria API Error"
