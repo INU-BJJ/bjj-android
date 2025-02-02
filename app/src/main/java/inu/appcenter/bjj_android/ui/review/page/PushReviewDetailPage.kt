@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
@@ -35,7 +35,7 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PushReviewDetailScreen(navController: NavController, reviewViewModel : ReviewViewModel) {
+fun PushReviewDetailScreen(navController: NavHostController, reviewViewModel : ReviewViewModel) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
     val imageList = reviewUiState.imageNames
     val currentIndex = reviewUiState.selectedImageIndex

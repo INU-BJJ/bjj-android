@@ -14,13 +14,14 @@ import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
+import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
 import inu.appcenter.bjj_android.ui.review.page.PushReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewWriteScreen
-import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 
 
 @Composable
@@ -87,7 +88,9 @@ fun AppNavigation(
             composable(AllDestination.MenuDetail.route) {
                 MenuDetailScreen(navController = navController, menuDetailViewModel = menuDetailViewModel)
             }
-            composable(AllDestination.Ranking.route) { RankingScreen(navController) }
+            composable(AllDestination.Ranking.route) {
+                RankingScreen(navController)
+            }
             composable(AllDestination.Review.route) {
                 ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
@@ -101,8 +104,14 @@ fun AppNavigation(
                 ReviewDetailScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
             composable(AllDestination.ReviewDetailPush.route) {
-                PushReviewDetailScreen(navController, reviewViewModel = reviewViewModel) }
-            composable(AllDestination.MyPage.route) { MyPageScreen(navController = navController, authViewModel = authViewModel) }
+                PushReviewDetailScreen(navController, reviewViewModel = reviewViewModel)
+            }
+            composable(AllDestination.MyPage.route) {
+                MyPageScreen(navController = navController, authViewModel = authViewModel)
+            }
+            composable(AllDestination.Setting.route) {
+                SettingScreen(navController)
+            }
         }
     }
 }

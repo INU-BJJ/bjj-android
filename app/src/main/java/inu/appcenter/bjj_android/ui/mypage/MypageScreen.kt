@@ -1,11 +1,9 @@
 package inu.appcenter.bjj_android.ui.mypage
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -79,7 +77,7 @@ fun MyPageScreen(
                         modifier = Modifier
                             .padding(end = 18.dp)
                             .clickable {
-
+                                navController.navigate(AllDestination.Setting.route)
                             }
                     )
                 },
