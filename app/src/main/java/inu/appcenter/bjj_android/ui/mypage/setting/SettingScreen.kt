@@ -1,8 +1,11 @@
 package inu.appcenter.bjj_android.ui.mypage.setting
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -15,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +27,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.mypage.setting.component.ClickableText
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,21 +73,35 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(24.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             ClickableText(
                 text = "닉네임 변경하기",
-                navController = navController
-            )
+                onClick = {
+                    //ToDO
+                })
             ClickableText(
                 text = "리뷰 작성하기",
                 route = AllDestination.ReviewWrite.route,
-                navController = navController
-            )
+                navController = navController)
             ClickableText(
                 text = "좋아요한 메뉴",
                 route = AllDestination.LikedMenu.route,
                 navController = navController)
+            Spacer(Modifier.height(400.dp))
+            Text(
+                text = "탈퇴하기",
+                style = LocalTypography.current.medium15.copy(
+                    lineHeight = 18.sp,
+                    letterSpacing = 0.13.sp,
+                    fontWeight = FontWeight(400),
+                    color = Red_FF0000
+                ),
+                modifier = Modifier.clickable {
+                    //ToDO
+                }
+            )
         }
     }
 }

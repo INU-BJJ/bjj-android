@@ -1,23 +1,21 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import inu.appcenter.bjj_android.LocalTypography
 
 @Composable
 fun ClickableText(
     text: String,
-    route: String = "",
-    navController: NavHostController
+    route: String? = null,
+    navController: NavController? = null,
+    onClick: (() -> Unit)? = null
 ) {
     Text(
         text = text,
@@ -28,9 +26,10 @@ fun ClickableText(
             color = Color.Black
         ),
         modifier = Modifier.clickable {
-            navController.navigate(route)
+            when {
+                route != null && navController != null -> navController.navigate(route)
+                onClick != null -> onClick()
+            }
         }
     )
-
-    Spacer(Modifier.height(24.dp))
 }
