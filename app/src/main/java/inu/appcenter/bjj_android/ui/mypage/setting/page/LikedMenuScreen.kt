@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.mypage.setting
+package inu.appcenter.bjj_android.ui.mypage.setting.page
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.mypage.setting.component.ClickableText
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(
+fun LikedMenuScreen(
     navController: NavHostController
 ) {
     Scaffold(
@@ -34,7 +32,7 @@ fun SettingScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "설정",
+                        text = "좋아요한 메뉴",
                         style = LocalTypography.current.semibold18.copy(
                             textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
@@ -68,21 +66,8 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(24.dp)
         ) {
-            ClickableText(
-                text = "닉네임 변경하기",
-                navController = navController
-            )
-            ClickableText(
-                text = "리뷰 작성하기",
-                route = AllDestination.ReviewWrite.route,
-                navController = navController
-            )
-            ClickableText(
-                text = "좋아요한 메뉴",
-                route = AllDestination.LikedMenu.route,
-                navController = navController)
+
         }
     }
 }

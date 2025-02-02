@@ -14,5 +14,6 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object ReviewDetail : AllDestination("reviewDetail", R.drawable.review, "리뷰 디테일")
     data object ReviewDetailPush : AllDestination("reviewDetailPush", R.drawable.review, "리뷰 디테일 누르면")
     data object MyPage : AllDestination("myPage", R.drawable.mypage, "마이페이지")
-    data object Setting : AllDestination("setting", R.drawable.setting, "설정")
+    data object Setting : AllDestination("setting", R.drawable.mypage, "설정")
+    data object LikedMenu : AllDestination("likedMenu", R.drawable.mypage, "좋아요한 메뉴")
 }

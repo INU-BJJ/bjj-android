@@ -15,6 +15,7 @@ import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.page.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
@@ -111,6 +112,9 @@ fun AppNavigation(
             }
             composable(AllDestination.Setting.route) {
                 SettingScreen(navController)
+            }
+            composable(AllDestination.LikedMenu.route) {
+                LikedMenuScreen(navController)
             }
         }
     }
