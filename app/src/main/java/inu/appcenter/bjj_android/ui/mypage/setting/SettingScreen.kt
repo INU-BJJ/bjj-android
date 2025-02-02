@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.mypage.setting.component.ClickableText
+import inu.appcenter.bjj_android.ui.mypage.setting.component.MainText
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 
@@ -76,16 +76,16 @@ fun SettingScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            ClickableText(
+            MainText(
                 text = "닉네임 변경하기",
                 onClick = {
                     //ToDO
                 })
-            ClickableText(
+            MainText(
                 text = "리뷰 작성하기",
                 route = AllDestination.ReviewWrite.route,
                 navController = navController)
-            ClickableText(
+            MainText(
                 text = "좋아요한 메뉴",
                 route = AllDestination.LikedMenu.route,
                 navController = navController)

@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.mypage.setting.component.ClickableText
+import inu.appcenter.bjj_android.ui.mypage.setting.component.LikedMenuFrame
+import inu.appcenter.bjj_android.ui.mypage.setting.component.MainText
 import inu.appcenter.bjj_android.ui.mypage.setting.component.SwitchButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,20 +74,24 @@ fun LikedMenuScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+                .padding(horizontal = 15.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 9.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ClickableText(text = "좋아요 알람 받기")
+                MainText(text = "좋아요 알람 받기")
                 SwitchButton()
             }
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(14.dp))
 
+            LikedMenuFrame("우삼겹떡볶이*핫도그")
+            LikedMenuFrame("김치볶음밥")
+            LikedMenuFrame("우삼겹떡볶이*핫도그")
         }
     }
 }

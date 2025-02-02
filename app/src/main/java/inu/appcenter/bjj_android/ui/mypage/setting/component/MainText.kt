@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import inu.appcenter.bjj_android.LocalTypography
 
 @Composable
-fun ClickableText(
+fun MainText(
     text: String,
     route: String? = null,
     navController: NavController? = null,
