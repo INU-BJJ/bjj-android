@@ -3,8 +3,10 @@ package inu.appcenter.bjj_android.ui.navigate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.login.LoginScreen
@@ -13,6 +15,7 @@ import inu.appcenter.bjj_android.ui.main.MainScreen
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.page.LikedMenuScreen
@@ -115,6 +118,17 @@ fun AppNavigation(
             }
             composable(AllDestination.LikedMenu.route) {
                 LikedMenuScreen(navController)
+            }
+            composable(
+                route = "moreImage/{menuPairId}",
+                arguments = listOf(navArgument("menuPairId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val menuPairId = backStackEntry.arguments?.getLong("menuPairId") ?: return@composable
+                MoreImageScreen(
+                    navController = navController,
+                    menuDetailViewModel = menuDetailViewModel,
+                    menuPairId = menuPairId
+                )
             }
         }
     }

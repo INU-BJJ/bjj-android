@@ -32,6 +32,7 @@ data class MenuDetailUiState(
     val isWithImages: Boolean = false,
     val sort: SortingRules = SortingRules.BEST_MATCH,
     val reviewImages: List<ReviewImageDetail>? = null,
+    val moreReviewImages: List<ReviewImageDetail>? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -214,10 +215,42 @@ class MenuDetailViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val response = reviewRepository.getReviewImages(menuPairId, 0, 3)
+                val response = reviewRepository.getReviewImages(menuPairId, pageNumber, pageSize)
                 if (response.isSuccessful) {
                     val reviewImages = response.body() ?: throw ReviewError.EmptyResponse()
                     _uiState.update { it.copy(reviewImages = reviewImages.reviewImageDetailList, isLoading = false) }
+                } else {
+                    throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
+                }
+            } catch (e: Exception) {
+                handleReviewError(e)
+            }
+        }
+    }
+
+    fun getMoreReviewImages(
+        menuPairId: Long,
+        pageNumber: Int = 0,
+        pageSize: Int = DEFAULT_PAGE_SIZE,
+    ) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val response = reviewRepository.getReviewImages(menuPairId, pageNumber, pageSize)
+                if (response.isSuccessful) {
+                    val newImages = response.body()?.reviewImageDetailList ?: emptyList()
+                    _uiState.update { currentState ->
+                        val updatedImages = if (pageNumber == 0) {
+                            newImages
+                        } else {
+                            (currentState.reviewImages ?: emptyList()) + newImages
+                        }
+                        currentState.copy(
+                            reviewImages = updatedImages,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
                 } else {
                     throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
                 }

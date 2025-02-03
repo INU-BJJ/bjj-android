@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,8 +43,11 @@ import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
+import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -111,7 +115,7 @@ fun ReviewItem(
                     StarRatingCalculator(rating = review.rating.toFloat())
                     Spacer(Modifier.width(10.dp))
                     Text(
-                        text = review.createdDate,
+                        text = review.createdDate.formatter(),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp,
@@ -163,6 +167,19 @@ fun ReviewItem(
             DynamicReviewImages(reviewImages = review.imageNames)
             Spacer(Modifier.height(12.dp))
         }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            ReviewMenuText(
+                text = review.mainMenuName,
+                isSame = review.mainMenuName == menu.mainMenuName
+            )
+            Spacer(Modifier.width(5.dp))
+            ReviewMenuText(
+                text = review.subMenuName
+            )
+        }
     }
 }
 
@@ -210,6 +227,25 @@ fun ExpandableText(
             )
         }
     }
+}
+
+@Composable
+fun ReviewMenuText(
+    text: String,
+    isSame: Boolean = false
+){
+    Text(
+        text = text,
+        style = LocalTypography.current.medium11.copy(
+            lineHeight = 15.sp,
+            letterSpacing = 0.13.sp,
+            color = Color.Black
+        ),
+        modifier = Modifier
+            .background(color = if (isSame) Orange_FF7800  else Gray_F6F6F8, shape = RoundedCornerShape(3.dp))
+            .padding(horizontal = 7.dp, vertical = 5.dp)
+
+    )
 }
 
 

@@ -59,7 +59,9 @@ fun MenuDetailScreen(
                 isWithImages = menuDetailUiState.isWithImages
             )
             menuDetailViewModel.getReviewImages(
-                menuPairId = menu.menuPairId
+                menuPairId = menu.menuPairId,
+                pageNumber = 0,
+                pageSize = 3
             )
         }
     }
@@ -119,7 +121,8 @@ private fun MenuContent(
                 onlyPhoto = menuDetailUiState.isWithImages,
                 onOnlyPhotoChanged = onPhotoFilterChange,
                 selectedSortingRule = menuDetailUiState.sort,
-                onSortingRUleChanged = onSortingChange
+                onSortingRUleChanged = onSortingChange,
+                navController = navController
             )
         }
 

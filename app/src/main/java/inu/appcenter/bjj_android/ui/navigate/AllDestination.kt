@@ -9,6 +9,9 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object MenuDetail : AllDestination("menuDetail", R.drawable.mypage, "메뉴 디테일")
     data object Ranking : AllDestination("ranking", R.drawable.tier, "랭킹")
     data object Review : AllDestination("review", R.drawable.review, "리뷰")
+    data object MoreImage : AllDestination("moreImage/{menuPairId}", R.drawable.review, "이미지 더보기") {
+        fun createRoute(menuPairId: Long) = "moreImage/$menuPairId"
+    }
     data object ReviewMore : AllDestination("reviewMore", R.drawable.review, "리뷰 더보기")
     data object ReviewWrite : AllDestination("reviewWrite", R.drawable.review, "리뷰 작성")
     data object ReviewDetail : AllDestination("reviewDetail", R.drawable.review, "리뷰 디테일")

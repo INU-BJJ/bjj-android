@@ -3,6 +3,7 @@ package inu.appcenter.bjj_android.ui.menudetail.review
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,17 +22,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewImageDetail
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 
 
 @Composable
 fun ReviewImagesSection(
+    menu: TodayDietRes,
     reviewImages: List<ReviewImageDetail>,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val totalSlots = 3
@@ -49,7 +55,10 @@ fun ReviewImagesSection(
             EmptyReviewSlot()
         }
         item {
-            MoreImagesButton()
+            MoreImagesButton(
+                menu = menu,
+                navController = navController
+            )
         }
     }
 }
@@ -92,11 +101,19 @@ fun EmptyReviewSlot() {
 }
 
 @Composable
-fun MoreImagesButton() {
+fun MoreImagesButton(
+    menu: TodayDietRes,
+    navController: NavHostController
+) {
     Box(
         modifier = Modifier
             .size(68.dp)
-            .background(Gray_D9D9D9, RoundedCornerShape(10.dp)),
+            .background(Gray_D9D9D9, RoundedCornerShape(10.dp))
+            .clickable {
+                navController.navigate(
+                    AllDestination.MoreImage.createRoute(menuPairId = menu.menuPairId)
+                )
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
