@@ -26,5 +26,6 @@ val Brown_C09470 = Color(0xFFC09470)
 val Green_27D34A = Color(0xFF27D34A)
 val White_FFFFFF = Color(0xFFFFFFFF)
 val Red_FF3916 = Color(0xFFFF3916)
+val Red_FF0000 = Color(0xFFFF0000)
 val Black_1E1E1E = Color(0xFF1E1E1E)
 

@@ -85,7 +85,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
             navigationIcon = {
                 Icon(
                     modifier = Modifier
-                        .offset(x = 19.4.dp, y = 4.5.dp)
+                        .offset(x = 20.dp, y = 4.5.dp)
                         .clickable {
                             navController.popBackStack()
                         },

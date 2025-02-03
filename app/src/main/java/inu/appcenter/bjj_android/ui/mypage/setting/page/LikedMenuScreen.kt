@@ -1,8 +1,9 @@
-package inu.appcenter.bjj_android.ui.mypage.setting
+package inu.appcenter.bjj_android.ui.mypage.setting.page
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,23 +16,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.mypage.setting.component.LikedMenuFrame
 import inu.appcenter.bjj_android.ui.mypage.setting.component.MainText
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
-import inu.appcenter.bjj_android.ui.theme.Red_FF0000
+import inu.appcenter.bjj_android.ui.mypage.setting.component.SwitchButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(
+fun LikedMenuScreen(
     navController: NavHostController
 ) {
     Scaffold(
@@ -39,7 +40,7 @@ fun SettingScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "설정",
+                        text = "좋아요한 메뉴",
                         style = LocalTypography.current.semibold18.copy(
                             textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
@@ -73,35 +74,24 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(horizontal = 15.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            MainText(
-                text = "닉네임 변경하기",
-                onClick = {
-                    //ToDO
-                })
-            MainText(
-                text = "리뷰 작성하기",
-                route = AllDestination.ReviewWrite.route,
-                navController = navController)
-            MainText(
-                text = "좋아요한 메뉴",
-                route = AllDestination.LikedMenu.route,
-                navController = navController)
-            Spacer(Modifier.height(400.dp))
-            Text(
-                text = "탈퇴하기",
-                style = LocalTypography.current.medium15.copy(
-                    lineHeight = 18.sp,
-                    letterSpacing = 0.13.sp,
-                    fontWeight = FontWeight(400),
-                    color = Red_FF0000
-                ),
-                modifier = Modifier.clickable {
-                    //ToDO
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 9.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MainText(text = "좋아요 알람 받기")
+                SwitchButton()
+            }
+            Spacer(Modifier.height(14.dp))
+
+            LikedMenuFrame("우삼겹떡볶이*핫도그")
+            LikedMenuFrame("김치볶음밥")
+            LikedMenuFrame("우삼겹떡볶이*핫도그")
         }
     }
 }
