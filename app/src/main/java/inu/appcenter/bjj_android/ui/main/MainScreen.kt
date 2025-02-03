@@ -1,19 +1,25 @@
 package inu.appcenter.bjj_android.ui.main
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -78,6 +84,28 @@ fun MainScreen(
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
+    val dummyCardNews = listOf(Color.Red, Color.Blue, Color.Yellow, Color.White)
+    //카드뉴스 페이저
+    var isAutoScrolling by remember {
+        mutableStateOf(false)
+    }
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { dummyCardNews.size }
+    )
+    val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        if (isDragged) {
+            isAutoScrolling = false
+        } else {
+            isAutoScrolling = true
+            delay(5000)
+            with(pagerState) {
+                val target = if (currentPage < dummyCardNews.size - 1) currentPage + 1 else 0
+                scrollToPage(target)
+            }
+        }
+    }
 
 
     Surface(
@@ -95,16 +123,45 @@ fun MainScreen(
                     .padding(),
             ) {
                 item {
-                    MainCardNews(
-                        backgroundColor = Orange_FF7800,
-                        innerPadding = innerPadding
-                    ) {
-                        Text(
-                            text = "오늘의 인기 메뉴를 \n알아볼까요?",
-                            style = LocalTypography.current.semibold24,
-                            color = Color.Black,
-                            lineHeight = 35.sp
-                        )
+                    HorizontalPager(
+                        state = pagerState,
+                        pageSize = PageSize.Fill,
+                    ) { page ->
+                        if (isAutoScrolling) {
+                            AnimatedContent(
+                                targetState = page,
+                                label = ""
+                            ) { index ->
+                                MainCardNews(
+                                    backgroundColor = dummyCardNews[index],
+                                    innerPadding = innerPadding
+                                ) {
+                                    Text(
+                                        text = "오늘의 인기 메뉴를 \n알아볼까요? ${index+1}",
+                                        style = LocalTypography.current.semibold24,
+                                        color = Color.Black,
+                                        lineHeight = 35.sp
+                                    )
+                                }
+                            }
+                        } else {
+                            AnimatedContent(
+                                targetState = page,
+                                label = ""
+                            ) { index ->
+                                MainCardNews(
+                                    backgroundColor = Orange_FF7800,
+                                    innerPadding = innerPadding
+                                ) {
+                                    Text(
+                                        text = "오늘의 인기 메뉴를 \n알아볼까요? ${index}",
+                                        style = LocalTypography.current.semibold24,
+                                        color = Color.Black,
+                                        lineHeight = 35.sp
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
