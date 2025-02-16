@@ -4,12 +4,14 @@ import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
 import inu.appcenter.bjj_android.model.menu.LikedMenu
+import inu.appcenter.bjj_android.model.menu.MenuRanking
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
+import inu.appcenter.bjj_android.utils.CustomResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -118,4 +120,10 @@ interface APIService {
 
     @GET("/api/menus/liked")
     suspend fun getLikedMenus() : Response<LikedMenu>
+
+    @GET("/api/menus/ranking")
+    suspend fun getMenusRanking(
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ) : MenuRanking
 }

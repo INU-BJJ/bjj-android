@@ -20,6 +20,7 @@ import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.page.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
+import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
@@ -33,7 +34,8 @@ fun AppNavigation(
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     menuDetailViewModel: MenuDetailViewModel,
-    reviewViewModel: ReviewViewModel
+    reviewViewModel: ReviewViewModel,
+    rankingViewModel: RankingViewModel
 ) {
 
     val navController = rememberNavController()
@@ -93,7 +95,7 @@ fun AppNavigation(
                 MenuDetailScreen(navController = navController, menuDetailViewModel = menuDetailViewModel)
             }
             composable(AllDestination.Ranking.route) {
-                RankingScreen(navController)
+                RankingScreen(navController, rankingViewModel = rankingViewModel)
             }
             composable(AllDestination.Review.route) {
                 ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)

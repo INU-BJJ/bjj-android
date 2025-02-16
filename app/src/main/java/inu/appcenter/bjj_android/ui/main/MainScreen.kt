@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,10 +41,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
+import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
@@ -120,7 +125,7 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = Background)
-                    .padding(),
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
             ) {
                 item {
                     HorizontalPager(
@@ -183,15 +188,42 @@ fun MainScreen(
                     }
                 }
 
-                items(mainUiState.menus) { menu ->
-                    MainMenuItem(
-                        menu = menu,
-                        clickMenuDetail = {
-                            menuDetailViewModel.selectMenu(menu = menu)
-                            navController.navigate(AllDestination.MenuDetail.route)
-                        },
-                        mainViewModel = mainViewModel
-                    )
+                if (mainUiState.menus.isEmpty()){
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(350.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.warning),
+                                contentDescription = "메뉴 없음 경고",
+                                tint = Color.Unspecified
+                            )
+                            Spacer(Modifier.height(20.dp))
+                            Text(
+                                text = "오늘은 운영을 안해요!",
+                                style = LocalTypography.current.bold18.copy(
+                                    color = Color(0xFFD9D9D9),
+                                    textAlign = TextAlign.Center,
+                                    letterSpacing = 0.13.sp,
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    items(mainUiState.menus) { menu ->
+                        MainMenuItem(
+                            menu = menu,
+                            clickMenuDetail = {
+                                menuDetailViewModel.selectMenu(menu = menu)
+                                navController.navigate(AllDestination.MenuDetail.route)
+                            },
+                            mainViewModel = mainViewModel
+                        )
+                    }
                 }
 
                 item {

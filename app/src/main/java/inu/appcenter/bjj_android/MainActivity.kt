@@ -18,6 +18,7 @@ import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AppNavigation
+import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
             val mainViewModel : MainViewModel by viewModel()
             val menuDetailViewModel : MenuDetailViewModel by viewModel()
             val reviewViewModel: ReviewViewModel by viewModel()
+            val rankingViewModel: RankingViewModel by viewModel()
 
             //하단 바 제거
             val view = LocalView.current
@@ -59,7 +61,8 @@ class MainActivity : ComponentActivity() {
                         authViewModel = authViewModel,
                         mainViewModel = mainViewModel,
                         menuDetailViewModel = menuDetailViewModel,
-                        reviewViewModel = reviewViewModel)
+                        reviewViewModel = reviewViewModel,
+                        rankingViewModel = rankingViewModel)
                 }
             }
         }

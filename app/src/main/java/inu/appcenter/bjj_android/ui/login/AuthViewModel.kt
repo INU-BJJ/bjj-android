@@ -159,6 +159,12 @@ class AuthViewModel(
         }
     }
 
+    fun resetNicknameCheckState() {
+        _uiState.update { it.copy(
+            checkNicknameState = AuthState.Idle
+        )}
+    }
+
     fun resetState() {
         _uiState.update {
             it.copy(

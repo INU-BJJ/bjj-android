@@ -309,19 +309,15 @@ class MenuDetailViewModel(
             try {
                 val response = menuRepository.toggleMenuLiked(mainMenuId = mainMenuId)
                 if (response.isSuccessful) {
-                    val isSuccess = response.body() ?: throw ReviewError.EmptyResponse()
-                    if (isSuccess){
-                        if (isSuccess) {
-                            _uiState.update { currentState ->
-                                val selectedMenu = currentState.selectedMenu?.copy(
-                                    likedMenu = !currentState.selectedMenu.likedMenu
-                                )
-                                currentState.copy(
-                                    selectedMenu = selectedMenu,
-                                    isLoading = false
-                                )
-                            }
-                        }
+                    val isLiked = response.body() ?: throw ReviewError.EmptyResponse()
+                    _uiState.update { currentState ->
+                        val selectedMenu = currentState.selectedMenu?.copy(
+                            likedMenu = isLiked
+                        )
+                        currentState.copy(
+                            selectedMenu = selectedMenu,
+                            isLoading = false
+                        )
                     }
                 } else {
                     throw ReviewError.ApiError(response.errorBody()?.string() ?: "Unknown API Error")
