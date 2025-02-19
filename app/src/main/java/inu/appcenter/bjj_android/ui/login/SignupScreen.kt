@@ -176,6 +176,7 @@ fun SignupScreen(
                         onValueChange = {
                             if (it.length <= 12) {
                                 nickname = it
+                                authViewModel.resetNicknameCheckState()
                             }
                         },
                         placeholder = {

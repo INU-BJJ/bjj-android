@@ -20,11 +20,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,15 +42,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.menu.MenuRankingDetail
 import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
+import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Brown_C09470
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
@@ -61,285 +66,18 @@ import kotlin.math.round
 
 @Composable
 fun RankingScreen(
-    navController: NavHostController
-
+    navController: NavHostController,
+    rankingViewModel: RankingViewModel
 ) {
+    val rankingUiState by rankingViewModel.uiState.collectAsStateWithLifecycle()
 
-    val rankingList = listOf(
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ), TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ), TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        ),
-        TodayDietRes(
-            todayDietId = 6129,
-            price = "moderatius",
-            kcal = "odio",
-            date = Date(20241231),
-
-            menuPairId = 7857,
-            mainMenuId = 9362,
-            mainMenuName = "우삼겹떡볶이*핫도그",
-            subMenuId = 9290,
-            restMenu = null,
-            cafeteriaName = "학생식당",
-            cafeteriaCorner = "2코너",
-            reviewCount = 9321,
-            reviewRatingAverage = 2.3f,
-            reviewImageName = null,
-            likedMenu = false
-        )
-
-
-    )
+    LaunchedEffect(key1 = true) {
+        rankingViewModel.getMenuRankingList()
+    }
 
     // 다이얼로그 표시 여부를 관리하는 상태
     var showDialog by remember { mutableStateOf(false) }
-// 선택된 메뉴 아이템을 저장하는 상태
+    // 선택된 메뉴 아이템을 저장하는 상태
     var reviewDetail : MyReviewDetailRes? = MyReviewDetailRes(
         reviewId = 8383,
         comment = "핫도그는 냉동인데\n떡볶이는 맛있음\n맛도 있고 가격도 착해서 떡볶이 땡길 때 추천",
@@ -359,7 +97,7 @@ fun RankingScreen(
 
     if (showDialog && reviewDetail != null) {
         BestReviewDialog(
-            review = reviewDetail!!,
+            review = reviewDetail,
             onDismiss = {
                 showDialog = false
                 reviewDetail = null
@@ -407,7 +145,7 @@ fun RankingScreen(
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
-                    text = "2024.12.26",
+                    text = rankingUiState.lastUpdatedAt?.formatter() ?: "",
                     style = LocalTypography.current.medium11.copy(
                         lineHeight = 15.sp,
                         fontWeight = FontWeight(500),
@@ -434,7 +172,7 @@ fun RankingScreen(
             }
             Spacer(Modifier.height(7.dp))
             LazyColumn {
-                itemsIndexed(rankingList) { index, rankingItem ->
+                itemsIndexed(rankingUiState.rankingList) { index, rankingItem ->
                     if (index + 1 <= 3) {
                         TopThreeRankingItem(
                             menu = rankingItem,
@@ -452,6 +190,25 @@ fun RankingScreen(
                             }
                         )
                     }
+
+                    if (index == rankingUiState.rankingList.size - 1 && !rankingUiState.isLoading) {
+                        LaunchedEffect(Unit) {
+                            rankingViewModel.getMenuRankingList()
+                        }
+                    }
+                }
+
+                if (rankingUiState.isLoading) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
@@ -461,7 +218,7 @@ fun RankingScreen(
 @Composable
 fun NormalRankingItem(
     modifier: Modifier = Modifier,
-    menu: TodayDietRes,
+    menu: MenuRankingDetail,
     ranking: Int,
     itemClick: () -> Unit
 ) {
@@ -499,7 +256,7 @@ fun NormalRankingItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = menu.mainMenuName,
+                text = menu.menuName,
                 style = LocalTypography.current.bold15.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 15.sp
@@ -527,7 +284,7 @@ fun NormalRankingItem(
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = (round(menu.reviewRatingAverage * 10) / 10).toString(),
+                        text = menu.menuRating.toString(),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
@@ -554,7 +311,7 @@ fun NormalRankingItem(
 @Composable
 fun TopThreeRankingItem(
     modifier: Modifier = Modifier,
-    menu: TodayDietRes,
+    menu: MenuRankingDetail,
     ranking: Int,
     itemClick: () -> Unit
 ) {
@@ -652,7 +409,7 @@ fun TopThreeRankingItem(
                     .padding(start = 12.dp)
             ) {
                 Text(
-                    text = menu.mainMenuName,
+                    text = menu.menuName,
                     style = LocalTypography.current.bold15.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
@@ -683,7 +440,7 @@ fun TopThreeRankingItem(
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = (round(menu.reviewRatingAverage * 10) / 10).toString(),
+                        text = menu.menuRating.toString(),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
