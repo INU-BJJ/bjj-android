@@ -9,6 +9,15 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object MenuDetail : AllDestination("menuDetail", R.drawable.mypage, "메뉴 디테일")
     data object Ranking : AllDestination("ranking", R.drawable.tier, "랭킹")
     data object Review : AllDestination("review", R.drawable.review, "리뷰")
+    object ReviewImageDetail : AllDestination("reviewImageDetail/{imageList}/{index}", R.drawable.review, "리뷰") {
+        fun createRoute(imageList: List<String>, index: Int): String {
+            // List를 쉼표로 구분된 문자열로 변환
+            val imageListString = imageList.joinToString(",")
+            return "reviewImageDetail/$imageListString/$index"
+        }
+    }
+    data object ReviewImageDetailPush : AllDestination("reviewImageDetailPush", R.drawable.review, "리뷰 디테일")
+
     data object MoreImage : AllDestination("moreImage/{menuPairId}", R.drawable.review, "이미지 더보기") {
         fun createRoute(menuPairId: Long) = "moreImage/$menuPairId"
     }

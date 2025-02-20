@@ -22,7 +22,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +52,8 @@ import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewDetailScreen(navController: NavHostController, review: ReviewDetailRes) {
-
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
     Column(
         modifier = Modifier
@@ -78,7 +84,54 @@ fun ReviewDetailScreen(navController: NavHostController, review: ReviewDetailRes
                     tint = Color.Black
                 )
 
+            },
+            actions = {
+                Icon(
+                    modifier = Modifier
+                        .offset(x = -(26).dp)
+                        .clickable { showBottomSheet = true },
+                    painter = painterResource(id = R.drawable.pencil),
+                    contentDescription = "삭제 하기",
+                    tint = Color.Black
+                )
             })
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                containerColor = Color.White,
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }) {
+                // Sheet content
+                Column(
+                    modifier = Modifier
+                ) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text(text = "신고하기",
+                        color = Color.Black,
+                        modifier = Modifier
+                            .clickable {
+
+                                showBottomSheet = false
+                            }
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(18.dp))
+                    Text(text = "차단하기",
+                        color =  Color.Black,
+                        modifier = Modifier
+                            .clickable {
+
+                                showBottomSheet = false
+                            }
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(63.5.dp))
+                }
+            }
+        }
 
         Spacer(Modifier.height(13.dp))
 
@@ -221,7 +274,7 @@ fun ReviewDetailScreen(navController: NavHostController, review: ReviewDetailRes
                         .padding(horizontal = 7.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = review.subMenuName ,
+                        text = review.subMenuName,
                         style = LocalTypography.current.medium11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp

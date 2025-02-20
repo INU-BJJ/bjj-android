@@ -127,7 +127,7 @@ private fun MenuContent(
         }
 
         items(menuDetailUiState.reviews?.reviewDetailList.orEmpty()) { review ->
-            ReviewItem(review = review, menu = menuDetailUiState.selectedMenu, menuDetailViewModel = menuDetailViewModel)
+            ReviewItem(review = review, menu = menuDetailUiState.selectedMenu, menuDetailViewModel = menuDetailViewModel, navController = navController)
             Spacer(Modifier.height(REVIEW_SPACER_HEIGHT))
             HorizontalDivider(
                 thickness = DIVIDER_THICKNESS,

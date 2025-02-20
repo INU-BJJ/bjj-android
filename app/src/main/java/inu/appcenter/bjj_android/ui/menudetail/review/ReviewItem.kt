@@ -36,12 +36,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -55,7 +57,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun ReviewItem(
     review: ReviewDetailRes,
     menu: TodayDietRes,
-    menuDetailViewModel: MenuDetailViewModel
+    menuDetailViewModel: MenuDetailViewModel,
+    navController: NavHostController
 ) {
     val context = LocalContext.current
 
@@ -164,7 +167,18 @@ fun ReviewItem(
 
         Spacer(Modifier.height(12.dp))
         if (!review.imageNames.isNullOrEmpty()){
-            DynamicReviewImages(reviewImages = review.imageNames)
+            DynamicReviewImages(
+                reviewImages = review.imageNames,
+                onClick = { imageList, index ->
+                    navController.navigate(
+                        AllDestination.ReviewImageDetail.createRoute(
+                            imageList = review.imageNames,
+                            index = index
+                        )
+                    )
+
+                }
+            )
             Spacer(Modifier.height(12.dp))
         }
         Row(

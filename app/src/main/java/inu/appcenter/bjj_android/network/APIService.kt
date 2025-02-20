@@ -7,6 +7,7 @@ import inu.appcenter.bjj_android.model.menu.LikedMenu
 import inu.appcenter.bjj_android.model.menu.MenuRanking
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
@@ -71,6 +72,11 @@ interface APIService {
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int
     ) : Response<ReviewImageDetailList>
+
+    @GET("/api/reviews/{reviewId}")
+    suspend fun getReviewDetail(
+        @Path("reviewId") reviewId: Long
+    ) : ReviewDetailRes
 
     // Image API
     @GET("/api/images")

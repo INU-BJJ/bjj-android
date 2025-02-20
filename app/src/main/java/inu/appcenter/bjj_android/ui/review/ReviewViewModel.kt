@@ -14,6 +14,7 @@ import inu.appcenter.bjj_android.repository.review.ReviewRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
 import inu.appcenter.bjj_android.ui.main.MainError
 import inu.appcenter.bjj_android.ui.menudetail.ReviewError
+import inu.appcenter.bjj_android.utils.collectAndHandle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -360,6 +361,21 @@ class ReviewViewModel(
                 handleReviewError(e)
             }
         }
+    }
+
+    // 리뷰 삭제하기
+    fun getReviewDetail(reviewId: Long) = viewModelScope.launch {
+
+        reviewRepository.getReviewDetail(reviewId).collectAndHandle(
+            onError = { error ->
+            },
+            onLoading = {
+
+            },
+            stateReducer = { reviewDetail ->
+
+            }
+        )
     }
 
     private fun handleReviewError(e: Exception) {

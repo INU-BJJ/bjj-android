@@ -15,6 +15,7 @@ import inu.appcenter.bjj_android.ui.main.MainScreen
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.menudetail.common.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
@@ -130,6 +131,27 @@ fun AppNavigation(
                     navController = navController,
                     menuDetailViewModel = menuDetailViewModel,
                     menuPairId = menuPairId
+                )
+            }
+            composable(
+                route = AllDestination.ReviewImageDetail.route,
+                arguments = listOf(
+                    navArgument("imageList") {
+                        type = NavType.StringType
+                        // 쉼표로 구분된 문자열을 받음
+                    },
+                    navArgument("index") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
+                val imageListString = backStackEntry.arguments?.getString("imageList") ?: ""
+                // 쉼표로 구분된 문자열을 다시 리스트로 변환
+                val imageList = imageListString.split(",").filter { it.isNotEmpty() }
+                val index = backStackEntry.arguments?.getInt("index") ?: 0
+
+                ReviewImageDetailScreen(
+                    navController = navController,
+                    imageList = imageList,
+                    index = index
                 )
             }
         }

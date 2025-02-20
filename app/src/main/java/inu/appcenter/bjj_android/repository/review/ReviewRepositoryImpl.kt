@@ -1,10 +1,16 @@
 package inu.appcenter.bjj_android.repository.review
 
+import inu.appcenter.bjj_android.model.menu.MenuRanking
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.network.APIService
+import inu.appcenter.bjj_android.utils.CustomResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -63,5 +69,13 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
         pageSize: Int
     ): Response<ReviewImageDetailList> {
         return apiService.getReviewImages(menuPairId, pageNumber, pageSize)
+    }
+
+    override suspend fun getReviewDetail(reviewId: Long): Flow<CustomResponse<ReviewDetailRes>> = flow {
+        emit(CustomResponse.Loading())
+        val response = apiService.getReviewDetail(reviewId)
+        emit(CustomResponse.Success(response))
+    }.catch { e ->
+        emit(CustomResponse.Error(e))
     }
 }
