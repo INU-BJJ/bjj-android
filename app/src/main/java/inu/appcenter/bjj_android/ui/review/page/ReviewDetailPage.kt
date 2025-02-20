@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -71,10 +72,11 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
             .fillMaxSize()
     ) {
         // 상단바
-        CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
             title = {
                 Text(
-                    text = "리뷰 상세",
+                    text = stringResource(id = R.string.review_detail_title),
                     style = LocalTypography.current.bold18.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
@@ -90,10 +92,9 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                             navController.popBackStack()
                         },
                     painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = "뒤로 가기",
+                    contentDescription = stringResource(id = R.string.back_description),
                     tint = Color.Black
                 )
-
             },
             actions = {
                 Icon(
@@ -101,37 +102,39 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                         .offset(x = -(26).dp)
                         .clickable { showBottomSheet = true },
                     painter = painterResource(id = R.drawable.pencil),
-                    contentDescription = "삭제 하기",
+                    contentDescription = stringResource(id = R.string.delete_description),
                     tint = Color.Black
                 )
-            })
+            }
+        )
+
         if (showBottomSheet) {
             ModalBottomSheet(
                 containerColor = Color.White,
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }) {
+                dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }
+            ) {
                 // Sheet content
-                Column(
-                    modifier = Modifier
-                ) {
+                Column {
                     Spacer(modifier = Modifier.height(31.5.dp))
-                    Text(text = "삭제하기",
+                    Text(
+                        text = stringResource(id = R.string.delete_text),
                         color = Red_FF3916,
                         modifier = Modifier
                             .clickable {
                                 reviewViewModel.deleteReview(
-                                    reviewId = reviewDetail?.reviewId
-                                        ?: -1, // null 일때 -1을 주어 지워지지 않게함
+                                    reviewId = reviewDetail?.reviewId ?: -1,
                                     onSuccess = {
-                                        // 삭제 성공 후 처리 (예: 이전 화면으로 이동)
+                                        // 삭제 성공 후 이전 화면으로 이동
                                         navController.popBackStack()
                                     }
                                 )
                                 showBottomSheet = false
                             }
                             .fillMaxWidth()
-                            .padding(horizontal = 31.dp))
+                            .padding(horizontal = 31.dp)
+                    )
                     Spacer(modifier = Modifier.height(64.5.dp))
                 }
             }
@@ -142,11 +145,12 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
         Column(
             modifier = Modifier
                 .padding(horizontal = 29.5.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
             // 본문: 유저 프로필, 이름, 별점, 날짜, 좋아요 버튼 및 숫자
             Row(
-                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 // 유저 프로필 (회색 동그라미)
                 Box(
@@ -162,7 +166,8 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = reviewDetail?.memberNickname ?: "잘못된 닉네임",
+                        text = reviewDetail?.memberNickname
+                            ?: stringResource(id = R.string.invalid_nickname),
                         style = LocalTypography.current.bold15.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -177,7 +182,8 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                         StarRatingCalculator(rating = reviewDetail?.rating?.toFloat() ?: 0f)
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = reviewDetail?.createdDate?.formatter() ?: "2025.00.00",
+                            text = reviewDetail?.createdDate?.formatter()
+                                ?: stringResource(id = R.string.default_date),
                             style = LocalTypography.current.regular13.copy(
                                 letterSpacing = 0.13.sp,
                                 lineHeight = 17.sp,
@@ -197,7 +203,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                     Icon(
                         modifier = Modifier,
                         painter = painterResource(id = R.drawable.thumbs),
-                        contentDescription = "좋아요",
+                        contentDescription = stringResource(id = R.string.like_description),
                         tint = Orange_FF7800
                     )
                     Spacer(Modifier.height(3.dp))
@@ -216,14 +222,14 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
 
             // 텍스트 영역
             Text(
-                text = reviewDetail?.comment ?: "잘못된 코멘트",
+                text = reviewDetail?.comment ?: stringResource(id = R.string.invalid_comment),
                 style = LocalTypography.current.medium13.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 17.sp
                 ),
                 color = Color.Black
             )
-        }   // 여기서 Column(좌우 29.5dp) 종료
+        } // 여기서 Column(좌우 29.5dp) 종료
 
         Spacer(Modifier.height(12.dp))
 
@@ -256,12 +262,14 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                 Box(
                     modifier = Modifier
                         .background(
-                            color = Orange_FF7800, shape = RoundedCornerShape(3.dp)
+                            color = Orange_FF7800,
+                            shape = RoundedCornerShape(3.dp)
                         )
                         .padding(horizontal = 7.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = reviewDetail?.mainMenuName ?: "잘못된 메인메뉴 이름",
+                        text = reviewDetail?.mainMenuName
+                            ?: stringResource(id = R.string.invalid_main_menu),
                         style = LocalTypography.current.medium11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -274,12 +282,14 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                 Box(
                     modifier = Modifier
                         .background(
-                            color = Gray_F6F6F8, shape = RoundedCornerShape(3.dp)
+                            color = Gray_F6F6F8,
+                            shape = RoundedCornerShape(3.dp)
                         )
                         .padding(horizontal = 7.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = reviewDetail?.subMenuName ?: "잘못된 서브메뉴 이름",
+                        text = reviewDetail?.subMenuName
+                            ?: stringResource(id = R.string.invalid_sub_menu),
                         style = LocalTypography.current.medium11.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -291,4 +301,5 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
         }
     }
 }
+
 

@@ -162,7 +162,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             Spacer(modifier = Modifier.height(13.8.dp))
 
             Text(
-                text = "음식 만족을 평가해주세요", style = LocalTypography.current.semibold15.copy(
+                text = "음식 만족도를 평가해주세요", style = LocalTypography.current.semibold15.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 18.sp,
                     color = Color.Black
