@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,36 +72,24 @@ fun RankingScreen(
 ) {
     val rankingUiState by rankingViewModel.uiState.collectAsStateWithLifecycle()
 
+
     LaunchedEffect(key1 = true) {
         rankingViewModel.getMenuRankingList()
     }
 
-    // 다이얼로그 표시 여부를 관리하는 상태
-    var showDialog by remember { mutableStateOf(false) }
-    // 선택된 메뉴 아이템을 저장하는 상태
-    var reviewDetail : MyReviewDetailRes? = MyReviewDetailRes(
-        reviewId = 8383,
-        comment = "핫도그는 냉동인데\n떡볶이는 맛있음\n맛도 있고 가격도 착해서 떡볶이 땡길 때 추천",
-        rating = 5,
-        imageNames = listOf(
-            "83760dd9-6f5f-4892-8ee8-7c82426e1c5d.jpg"
-        ),
-        likeCount = 5501,
-        createdDate = "2024.08.20",
-        menuPairId = 4420,
-        mainMenuName = "떡볶이",
-        subMenuName = "핫도그",
-        memberId = 7013,
-        memberNickname = "떡볶이킬러나는최고야룰루",
-        memberImageName = null
-    )
+    // 다이얼로그 표시 로직을 아이템 클릭 핸들러 안으로 이동
+    val handleItemClick: (Long) -> Unit = { bestReviewId ->
+        rankingViewModel.getBestReviewDetail(bestReviewId)
+        rankingViewModel.selectBestReviewId(bestReviewId)
+    }
 
-    if (showDialog && reviewDetail != null) {
+    if (rankingUiState.selectedReviewId != null && rankingUiState.bestReview != null) {
         BestReviewDialog(
-            review = reviewDetail,
+            reviewId = rankingUiState.selectedReviewId!!,
+            navController = navController,
+            rankingViewModel = rankingViewModel,
             onDismiss = {
-                showDialog = false
-                reviewDetail = null
+                rankingViewModel.resetSelectedBestReviewId()
             }
         )
     }
@@ -177,17 +166,13 @@ fun RankingScreen(
                         TopThreeRankingItem(
                             menu = rankingItem,
                             ranking = index + 1,
-                            itemClick = {
-                                showDialog = true
-                            }
+                            itemClick = handleItemClick
                         )
                     } else {
                         NormalRankingItem(
                             menu = rankingItem,
                             ranking = index + 1,
-                            itemClick = {
-                                showDialog = true
-                            }
+                            itemClick = handleItemClick
                         )
                     }
 
@@ -220,7 +205,7 @@ fun NormalRankingItem(
     modifier: Modifier = Modifier,
     menu: MenuRankingDetail,
     ranking: Int,
-    itemClick: () -> Unit
+    itemClick: (Long) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -234,7 +219,7 @@ fun NormalRankingItem(
             .height(54.dp)
             .background(color = Color.White, shape = RoundedCornerShape(3.dp))
             .clickable {
-                itemClick()
+                itemClick(menu.bestReviewId)
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -313,7 +298,7 @@ fun TopThreeRankingItem(
     modifier: Modifier = Modifier,
     menu: MenuRankingDetail,
     ranking: Int,
-    itemClick: () -> Unit
+    itemClick: (Long) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -327,7 +312,7 @@ fun TopThreeRankingItem(
             .height(69.dp)
             .background(color = Color.White, shape = RoundedCornerShape(3.dp))
             .clickable {
-                itemClick()
+                itemClick(menu.bestReviewId)
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically

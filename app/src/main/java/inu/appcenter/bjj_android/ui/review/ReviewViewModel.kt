@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewPost
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
@@ -45,6 +46,14 @@ data class ReviewUiState(
     val error: String? = null
 )
 
+data class ReviewDetailUiState(
+    val reviewDetail: ReviewDetailRes? = null,
+    val imageNames: List<String> = emptyList(),
+    val selectedImageIndex: Int = 0,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)
+
 
 class ReviewViewModel(
     private val reviewRepository: ReviewRepository,
@@ -54,6 +63,9 @@ class ReviewViewModel(
 
     private val _uiState = MutableStateFlow(ReviewUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _reviewDetailUiState = MutableStateFlow(ReviewDetailUiState())
+    val reviewDetailUiState = _reviewDetailUiState.asStateFlow()
 
     private var currentPageNumber = 0
 
@@ -363,17 +375,36 @@ class ReviewViewModel(
         }
     }
 
-    // 리뷰 삭제하기
+    // 리뷰 상세 받기
     fun getReviewDetail(reviewId: Long) = viewModelScope.launch {
+        _reviewDetailUiState.update { it.copy(isLoading = true, error = null) }
 
         reviewRepository.getReviewDetail(reviewId).collectAndHandle(
             onError = { error ->
+                val errorMessage = when (error) {
+                    is ReviewError.EmptyResponse -> error.message
+                    is ReviewError.ApiError -> "API 오류: ${error.message}"
+                    is ReviewError.NetworkError -> "네트워크 오류: ${error.message}"
+                    else -> "알 수 없는 오류: ${error?.message ?: "null"}"
+                }
+                _reviewDetailUiState.update { it.copy(
+                    isLoading = false,
+                    error = errorMessage
+                )}
             },
             onLoading = {
-
+                _reviewDetailUiState.update { it.copy(isLoading = true) }
             },
             stateReducer = { reviewDetail ->
-
+                _reviewDetailUiState.update { currentState ->
+                    currentState.copy(
+                        reviewDetail = reviewDetail,
+                        imageNames = reviewDetail.imageNames,
+                        selectedImageIndex = 0,
+                        isLoading = false,
+                        error = null
+                    )
+                }
             }
         )
     }

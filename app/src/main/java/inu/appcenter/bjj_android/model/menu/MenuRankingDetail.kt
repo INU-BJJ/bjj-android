@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MenuRankingDetail(
     @SerializedName("bestReviewId")
-    val bestReviewId: Int,
+    val bestReviewId: Long,
     @SerializedName("cafeteriaCorner")
     val cafeteriaCorner: String,
     @SerializedName("cafeteriaName")

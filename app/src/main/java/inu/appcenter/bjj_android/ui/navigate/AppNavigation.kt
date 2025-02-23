@@ -134,24 +134,46 @@ fun AppNavigation(
                 )
             }
             composable(
-                route = AllDestination.ReviewImageDetail.route,
+                route = AllDestination.MenuDetailReviewDetailPush.route,
                 arguments = listOf(
                     navArgument("imageList") {
                         type = NavType.StringType
                         // 쉼표로 구분된 문자열을 받음
                     },
-                    navArgument("index") { type = NavType.IntType }
+                    navArgument("index") { type = NavType.IntType },
+                    navArgument("reviewId") { type = NavType.LongType },
+                    navArgument("fromReviewDetail") { type = NavType.BoolType },
+
                 )
             ) { backStackEntry ->
                 val imageListString = backStackEntry.arguments?.getString("imageList") ?: ""
                 // 쉼표로 구분된 문자열을 다시 리스트로 변환
                 val imageList = imageListString.split(",").filter { it.isNotEmpty() }
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
+                val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
+                val fromReviewDetail = backStackEntry.arguments?.getBoolean("fromReviewDetail") ?: false
 
                 ReviewImageDetailScreen(
                     navController = navController,
                     imageList = imageList,
-                    index = index
+                    index = index,
+                    reviewId = reviewId,
+                    fromReviewDetail = fromReviewDetail
+                )
+            }
+
+            composable(
+                route = AllDestination.MenuDetailReviewDetail.route,
+                arguments = listOf(
+                    navArgument("reviewId") { type = NavType.LongType }
+                )
+            ) { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
+
+                inu.appcenter.bjj_android.ui.menudetail.common.ReviewDetailScreen(
+                    navController = navController,
+                    reviewId = reviewId,
+                    reviewViewModel = reviewViewModel
                 )
             }
         }

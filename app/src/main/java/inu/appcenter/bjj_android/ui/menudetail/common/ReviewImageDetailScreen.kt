@@ -55,7 +55,9 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 fun ReviewImageDetailScreen(
     navController: NavHostController,
     imageList: List<String>,
-    index: Int
+    index: Int,
+    reviewId: Long,
+    fromReviewDetail : Boolean = false
 ) {
     var currentIndex by remember { mutableIntStateOf(index) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -170,21 +172,26 @@ fun ReviewImageDetailScreen(
                 contentScale = ContentScale.Fit
             )
         }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 20.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.seemainbutton),
-                contentDescription = "본문 보기",
-                tint = Color.White,
-                modifier = Modifier.clickable {
-                    navController.navigate(AllDestination.ReviewDetail.route)
-                }
-            )
+        if (!fromReviewDetail){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 20.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.seemainbutton),
+                    contentDescription = "본문 보기",
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        navController.navigate(
+                            AllDestination.MenuDetailReviewDetail.createRoute(
+                                reviewId = reviewId
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 }

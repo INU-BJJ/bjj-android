@@ -15,10 +15,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,10 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
+import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
+import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DynamicReviewDetailImages
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -40,9 +47,19 @@ import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
 
 @Composable
 fun BestReviewDialog(
-    review: MyReviewDetailRes,
+    reviewId: Long,
+    rankingViewModel: RankingViewModel,
+    navController: NavHostController,
     onDismiss: () -> Unit
 ) {
+    val uiState by rankingViewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        rankingViewModel.getBestReviewDetail(reviewId)
+    }
+
+    val bestReview = uiState.bestReview ?: return
+
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -50,6 +67,31 @@ fun BestReviewDialog(
             usePlatformDefaultWidth = false
         )
     ) {
+        if (uiState.isLoading) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = White_FFFFFF
+                )
+            ) {
+                Box(
+                    modifier = Modifier.padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Orange_FF7800)
+                }
+            }
+            return@Dialog
+        }
+
+        uiState.error?.let { error ->
+            // Show error message
+            return@Dialog
+        }
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -82,7 +124,7 @@ fun BestReviewDialog(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = review.memberNickname ?: "잘못된 닉네임",
+                            text = bestReview.memberNickname ?: "잘못된 닉네임",
                             style = LocalTypography.current.bold15.copy(
                                 letterSpacing = 0.13.sp,
                                 lineHeight = 15.sp
@@ -95,10 +137,10 @@ fun BestReviewDialog(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            StarRatingCalculator(rating = review.rating.toFloat() ?: 0f)
+                            StarRatingCalculator(rating = bestReview.rating.toFloat() ?: 0f)
                             Spacer(Modifier.width(10.dp))
                             Text(
-                                text = review.createdDate.formatter() ?: "2025.00.00",
+                                text = bestReview.createdDate.formatter() ?: "2025.00.00",
                                 style = LocalTypography.current.regular13.copy(
                                     letterSpacing = 0.13.sp,
                                     lineHeight = 17.sp,
@@ -144,7 +186,7 @@ fun BestReviewDialog(
 
                 // 텍스트 영역
                 Text(
-                    text = review.comment ?: "잘못된 코멘트",
+                    text = bestReview.comment ?: "잘못된 코멘트",
                     style = LocalTypography.current.medium13.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 17.sp
@@ -154,17 +196,26 @@ fun BestReviewDialog(
 
 
                 // 이미지 영역
-                if (review.imageNames.isNotEmpty()) {
+                if (bestReview.imageNames.isNotEmpty()) {
                     Spacer(Modifier.height(12.dp))
 
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(250.dp)
                     ) {
-                        DynamicReviewDetailImages(
-                            imageNames = review.imageNames,
-                            onImageClick = { index ->
-                                // 클릭 콜백
+                        DynamicReviewImages(
+                            reviewImages = bestReview.imageNames,
+                            onClick = { imageList, index ->
+                                navController.navigate(
+                                    AllDestination.MenuDetailReviewDetailPush.createRoute(
+                                        imageList = bestReview.imageNames,
+                                        index = index,
+                                        reviewId = reviewId,
+                                        fromReviewDetail = false
+                                    )
+                                )
+
                             }
                         )
                     }

@@ -24,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,23 +39,40 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.model.review.ReviewDetailRes
+import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DynamicReviewDetailImages
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
-import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(navController: NavHostController, review: ReviewDetailRes) {
+fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewViewModel: ReviewViewModel) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
+
+    val uiState by reviewViewModel.reviewDetailUiState.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        reviewViewModel.getReviewDetail(reviewId)
+    }
+
+    if (uiState.isLoading) {
+        // Show loading indicator
+        return
+    }
+
+    uiState.error?.let { error ->
+        // Show error message
+        return
+    }
+
+    val review = uiState.reviewDetail ?: return
 
     Column(
         modifier = Modifier
@@ -230,11 +249,18 @@ fun ReviewDetailScreen(navController: NavHostController, review: ReviewDetailRes
                     .fillMaxWidth()
                     .padding(start = 29.5.dp) // 왼쪽만 29.5dp
             ) {
-                DynamicReviewDetailImages(
-                    imageNames = review.imageNames,
-                    onImageClick = { index ->
-                        // 클릭 콜백
-                        navController.navigate(AllDestination.ReviewDetailPush.route)
+                DynamicReviewImages(
+                    reviewImages = review.imageNames,
+                    onClick = { imageList, index ->
+                        navController.navigate(
+                            AllDestination.MenuDetailReviewDetailPush.createRoute(
+                                imageList = review.imageNames,
+                                index = index,
+                                reviewId = reviewId,
+                                fromReviewDetail = true
+                            )
+                        )
+
                     }
                 )
             }
