@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.menudetail.moreimage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -40,6 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
@@ -61,6 +65,7 @@ fun MoreImageScreen(
     var currentPage by remember { mutableIntStateOf(0) }
     var isLoadingMore by remember { mutableStateOf(false) }
     var isLastPage by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(menuPairId) {
         menuDetailViewModel.getMoreReviewImages(
@@ -130,19 +135,40 @@ fun MoreImageScreen(
                     ) {
                         uiState.reviewImages?.let { images ->
                             items(images) { imageDetail ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data("https://bjj.inuappcenter.kr/images/review/${imageDetail.imageName}")
-                                        .memoryCacheKey(imageDetail.imageName)
-                                        .diskCacheKey(imageDetail.imageName)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = null,
+                                Box(
                                     modifier = Modifier
                                         .aspectRatio(1f)
-                                        .fillMaxWidth(),
-                                    contentScale = ContentScale.Crop
-                                )
+                                        .fillMaxWidth()
+                                ) {
+                                    SubcomposeAsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data("https://bjj.inuappcenter.kr/images/review/${imageDetail.imageName}")
+                                            .memoryCacheKey(imageDetail.imageName)
+                                            .diskCacheKey(imageDetail.imageName)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clickable {
+                                                navController.navigate(
+                                                    AllDestination.MenuDetailReviewDetailPush.createRoute(
+                                                        imageList = listOf(imageDetail.imageName),
+                                                        index = 0,
+                                                        reviewId = imageDetail.reviewId,
+                                                        fromReviewDetail = false
+                                                    )
+                                                )
+                                            },
+                                        contentScale = ContentScale.Crop,
+                                        loading = {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(10.dp),
+                                                strokeWidth = 1.dp
+                                            )
+                                        }
+                                    )
+                                }
                             }
 
                             // 이미지가 있고, 마지막 페이지가 아닐 때만 추가 로딩

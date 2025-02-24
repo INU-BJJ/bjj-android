@@ -247,7 +247,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewV
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 29.5.dp) // 왼쪽만 29.5dp
+                    .padding(horizontal = 29.5.dp) // 왼쪽만 29.5dp
             ) {
                 DynamicReviewImages(
                     reviewImages = review.imageNames,

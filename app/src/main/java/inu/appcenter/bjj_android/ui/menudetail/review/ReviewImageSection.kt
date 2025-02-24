@@ -49,7 +49,19 @@ fun ReviewImagesSection(
         modifier = modifier
     ) {
         items(filledSlots) { index ->
-            ReviewImageItem(image = reviewImages[index])
+            ReviewImageItem(
+                image = reviewImages[index],
+                onClick = {
+                    navController.navigate(
+                        AllDestination.MenuDetailReviewDetailPush.createRoute(
+                            imageList = listOf(reviewImages[index].imageName) ,
+                            index = 0,
+                            reviewId = reviewImages[index].reviewId,
+                            fromReviewDetail = false
+                        )
+                    )
+                }
+            )
         }
         items(emptySlots) {
             EmptyReviewSlot()
@@ -64,7 +76,7 @@ fun ReviewImagesSection(
 }
 
 @Composable
-fun ReviewImageItem(image: ReviewImageDetail) {
+fun ReviewImageItem(image: ReviewImageDetail, onClick: () -> Unit) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data("https://bjj.inuappcenter.kr/images/review/${image.imageName}")
@@ -73,10 +85,17 @@ fun ReviewImageItem(image: ReviewImageDetail) {
             .crossfade(true)
             .listener(
                 onError = { _, result ->
-                    Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
+                    Log.e(
+                        "ImageLoading",
+                        "Error loading image: ${result.throwable.message}",
+                        result.throwable
+                    )
                 },
                 onSuccess = { _, _ ->
-                    Log.d("ImageLoading", "Successfully loaded image")
+                    Log.d(
+                        "ImageLoading",
+                        "Successfully loaded image"
+                    )
                 }
             )
             .build(),
@@ -84,7 +103,10 @@ fun ReviewImageItem(image: ReviewImageDetail) {
         contentDescription = "리뷰 이미지",
         modifier = Modifier
             .size(68.dp)
-            .clip(RoundedCornerShape(10.dp)),
+            .clip(RoundedCornerShape(10.dp))
+            .clickable {
+                onClick()
+            },
         contentScale = ContentScale.Crop
     )
 }
@@ -94,7 +116,10 @@ fun EmptyReviewSlot() {
     Box(
         modifier = Modifier
             .size(68.dp)
-            .background(Gray_D9D9D9, RoundedCornerShape(10.dp)),
+            .background(
+                Gray_D9D9D9,
+                RoundedCornerShape(10.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {
     }
@@ -108,7 +133,10 @@ fun MoreImagesButton(
     Box(
         modifier = Modifier
             .size(68.dp)
-            .background(Gray_D9D9D9, RoundedCornerShape(10.dp))
+            .background(
+                Gray_D9D9D9,
+                RoundedCornerShape(10.dp)
+            )
             .clickable {
                 navController.navigate(
                     AllDestination.MoreImage.createRoute(menuPairId = menu.menuPairId)
