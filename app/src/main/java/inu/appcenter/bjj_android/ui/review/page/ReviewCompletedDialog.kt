@@ -21,6 +21,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.CircleRectShape
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun ReviewCompletedDialog(
@@ -30,7 +31,7 @@ fun ReviewCompletedDialog(
     if (show) {
         // 1초 후 자동 닫기
         LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(1000)
+            delay(10000)
             onDismiss()
         }
 
@@ -45,7 +46,7 @@ fun ReviewCompletedDialog(
                 Box(
                     modifier = Modifier
                         // 원하는 전체 크기를 지정(너비, 높이)
-                        .size(width = 240.dp, height = 65.dp)
+                        .size(width = 240.dp, height = 120.dp)
                         .background(color = Color.White, shape = CircleRectShape)
                 ) {
                     // (1) 체크 아이콘
@@ -53,7 +54,7 @@ fun ReviewCompletedDialog(
                         painter = painterResource(id = R.drawable.checkcircle),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(48.dp)
                             .align(Alignment.TopCenter)
                             // 원이 상단 0~48dp(대략) 구간에 그려지므로,
                             // 아이콘을 약간 아래로 내려서 원 내부에 배치
@@ -65,11 +66,12 @@ fun ReviewCompletedDialog(
                         text = "완료되었습니다!",
                         style = LocalTypography.current.medium15.copy(
                             letterSpacing = 0.13.sp,
-                            lineHeight = 18.sp
+                            lineHeight = 18.sp,
+                            color = Color.Black
                         ),
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .offset(y = (-8).dp) // 아래로 8dp 여백
+                            .align(Alignment.Center)
+                            .offset(y = 15.dp)
 
                     )
                 }

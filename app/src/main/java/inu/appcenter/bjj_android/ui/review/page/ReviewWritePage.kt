@@ -70,6 +70,9 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
         getFileFromUri(context, uri)?.absolutePath
     }
 
+    // 작성 완료 후 다이얼로그를 띄우기 위한 상태 변수
+    var showCompletedDialog by remember { mutableStateOf(false) }
+
     // 갤러리에서 이미지 선택을 처리하는 런처
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -305,12 +308,23 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 reviewComment = reviewComment,
                 currentRating = currentRating,
                 reviewViewModel = reviewViewModel,
-                selectedImages = imagePaths, // 수정된 파라미터
-                onSuccess = { navController.popBackStack() }
+                selectedImages = imagePaths,
+                onSuccess = {
+                    // 리뷰 작성 성공 시 다이얼로그 상태 true로 변경
+                    showCompletedDialog = true
+                }
             )
-
+        }
+        // 작성 완료 다이얼로그: showCompletedDialog가 true일 때 보여짐
+        if (showCompletedDialog) {
+            ReviewCompletedDialog(
+                show = showCompletedDialog,
+                onDismiss = {
+                    showCompletedDialog = false
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
-
 

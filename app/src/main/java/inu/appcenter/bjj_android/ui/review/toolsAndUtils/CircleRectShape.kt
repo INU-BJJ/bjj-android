@@ -17,8 +17,8 @@ object CircleRectShape : Shape {
         density: Density
     ): Outline {
         // 원하는 원의 반지름과 사각형 모서리 둥글림 정도를 dp로 정의
-        val circleRadiusDp = 24.dp
-        val cornerRadiusDp = 8.dp
+        val circleRadiusDp = 40.dp
+        val cornerRadiusDp = 14.dp
 
         // 실제 px 단위로 변환
         val circleRadiusPx = with(density) { circleRadiusDp.toPx() }
