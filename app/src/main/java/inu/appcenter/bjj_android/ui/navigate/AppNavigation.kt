@@ -101,13 +101,36 @@ fun AppNavigation(
                 ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
             composable(AllDestination.ReviewMore.route){
-                MoreReadScreen(navController = navController, reviewViewModel = reviewViewModel)
+                MoreReadScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToReviewDetail = { reviewDetail ->
+                        reviewViewModel.setSelectedReviewDetail(reviewDetail)
+                        navController.navigate(AllDestination.ReviewDetail.route)
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewWrite.route){
-                ReviewWriteScreen(navController = navController, reviewViewModel = reviewViewModel)
+                ReviewWriteScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewDetail.route){
-                ReviewDetailScreen(navController = navController, reviewViewModel = reviewViewModel)
+                ReviewDetailScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToImageDetail = { index ->
+                        reviewViewModel.selectImageIndex(index)
+                        navController.navigate(AllDestination.ReviewDetailPush.route)
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewDetailPush.route) {
                 ReviewImageDetailScreen(

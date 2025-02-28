@@ -36,10 +36,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
@@ -49,7 +48,11 @@ private val BOTTOM_SPACER_HEIGHT = 28.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
+fun MoreReadScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToReviewDetail: (MyReviewDetailRes) -> Unit,  // 타입 명시
+    reviewViewModel: ReviewViewModel
+) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
     val selectedRestaurant = reviewUiState.selectedRestaurant
 
@@ -80,7 +83,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.popBackStack() },
+                        .clickable { onNavigateBack() },
                     painter = painterResource(id = R.drawable.leftarrow),
                     contentDescription = stringResource(id = R.string.back_description),
                     tint = Color.Black
@@ -104,8 +107,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                                 .height(63.dp)
                                 .border(0.5.dp, Gray_B9B9B9, shape = RoundedCornerShape(3.dp))
                                 .clickable {
-                                    reviewViewModel.setSelectedReviewDetail(item)
-                                    navController.navigate(AllDestination.ReviewDetail.route)
+                                    onNavigateToReviewDetail(item)
                                 }
                         ) {
                             Column(

@@ -40,9 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
@@ -59,7 +59,10 @@ import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
+fun ReviewWriteScreen(
+    onNavigateBack: () -> Unit,
+    reviewViewModel: ReviewViewModel
+) {
     var cautionExpanded by remember { mutableStateOf(false) }
     var reviewComment by remember { mutableStateOf("") }
     var currentRating by remember { mutableIntStateOf(5) }
@@ -118,7 +121,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
         CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
             title = {
                 Text(
-                    text = "리뷰 작성하기",
+                    text = stringResource(R.string.write_review_title),
                     style = LocalTypography.current.semibold18.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
@@ -129,9 +132,9 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.popBackStack() },
+                        .clickable { onNavigateBack() },
                     painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = "뒤로 가기",
+                    contentDescription = stringResource(R.string.back_description),
                     tint = Color.Black
                 )
             })
@@ -145,7 +148,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             DropdownMenuBox(
                 reviewViewModel,
                 dropdownType = DropdownType.RESTAURANT,
-                labelText = "식당 위치"
+                labelText = stringResource(R.string.restaurant_location)
             )
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -153,7 +156,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             DropdownMenuBox(
                 reviewViewModel,
                 dropdownType = DropdownType.MENU,
-                labelText = "메뉴 선택"
+                labelText = stringResource(R.string.menu_selection)
             )
             Spacer(modifier = Modifier.height(13.8.dp))
 
@@ -165,7 +168,8 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             Spacer(modifier = Modifier.height(13.8.dp))
 
             Text(
-                text = "음식 만족도를 평가해주세요", style = LocalTypography.current.semibold15.copy(
+                text = stringResource(R.string.rate_food_satisfaction),
+                style = LocalTypography.current.semibold15.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 18.sp,
                     color = Color.Black
@@ -186,7 +190,8 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
             Spacer(modifier = Modifier.height(25.dp))
 
             Text(
-                text = "자세한 리뷰를 작성해주세요", style = LocalTypography.current.semibold15.copy(
+                text = stringResource(R.string.write_detailed_review),
+                style = LocalTypography.current.semibold15.copy(
                     letterSpacing = 0.13.sp,
                     lineHeight = 18.sp,
                     color = Color.Black
@@ -251,7 +256,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "리뷰 작성 유의사항",
+                    text = stringResource(R.string.review_caution_title),
                     style = LocalTypography.current.semibold15.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 18.sp,
@@ -263,7 +268,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                         cautionExpanded = !cautionExpanded
                     },
                     painter = painterResource(R.drawable.underarrow),
-                    contentDescription = "아래 화살표",
+                    contentDescription = stringResource(R.string.down_arrow),
                     tint = Color.Black
                 )
             }
@@ -277,7 +282,7 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
-                        text = "식당 오픈 전에는 식사 리뷰를 작성하실 수 없습니다.",
+                        text = stringResource(R.string.restaurant_not_open_warning),
                         style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
@@ -321,10 +326,9 @@ fun ReviewWriteScreen(navController: NavHostController, reviewViewModel: ReviewV
                 show = showCompletedDialog,
                 onDismiss = {
                     showCompletedDialog = false
-                    navController.popBackStack()
+                    onNavigateBack()
                 }
             )
         }
     }
 }
-
