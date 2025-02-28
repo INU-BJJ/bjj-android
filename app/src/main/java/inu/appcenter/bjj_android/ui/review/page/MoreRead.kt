@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -81,10 +82,9 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                         .offset(x = 19.4.dp, y = 4.5.dp)
                         .clickable { navController.popBackStack() },
                     painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = "뒤로 가기",
+                    contentDescription = stringResource(id = R.string.back_description),
                     tint = Color.Black
                 )
-
             })
         Spacer(Modifier.height(21.dp))
 
@@ -138,7 +138,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
                                             painter = painterResource(R.drawable.star),
-                                            contentDescription = "Full Star",
+                                            contentDescription = stringResource(R.string.full_star_description),
                                             tint = Orange_FF7800
                                         )
                                         Spacer(Modifier.width(4.dp))
@@ -168,7 +168,6 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                         )
                     }
                 }
-
             }
         }
     }
@@ -191,7 +190,7 @@ private fun LoadMoreButton(
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
             border = BorderStroke(width = 1.dp, color = Color.Black)
         ) {
-            Text(text = "더보기")
+            Text(text = stringResource(R.string.view_more))
         }
         Spacer(Modifier.height(BOTTOM_SPACER_HEIGHT))
     }

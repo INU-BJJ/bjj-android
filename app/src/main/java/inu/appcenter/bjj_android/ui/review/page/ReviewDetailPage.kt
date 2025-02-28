@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review.page
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +50,6 @@ import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -301,5 +299,3 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
         }
     }
 }
-
-
