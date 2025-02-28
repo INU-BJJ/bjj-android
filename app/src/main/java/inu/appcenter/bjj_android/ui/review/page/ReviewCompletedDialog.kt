@@ -3,8 +3,10 @@ package inu.appcenter.bjj_android.ui.review.page
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +31,7 @@ fun ReviewCompletedDialog(
     onDismiss: () -> Unit
 ) {
     if (show) {
-        // 1초 후 자동 닫기
+        // 10초 후 자동 닫기
         LaunchedEffect(Unit) {
             delay(10000)
             onDismiss()
@@ -43,25 +45,24 @@ fun ReviewCompletedDialog(
                     .wrapContentSize() // 내용만큼 크기 잡기
             ) {
                 // "원 + 사각형" 일체형 모양
+                // 전체 높이는 원의 보이는 부분(46dp) + 사각형 높이(65dp)에서 겹치는 부분 고려
                 Box(
                     modifier = Modifier
-                        // 원하는 전체 크기를 지정(너비, 높이)
-                        .size(width = 240.dp, height = 120.dp)
+                        .width(247.dp)
+                        .height(111.dp) // 46dp(보이는 원 부분) + 65dp(사각형) = 111dp
                         .background(color = Color.White, shape = CircleRectShape)
                 ) {
-                    // (1) 체크 아이콘
+                    // (1) 체크 아이콘 - 상단 원 중앙에 배치
                     Image(
                         painter = painterResource(id = R.drawable.checkcircle),
                         contentDescription = null,
                         modifier = Modifier
                             .size(48.dp)
                             .align(Alignment.TopCenter)
-                            // 원이 상단 0~48dp(대략) 구간에 그려지므로,
-                            // 아이콘을 약간 아래로 내려서 원 내부에 배치
-                            .offset(y = 7.dp)
+                            .offset(y = 11.dp) // 원 내부에 정중앙 배치되도록 오프셋 조정
                     )
 
-                    // (2) 텍스트
+                    // (2) 텍스트 - 사각형 부분에 중앙 배치
                     Text(
                         text = "완료되었습니다!",
                         style = LocalTypography.current.medium15.copy(
@@ -70,16 +71,14 @@ fun ReviewCompletedDialog(
                             color = Color.Black
                         ),
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .offset(y = 15.dp)
-
+                            .align(Alignment.BottomCenter) // 사각형 부분 중앙에 배치
+                            .offset(y = (-24).dp) // 사각형 부분 중앙에 맞추기 위해 위로 오프셋
                     )
                 }
             }
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

@@ -15,5 +15,6 @@ data class ReviewDetailRes(
     @SerializedName("memberId") val memberId: Long,
     @SerializedName("memberNickname") val memberNickname: String,
     @SerializedName("memberImageName") val memberImageName: String?,
+    @SerializedName("owned") val owned: Boolean,
     @SerializedName("liked") val liked: Boolean
 )
