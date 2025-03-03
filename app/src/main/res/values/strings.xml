@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">밥점줘</string>
+
+    <!-- ReviewDetailPage.kt 문자열 -->
     <string name="review_detail_title">리뷰 상세</string>
     <string name="back_description">뒤로 가기</string>
     <string name="delete_description">삭제 하기</string>
@@ -11,4 +13,29 @@
     <string name="default_date">2025.00.00</string>
     <string name="like_description">좋아요</string>
     <string name="review_write_complete">완료되었습니다!</string>
+    <string name="pencil_icon">수정하기</string>
+
+    <!-- ReviewScreen.kt 문자열 -->
+    <string name="review_page_title">리뷰 페이지</string>
+    <string name="write_review_action">리뷰 작성하기</string>
+    <string name="review_warning">리뷰 없음 경고</string>
+    <string name="add_review_message">리뷰를 추가해주세요!</string>
+    <string name="write_review_button">리뷰 작성하기</string>
+    <string name="warning_icon">경고 아이콘</string>
+
+    <!-- MoreRead.kt 문자열 -->
+    <string name="view_more">더보기</string>
+
+    <!-- ReviewWritePage.kt 문자열 -->
+    <string name="write_review_title">리뷰 작성하기</string>
+    <string name="restaurant_location">식당 위치</string>
+    <string name="menu_selection">메뉴 선택</string>
+    <string name="rate_food_satisfaction">음식 만족도를 평가해주세요</string>
+    <string name="write_detailed_review">자세한 리뷰를 작성해주세요</string>
+    <string name="down_arrow">아래 화살표</string>
+    <string name="review_caution_title">리뷰 작성 유의사항</string>
+    <string name="restaurant_not_open_warning">식당 오픈 전에는 식사 리뷰를 작성하실 수 없습니다.</string>
+
+    <!-- ReviewFrame.kt 문자열 -->
+    <string name="full_star_description">별점</string>
 </resources>

@@ -33,12 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
+import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
@@ -48,7 +48,11 @@ private val BOTTOM_SPACER_HEIGHT = 28.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
+fun MoreReadScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToReviewDetail: (MyReviewDetailRes) -> Unit,  // 타입 명시
+    reviewViewModel: ReviewViewModel
+) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
     val selectedRestaurant = reviewUiState.selectedRestaurant
 
@@ -79,12 +83,11 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.popBackStack() },
+                        .clickable { onNavigateBack() },
                     painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = "뒤로 가기",
+                    contentDescription = stringResource(id = R.string.back_description),
                     tint = Color.Black
                 )
-
             })
         Spacer(Modifier.height(21.dp))
 
@@ -104,8 +107,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                                 .height(63.dp)
                                 .border(0.5.dp, Gray_B9B9B9, shape = RoundedCornerShape(3.dp))
                                 .clickable {
-                                    reviewViewModel.setSelectedReviewDetail(item)
-                                    navController.navigate(AllDestination.ReviewDetail.route)
+                                    onNavigateToReviewDetail(item)
                                 }
                         ) {
                             Column(
@@ -138,7 +140,7 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
                                             painter = painterResource(R.drawable.star),
-                                            contentDescription = "Full Star",
+                                            contentDescription = stringResource(R.string.full_star_description),
                                             tint = Orange_FF7800
                                         )
                                         Spacer(Modifier.width(4.dp))
@@ -168,7 +170,6 @@ fun MoreReadScreen(navController: NavHostController, reviewViewModel: ReviewView
                         )
                     }
                 }
-
             }
         }
     }
@@ -191,7 +192,7 @@ private fun LoadMoreButton(
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
             border = BorderStroke(width = 1.dp, color = Color.Black)
         ) {
-            Text(text = "더보기")
+            Text(text = stringResource(R.string.view_more))
         }
         Spacer(Modifier.height(BOTTOM_SPACER_HEIGHT))
     }

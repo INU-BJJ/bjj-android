@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.menudetail.common
+package inu.appcenter.bjj_android.ui.components
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -10,14 +10,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,10 +24,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -47,22 +41,47 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewImageDetailScreen(
     navController: NavHostController,
-    imageList: List<String>,
-    index: Int,
-    reviewId: Long,
-    fromReviewDetail : Boolean = false
+    // 첫 번째 사용 방식: 직접 이미지 리스트와 인덱스 전달 (기존 메뉴 디테일 용)
+    imageList: List<String>? = null,
+    index: Int = 0,
+    reviewId: Long = -1L,
+    fromReviewDetail: Boolean = false,
+    // 두 번째 사용 방식: ReviewViewModel 사용 (기존 리뷰 상세보기 용)
+    reviewViewModel: ReviewViewModel? = null
 ) {
-    var currentIndex by remember { mutableIntStateOf(index) }
+    // ReviewViewModel이 있으면 ViewModel의 상태를 수집
+    val reviewUiState = reviewViewModel?.uiState?.collectAsState()
+
+    // 데이터 소스 결정: 직접 파라미터 또는 viewModel
+    val images = if (reviewViewModel != null && reviewUiState != null) {
+        // ReviewViewModel에서 데이터 가져오기
+        reviewUiState.value.imageNames
+    } else {
+        // 직접 전달된 이미지 리스트 사용
+        imageList ?: emptyList()
+    }
+
+    // 초기 인덱스 설정
+    var currentIndex by remember {
+        mutableIntStateOf(
+            if (reviewViewModel != null && reviewUiState != null) {
+                reviewUiState.value.selectedImageIndex
+            } else {
+                index
+            }
+        )
+    }
+
     var offsetX by remember { mutableFloatStateOf(0f) }
-    val imageName = imageList.getOrNull(currentIndex)
-    val totalImages = imageList.size
+    val imageName = images.getOrNull(currentIndex)
+    val totalImages = images.size
     val displayText = if (totalImages > 0) "${currentIndex + 1}/$totalImages" else "0/0"
 
     Column(
@@ -155,7 +174,7 @@ fun ReviewImageDetailScreen(
             )
 
             AsyncImage(
-                model =  ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest.Builder(LocalContext.current)
                     .data("https://bjj.inuappcenter.kr/images/review/${imageName}")
                     .size(500) // 적절한 크기로 조정 (픽셀 단위)
                     .scale(Scale.FILL)
@@ -172,7 +191,9 @@ fun ReviewImageDetailScreen(
                 contentScale = ContentScale.Fit
             )
         }
-        if (!fromReviewDetail){
+
+        // 버튼 영역 - 본문 보기 버튼이 필요한 경우만 표시
+        if (!fromReviewDetail) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -184,11 +205,16 @@ fun ReviewImageDetailScreen(
                     contentDescription = "본문 보기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.navigate(
-                            AllDestination.MenuDetailReviewDetail.createRoute(
-                                reviewId = reviewId
+                        // 사용 방식에 따라 다른 네비게이션 처리
+                        if (reviewViewModel != null) {
+                            navController.navigate(AllDestination.ReviewDetail.route)
+                        } else {
+                            navController.navigate(
+                                AllDestination.MenuDetailReviewDetail.createRoute(
+                                    reviewId = reviewId
+                                )
                             )
-                        )
+                        }
                     }
                 )
             }

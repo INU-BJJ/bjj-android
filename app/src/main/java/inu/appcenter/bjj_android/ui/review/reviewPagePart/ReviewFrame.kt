@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -71,7 +72,7 @@ fun ReviewFrameScreen(
                         reviewViewModel.setSelectedRestaurant(selectRestaurantName)
                         navController.navigate(AllDestination.ReviewMore.route)
                     },
-                    text = "더보기",
+                    text = stringResource(R.string.view_more),
                     style = LocalTypography.current.regular11.copy(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
@@ -126,7 +127,7 @@ fun ReviewFrameScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(R.drawable.star),
-                                    contentDescription = "Full Star",
+                                    contentDescription = stringResource(R.string.full_star_description),
                                     tint = Orange_FF7800
                                 )
                                 Spacer(Modifier.width(4.dp))

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import inu.appcenter.bjj_android.ui.components.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.login.LoginScreen
 import inu.appcenter.bjj_android.ui.login.SignupScreen
@@ -15,7 +16,6 @@ import inu.appcenter.bjj_android.ui.main.MainScreen
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
-import inu.appcenter.bjj_android.ui.menudetail.common.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
@@ -25,7 +25,6 @@ import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.page.MoreReadScreen
-import inu.appcenter.bjj_android.ui.review.page.PushReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewDetailScreen
 import inu.appcenter.bjj_android.ui.review.page.ReviewWriteScreen
 
@@ -102,16 +101,42 @@ fun AppNavigation(
                 ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
             }
             composable(AllDestination.ReviewMore.route){
-                MoreReadScreen(navController = navController, reviewViewModel = reviewViewModel)
+                MoreReadScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToReviewDetail = { reviewDetail ->
+                        reviewViewModel.setSelectedReviewDetail(reviewDetail)
+                        navController.navigate(AllDestination.ReviewDetail.route)
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewWrite.route){
-                ReviewWriteScreen(navController = navController, reviewViewModel = reviewViewModel)
+                ReviewWriteScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewDetail.route){
-                ReviewDetailScreen(navController = navController, reviewViewModel = reviewViewModel)
+                ReviewDetailScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToImageDetail = { index ->
+                        reviewViewModel.selectImageIndex(index)
+                        navController.navigate(AllDestination.ReviewDetailPush.route)
+                    },
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.ReviewDetailPush.route) {
-                PushReviewDetailScreen(navController, reviewViewModel = reviewViewModel)
+                ReviewImageDetailScreen(
+                    navController = navController,
+                    reviewViewModel = reviewViewModel
+                )
             }
             composable(AllDestination.MyPage.route) {
                 MyPageScreen(navController = navController, authViewModel = authViewModel)

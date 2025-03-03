@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -48,7 +49,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
             CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
                 title = {
                     Text(
-                        text = "리뷰 페이지",
+                        text = stringResource(R.string.review_page_title),
                         style = LocalTypography.current.semibold18.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
@@ -68,12 +69,10 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.writeplusbutton),
-                    contentDescription = "리뷰 작성하기",
+                    contentDescription = stringResource(R.string.write_review_button),
                     tint = Color.Unspecified,
-
-                    )
+                )
             }
-
         },
         bottomBar = { AppBottomBar(navController) }
     ) { innerPadding ->
@@ -98,12 +97,12 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                     {
                         Icon(
                             painter = painterResource(id = R.drawable.cautiontriangle),
-                            contentDescription = "리뷰 없음 경고",
+                            contentDescription = stringResource(R.string.warning_icon),
                             tint = Gray_D9D9D9,
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.caution), // 위에 겹쳐지는 벡터 이미지
-                            contentDescription = "리뷰 없음 경고",
+                            contentDescription = stringResource(R.string.warning_icon),
                             tint = Color.White,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
@@ -112,7 +111,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                     }
                     Spacer(Modifier.height(20.25.dp))
                     Text(
-                        text = "리뷰를 추가해주세요!",
+                        text = stringResource(R.string.add_review_message),
                         color = Gray_D9D9D9,
                         style = LocalTypography.current.bold18.copy(
                             letterSpacing = 0.13.sp,
@@ -128,10 +127,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                         reviewViewModel
                     )
                 }
-
             }
-
         }
     }
-
 }

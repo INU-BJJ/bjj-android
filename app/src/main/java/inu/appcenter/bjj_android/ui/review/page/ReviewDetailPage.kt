@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review.page
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,11 +37,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DynamicReviewDetailImages
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
@@ -52,10 +49,13 @@ import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
+fun ReviewDetailScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToImageDetail: (Int) -> Unit,
+    reviewViewModel: ReviewViewModel
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
@@ -89,7 +89,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                     modifier = Modifier
                         .offset(x = 20.dp, y = 4.5.dp)
                         .clickable {
-                            navController.popBackStack()
+                            onNavigateBack()
                         },
                     painter = painterResource(id = R.drawable.leftarrow),
                     contentDescription = stringResource(id = R.string.back_description),
@@ -127,7 +127,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                                     reviewId = reviewDetail?.reviewId ?: -1,
                                     onSuccess = {
                                         // 삭제 성공 후 이전 화면으로 이동
-                                        navController.popBackStack()
+                                        onNavigateBack()
                                     }
                                 )
                                 showBottomSheet = false
@@ -244,8 +244,7 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
                     imageNames = reviewUiState.imageNames,
                     onImageClick = { index ->
                         // 클릭 콜백
-                        reviewViewModel.selectImageIndex(index)
-                        navController.navigate(AllDestination.ReviewDetailPush.route)
+                        onNavigateToImageDetail(index)
                     }
                 )
             }
@@ -301,5 +300,3 @@ fun ReviewDetailScreen(navController: NavHostController, reviewViewModel: Review
         }
     }
 }
-
-

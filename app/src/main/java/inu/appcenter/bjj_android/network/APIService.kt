@@ -12,7 +12,6 @@ import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayMenuRes
-import inu.appcenter.bjj_android.utils.CustomResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
