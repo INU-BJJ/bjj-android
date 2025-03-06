@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.navigate
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
@@ -9,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import inu.appcenter.bjj_android.ui.components.ReviewImageDetailScreen
+import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.login.LoginScreen
 import inu.appcenter.bjj_android.ui.login.SignupScreen
@@ -43,6 +45,28 @@ fun AppNavigation(
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
 
+    // 회원 탈퇴 상태 관찰
+    LaunchedEffect(uiState.deleteAccountState) {
+        if (uiState.deleteAccountState is AuthState.Success) {
+            // 회원 탈퇴 성공 시 로그인 화면으로 이동
+            navController.navigate(AllDestination.Login.route) {
+                popUpTo(AllDestination.Main.route) { inclusive = true }
+            }
+            // 상태 초기화
+            authViewModel.resetDeleteAccountState()
+        }
+    }
+
+    // 로그아웃 상태 관찰 (현재는 SettingScreen에서 처리중이지만 일관성을 위해 여기로 이동할 수도 있음)
+    LaunchedEffect(uiState.logoutState) {
+        if (uiState.logoutState is AuthState.Success) {
+            navController.navigate(AllDestination.Login.route) {
+                popUpTo(AllDestination.Main.route) { inclusive = true }
+            }
+            // 상태 초기화
+            authViewModel.resetState()
+        }
+    }
 
     if (uiState.hasToken == null) {
         LoadingScreen()
@@ -158,13 +182,12 @@ fun AppNavigation(
                         navController.navigate(AllDestination.BlockedUser.route)
                     },
                     onNavigateToLogin = {
+                        //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
                         authViewModel.logout()
-                        navController.navigate(AllDestination.Login.route) {
-                            popUpTo(AllDestination.Main.route) { inclusive = true }
-                        }
                     },
                     onWithdrawalAccount = {
-                        //TODO: 탈퇴 로직 구현
+                        // 회원 탈퇴 기능 호출, 네비게이션은 LaunchedEffect에서 처리
+                        authViewModel.deleteAccount()
                     }
                 )
             }

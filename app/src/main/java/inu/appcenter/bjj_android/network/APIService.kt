@@ -102,6 +102,9 @@ interface APIService {
     @GET("/api/members")
     suspend fun getAllMembers() : Response<MemberResponseDTO>
 
+    @DELETE("/api/members")
+    suspend fun deleteAccount(): Response<Unit>
+
     @POST("/api/members/sign-up")
     suspend fun signup(
         @Body signupReq: SignupReq

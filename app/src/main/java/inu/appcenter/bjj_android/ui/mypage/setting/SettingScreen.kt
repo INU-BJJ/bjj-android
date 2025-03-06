@@ -8,13 +8,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -38,6 +46,35 @@ fun SettingScreen(
     onNavigateToLogin: () -> Unit,
     onWithdrawalAccount: () -> Unit = {}
 ) {
+    // 회원 탈퇴 확인 다이얼로그 표시 여부 상태
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
+
+    // 회원 탈퇴 확인 다이얼로그
+    if (showDeleteAccountDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteAccountDialog = false },
+            title = { Text("회원 탈퇴") },
+            text = { Text("정말 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onWithdrawalAccount()
+                        showDeleteAccountDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Red_FF0000
+                    )
+                ) {
+                    Text("탈퇴하기", color = Color.White)
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { showDeleteAccountDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -125,7 +162,7 @@ fun SettingScreen(
                         fontWeight = FontWeight(400),
                         color = Red_FF0000
                     ),
-                    modifier = Modifier.clickable { onWithdrawalAccount() }
+                    modifier = Modifier.clickable { showDeleteAccountDialog = true }
                 )
             }
         }

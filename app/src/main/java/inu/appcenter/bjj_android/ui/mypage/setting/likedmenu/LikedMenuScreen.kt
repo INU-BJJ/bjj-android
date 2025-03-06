@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
@@ -44,7 +44,7 @@ fun LikedMenuScreen(
     likedMenuViewModel: LikedMenuViewModel,
     onNavigateBack: () -> Unit
 ) {
-    val uiState by likedMenuViewModel.uiState.collectAsState()
+    val uiState by likedMenuViewModel.uiState.collectAsStateWithLifecycle()
 
     // 알림 설정 상태
     var notificationEnabled by remember { mutableStateOf(uiState.notificationEnabled) }
