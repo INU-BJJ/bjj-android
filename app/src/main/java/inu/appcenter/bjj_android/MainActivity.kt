@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.navigate.AppNavigation
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
             val menuDetailViewModel : MenuDetailViewModel by viewModel()
             val reviewViewModel: ReviewViewModel by viewModel()
             val rankingViewModel: RankingViewModel by viewModel()
+            val likedMenuViewModel: LikedMenuViewModel by viewModel()
 
             //하단 바 제거
             val view = LocalView.current
@@ -62,7 +64,9 @@ class MainActivity : ComponentActivity() {
                         mainViewModel = mainViewModel,
                         menuDetailViewModel = menuDetailViewModel,
                         reviewViewModel = reviewViewModel,
-                        rankingViewModel = rankingViewModel)
+                        rankingViewModel = rankingViewModel,
+                        likedMenuViewModel = likedMenuViewModel
+                    )
                 }
             }
         }
