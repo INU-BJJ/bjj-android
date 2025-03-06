@@ -19,8 +19,8 @@ fun HorizontalDivider(
 ) {
     Box(
         modifier = modifier
+            .fillMaxWidth()
             .height(height)
             .background(color = color)
-            .fillMaxWidth()
     )
 }

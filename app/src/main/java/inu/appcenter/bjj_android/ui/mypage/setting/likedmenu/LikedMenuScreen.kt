@@ -41,17 +41,17 @@ import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LikedMenuScreen(
-    viewModel: LikedMenuViewModel,
+    likedMenuViewModel: LikedMenuViewModel,
     onNavigateBack: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by likedMenuViewModel.uiState.collectAsState()
 
     // 알림 설정 상태
     var notificationEnabled by remember { mutableStateOf(uiState.notificationEnabled) }
 
     // 화면 진입 시 데이터 로드
     LaunchedEffect(Unit) {
-        viewModel.getLikedMenus()
+        likedMenuViewModel.getLikedMenus()
     }
 
     Scaffold(
@@ -106,7 +106,7 @@ fun LikedMenuScreen(
                     checked = notificationEnabled,
                     onCheckedChange = { enabled ->
                         notificationEnabled = enabled
-                        viewModel.toggleNotification(enabled)
+                        likedMenuViewModel.toggleNotification(enabled)
                     }
                 )
             }
@@ -138,7 +138,7 @@ fun LikedMenuScreen(
                 uiState.likedMenus.forEach { likedMenu ->
                     LikedMenuFrame(
                         menu = likedMenu.menuName,
-                        onHeartClick = { viewModel.toggleLike(likedMenu.menuId) }
+                        onHeartClick = { likedMenuViewModel.toggleLike(likedMenu.menuId) }
                     )
                 }
             }

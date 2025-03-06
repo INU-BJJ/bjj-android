@@ -75,43 +75,60 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            MainText(
-                text = "닉네임 변경하기",
-                onClick = { onNavigeteToNickname() }
-            )
-            MainText(
-                text = "좋아요한 메뉴",
-                onClick = { onNavigateToLikedMenu() }
-            )
-            MainText(
-                text = "차단한 유저 보기",
-                onClick = { onNavigateToBlockedUser() }
-            )
-            Spacer(Modifier.height(400.dp))
+            // 상단 메뉴 항목들
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                MainText(
+                    text = "닉네임 변경하기",
+                    onClick = { onNavigeteToNickname() }
+                )
+                MainText(
+                    text = "좋아요한 메뉴",
+                    onClick = { onNavigateToLikedMenu() }
+                )
+                MainText(
+                    text = "차단한 유저 보기",
+                    onClick = { onNavigateToBlockedUser() }
+                )
+            }
+            Spacer(Modifier.height(391.dp))
+            // Divider (padding 없이 전체 너비 차지)
             HorizontalDivider()
-            Text(
-                text = "로그아웃",
-                style = LocalTypography.current.medium15.copy(
-                    lineHeight = 18.sp,
-                    letterSpacing = 0.13.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color.Black
-                ),
-                modifier = Modifier.clickable { onNavigateToLogin()}
-            )
-            Text(
-                text = "탈퇴하기",
-                style = LocalTypography.current.medium15.copy(
-                    lineHeight = 18.sp,
-                    letterSpacing = 0.13.sp,
-                    fontWeight = FontWeight(400),
-                    color = Red_FF0000
-                ),
-                modifier = Modifier.clickable { onWithdrawalAccount() }
-            )
+            Spacer(Modifier.height(24.dp))
+
+            // 하단 메뉴 항목들 (로그아웃, 탈퇴하기)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = "로그아웃",
+                    style = LocalTypography.current.medium15.copy(
+                        lineHeight = 18.sp,
+                        letterSpacing = 0.13.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color.Black
+                    ),
+                    modifier = Modifier.clickable { onNavigateToLogin() }
+                )
+                Text(
+                    text = "탈퇴하기",
+                    style = LocalTypography.current.medium15.copy(
+                        lineHeight = 18.sp,
+                        letterSpacing = 0.13.sp,
+                        fontWeight = FontWeight(400),
+                        color = Red_FF0000
+                    ),
+                    modifier = Modifier.clickable { onWithdrawalAccount() }
+                )
+            }
         }
     }
 }
