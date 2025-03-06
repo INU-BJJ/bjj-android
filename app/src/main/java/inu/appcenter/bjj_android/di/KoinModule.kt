@@ -16,8 +16,9 @@ import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.MypageViewModel
-import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -40,4 +41,5 @@ val viewModelModule = module {
     viewModel{ MypageViewModel() }
     viewModel{ ReviewViewModel(get(), get(), get()) }
     viewModel{ RankingViewModel(get(), get()) }
+    viewModel{ LikedMenuViewModel(get()) }
 }

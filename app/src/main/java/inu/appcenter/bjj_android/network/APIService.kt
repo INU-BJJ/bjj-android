@@ -102,6 +102,9 @@ interface APIService {
     @GET("/api/members")
     suspend fun getAllMembers() : Response<MemberResponseDTO>
 
+    @DELETE("/api/members")
+    suspend fun deleteAccount(): Response<Unit>
+
     @POST("/api/members/sign-up")
     suspend fun signup(
         @Body signupReq: SignupReq
@@ -124,7 +127,7 @@ interface APIService {
     ) : Response<Boolean>
 
     @GET("/api/menus/liked")
-    suspend fun getLikedMenus() : Response<LikedMenu>
+    suspend fun getLikedMenus() : Response<List<LikedMenu>>
 
     // 이 메서드도 Response로 감싸서 일관성 있게 변경
     @GET("/api/menus/ranking")

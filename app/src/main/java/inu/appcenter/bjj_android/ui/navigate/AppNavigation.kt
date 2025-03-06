@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.navigate
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
@@ -9,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import inu.appcenter.bjj_android.ui.components.ReviewImageDetailScreen
+import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.login.LoginScreen
 import inu.appcenter.bjj_android.ui.login.SignupScreen
@@ -19,7 +21,8 @@ import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
-import inu.appcenter.bjj_android.ui.mypage.setting.page.LikedMenuScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
@@ -35,12 +38,35 @@ fun AppNavigation(
     mainViewModel: MainViewModel,
     menuDetailViewModel: MenuDetailViewModel,
     reviewViewModel: ReviewViewModel,
-    rankingViewModel: RankingViewModel
+    rankingViewModel: RankingViewModel,
+    likedMenuViewModel: LikedMenuViewModel
 ) {
 
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
 
+    // 회원 탈퇴 상태 관찰
+    LaunchedEffect(uiState.deleteAccountState) {
+        if (uiState.deleteAccountState is AuthState.Success) {
+            // 회원 탈퇴 성공 시 로그인 화면으로 이동
+            navController.navigate(AllDestination.Login.route) {
+                popUpTo(AllDestination.Main.route) { inclusive = true }
+            }
+            // 상태 초기화
+            authViewModel.resetDeleteAccountState()
+        }
+    }
+
+    // 로그아웃 상태 관찰 (현재는 SettingScreen에서 처리중이지만 일관성을 위해 여기로 이동할 수도 있음)
+    LaunchedEffect(uiState.logoutState) {
+        if (uiState.logoutState is AuthState.Success) {
+            navController.navigate(AllDestination.Login.route) {
+                popUpTo(AllDestination.Main.route) { inclusive = true }
+            }
+            // 상태 초기화
+            authViewModel.resetState()
+        }
+    }
 
     if (uiState.hasToken == null) {
         LoadingScreen()
@@ -142,10 +168,40 @@ fun AppNavigation(
                 MyPageScreen(navController = navController, authViewModel = authViewModel)
             }
             composable(AllDestination.Setting.route) {
-                SettingScreen(navController)
+                SettingScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigeteToNickname = {
+                        navController.navigate(AllDestination.Nickname.route)
+                    },
+                    onNavigateToLikedMenu = {
+                        navController.navigate(AllDestination.LikedMenu.route)
+                    },
+                    onNavigateToBlockedUser = {
+                        navController.navigate(AllDestination.BlockedUser.route)
+                    },
+                    onNavigateToLogin = {
+                        //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
+                        authViewModel.logout()
+                    },
+                    onWithdrawalAccount = {
+                        // 회원 탈퇴 기능 호출, 네비게이션은 LaunchedEffect에서 처리
+                        authViewModel.deleteAccount()
+                    }
+                )
             }
             composable(AllDestination.LikedMenu.route) {
-                LikedMenuScreen(navController)
+                LikedMenuScreen(
+                    likedMenuViewModel = likedMenuViewModel,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+//                    onNavigateToMenuDetail = { menuId ->
+//                        // 메뉴 상세 페이지로 이동 (필요한 경우)
+//                        // 예: navController.navigate("menuDetail/$menuId")
+//                    }
+                )
             }
             composable(
                 route = "moreImage/{menuPairId}",

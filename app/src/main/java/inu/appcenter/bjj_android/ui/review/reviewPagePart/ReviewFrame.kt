@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review.reviewPagePart
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,12 +27,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.HorizontalDivider
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
-import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
 @Composable
@@ -102,7 +101,7 @@ fun ReviewFrameScreen(
                     ) {
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            text = item.mainMenuName.toString(),//임시
+                            text = item.mainMenuName,//임시
                             style = LocalTypography.current.semibold15.copy(
                                 letterSpacing = 0.13.sp,
                                 lineHeight = 18.sp,
@@ -148,12 +147,6 @@ fun ReviewFrameScreen(
         }
     }
     Spacer(Modifier.height(24.dp))
-
-    Box(
-        modifier = Modifier
-            .height(7.dp)
-            .background(color = Gray_F6F6F8)
-            .fillMaxWidth()
-    )
+    HorizontalDivider()
     Spacer(Modifier.height(22.dp))
 }

@@ -12,6 +12,10 @@ class MemberRepositoryImpl(private val apiService: APIService) : MemberRepositor
         apiService.getAllMembers()
     }
 
+    override suspend fun deleteAccount(): Flow<CustomResponse<Unit>> = safeApiCall {
+        apiService.deleteAccount()
+    }
+
     override suspend fun signup(signupReq: SignupReq): Flow<CustomResponse<SignupRes>> = safeApiCall {
         apiService.signup(signupReq = signupReq)
     }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface MemberRepository : BaseRepository {
     suspend fun getAllMembers(): Flow<CustomResponse<MemberResponseDTO>>
     suspend fun signup(signupReq: SignupReq): Flow<CustomResponse<SignupRes>>
+    suspend fun deleteAccount(): Flow<CustomResponse<<Unit>>
     suspend fun checkNickname(nickname: String): Flow<CustomResponse<Boolean>>
     suspend fun modifyNickname(nickname: String): Flow<CustomResponse<Unit>>
 }

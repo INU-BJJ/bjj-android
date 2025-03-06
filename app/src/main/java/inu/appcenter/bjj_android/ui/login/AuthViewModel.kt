@@ -31,6 +31,7 @@ data class AuthUiState(
     val signupState: AuthState = AuthState.Idle,
     val checkNicknameState: AuthState = AuthState.Idle,
     val logoutState: AuthState = AuthState.Idle,
+    val deleteAccountState: AuthState = AuthState.Idle,
     val signupEmail: String = "",
     val socialName: String = "",
     val saveTokenState: Boolean? = null,
@@ -170,6 +171,46 @@ class AuthViewModel(
         }
     }
 
+    fun deleteAccount() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(deleteAccountState = AuthState.Loading) }
+
+                val response = memberRepository.deleteAccount()
+                if (response.isSuccessful) {
+                    // 토큰 삭제 및 상태 초기화
+                    dataStoreManager.clearToken()
+
+                    // 다른 ViewModel 상태 초기화
+                    getKoin().getAll<ViewModel>().forEach {
+                        when (it) {
+                            is MainViewModel -> it.resetState()
+                            is MenuDetailViewModel -> it.resetState()
+                            // 다른 ViewModel들도 필요에 따라 추가
+                        }
+                    }
+
+                    _uiState.update { it.copy(
+                        deleteAccountState = AuthState.Success,
+                        hasToken = false
+                    )}
+                } else {
+                    throw Exception(response.errorBody()?.string() ?: "회원 탈퇴 실패")
+                }
+            } catch (e: Exception) {
+                Log.e("deleteAccount", e.message.toString())
+                _uiState.update { it.copy(
+                    deleteAccountState = AuthState.Error(e.message ?: UNKNOWN_ERROR)
+                )}
+            } catch (e: RuntimeException) {
+                Log.e("deleteAccount timeout", e.message.toString())
+                _uiState.update { it.copy(
+                    deleteAccountState = AuthState.Error(TIMEOUT_ERROR)
+                )}
+            }
+        }
+    }
+
     fun resetNicknameCheckState() {
         _uiState.update {
             it.copy(
@@ -187,5 +228,8 @@ class AuthViewModel(
                 saveTokenState = null
             )
         }
+    }
+    fun resetDeleteAccountState() {
+        _uiState.update { it.copy(deleteAccountState = AuthState.Idle) }
     }
 }

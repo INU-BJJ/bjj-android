@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -81,19 +80,19 @@ fun MyPageScreen(
                             }
                     )
                 },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            authViewModel.logout()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.logout),
-                            contentDescription = "logout",
-                            tint = Color.Black
-                        )
-                    }
-                },
+//                navigationIcon = {
+//                    IconButton(
+//                        onClick = {
+//                            authViewModel.logout()
+//                        }
+//                    ) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.logout),
+//                            contentDescription = "logout",
+//                            tint = Color.Black
+//                        )
+//                    }
+//                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
