@@ -124,7 +124,7 @@ interface APIService {
     ) : Response<Boolean>
 
     @GET("/api/menus/liked")
-    suspend fun getLikedMenus() : Response<LikedMenu>
+    suspend fun getLikedMenus() : Response<List<LikedMenu>>
 
     @GET("/api/menus/ranking")
     suspend fun getMenusRanking(

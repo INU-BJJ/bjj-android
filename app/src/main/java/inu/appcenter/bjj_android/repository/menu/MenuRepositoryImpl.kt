@@ -14,7 +14,7 @@ class MenuRepositoryImpl(private val apiService: APIService) : MenuRepository {
         return apiService.toggleMenuLiked(mainMenuId = mainMenuId)
     }
 
-    override suspend fun getLikedMenus(): Response<LikedMenu> {
+    override suspend fun getLikedMenus(): Response<List<LikedMenu>> {
         return apiService.getLikedMenus()
     }
 
