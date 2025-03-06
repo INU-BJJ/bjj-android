@@ -16,8 +16,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -34,26 +32,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
+import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
-import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 private val GRID_SPACING = 4.dp
 private const val PAGE_SIZE = 18
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreImageScreen(
@@ -66,6 +58,8 @@ fun MoreImageScreen(
     var isLoadingMore by remember { mutableStateOf(false) }
     var isLastPage by remember { mutableStateOf(false) }
 
+    LoadingIndicator(menuDetailViewModel)
+    ErrorHandler(menuDetailViewModel)
 
     LaunchedEffect(menuPairId) {
         menuDetailViewModel.getMoreReviewImages(
@@ -109,99 +103,53 @@ fun MoreImageScreen(
                 .background(Color.White)
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
-            when {
-                uiState.isLoading && currentPage == 0 -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = androidx.compose.ui.Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                uiState.error != null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = androidx.compose.ui.Alignment.Center
-                    ) {
-                        Text(uiState.error!!)
-                    }
-                }
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        horizontalArrangement = Arrangement.spacedBy(GRID_SPACING),
-                        verticalArrangement = Arrangement.spacedBy(GRID_SPACING),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        uiState.reviewImages?.let { images ->
-                            items(images) { imageDetail ->
-                                Box(
-                                    modifier = Modifier
-                                        .aspectRatio(1f)
-                                        .fillMaxWidth()
-                                ) {
-                                    SubcomposeAsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data("https://bjj.inuappcenter.kr/images/review/${imageDetail.imageName}")
-                                            .memoryCacheKey(imageDetail.imageName)
-                                            .diskCacheKey(imageDetail.imageName)
-                                            .crossfade(true)
-                                            .build(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clickable {
-                                                navController.navigate(
-                                                    AllDestination.MenuDetailReviewDetailPush.createRoute(
-                                                        imageList = listOf(imageDetail.imageName),
-                                                        index = 0,
-                                                        reviewId = imageDetail.reviewId,
-                                                        fromReviewDetail = false
-                                                    )
-                                                )
-                                            },
-                                        contentScale = ContentScale.Crop,
-                                        loading = {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(10.dp),
-                                                strokeWidth = 1.dp
-                                            )
-                                        }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                horizontalArrangement = Arrangement.spacedBy(GRID_SPACING),
+                verticalArrangement = Arrangement.spacedBy(GRID_SPACING),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                uiState.reviewImages?.let { images ->
+                    items(images) { imageDetail ->
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .fillMaxWidth()
+                        ) {
+                            // ImageLoader 사용
+                            ImageLoader.ReviewImage(
+                                imageName = imageDetail.imageName,
+                                modifier = Modifier.fillMaxSize(),
+                                clickable = true,
+                                onClick = {
+                                    navController.navigate(
+                                        AllDestination.MenuDetailReviewDetailPush.createRoute(
+                                            imageList = listOf(imageDetail.imageName),
+                                            index = 0,
+                                            reviewId = imageDetail.reviewId,
+                                            fromReviewDetail = false
+                                        )
                                     )
                                 }
-                            }
+                            )
+                        }
+                    }
 
-                            // 이미지가 있고, 마지막 페이지가 아닐 때만 추가 로딩
-                            if (images.isNotEmpty() && !isLastPage) {
-                                item(span = { GridItemSpan(maxLineSpan) }) {
-                                    if (!isLoadingMore && !uiState.isLoading) {
-                                        LaunchedEffect(Unit) {
-                                            isLoadingMore = true
-                                            currentPage++
-                                            menuDetailViewModel.getMoreReviewImages(
-                                                menuPairId = menuPairId,
-                                                pageNumber = currentPage,
-                                                pageSize = PAGE_SIZE
-                                            )
-                                            // 빈 리스트가 오면 마지막 페이지로 처리
-                                            if (images.size % PAGE_SIZE != 0) {
-                                                isLastPage = true
-                                            }
-                                            isLoadingMore = false
-                                        }
-
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(24.dp),
-                                                strokeWidth = 2.dp
-                                            )
-                                        }
+                    if (images.isNotEmpty() && !isLastPage) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            if (!isLoadingMore) {
+                                LaunchedEffect(Unit) {
+                                    isLoadingMore = true
+                                    currentPage++
+                                    menuDetailViewModel.getMoreReviewImages(
+                                        menuPairId = menuPairId,
+                                        pageNumber = currentPage,
+                                        pageSize = PAGE_SIZE
+                                    )
+                                    if (images.size % PAGE_SIZE != 0) {
+                                        isLastPage = true
                                     }
+                                    isLoadingMore = false
                                 }
                             }
                         }
@@ -211,3 +159,5 @@ fun MoreImageScreen(
         }
     }
 }
+
+

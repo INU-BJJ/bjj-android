@@ -1,7 +1,9 @@
 package inu.appcenter.bjj_android.repository.cafeterias
 
-import retrofit2.Response
+import inu.appcenter.bjj_android.repository.base.BaseRepository
+import inu.appcenter.bjj_android.utils.CustomResponse
+import kotlinx.coroutines.flow.Flow
 
-interface CafeteriasRepository {
-    suspend fun getCafeterias() : Response<List<String>>
+interface CafeteriasRepository : BaseRepository {
+    suspend fun getCafeterias() : Flow<CustomResponse<List<String>>>
 }

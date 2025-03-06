@@ -1,8 +1,5 @@
 package inu.appcenter.bjj_android.ui.main.common
 
-import android.util.Log
-import android.view.ViewGroup
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,21 +24,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
+import inu.appcenter.bjj_android.utils.ImageLoader
 import kotlin.math.round
-
 
 @Composable
 fun MainMenuItem(
@@ -49,8 +42,6 @@ fun MainMenuItem(
     clickMenuDetail: () -> Unit,
     mainViewModel: MainViewModel
 ) {
-
-
     Row(
         modifier = Modifier
             .padding(horizontal = 20.dp)
@@ -61,7 +52,6 @@ fun MainMenuItem(
                 color = Color(0xFF0C0C0C).copy(alpha = 0.05f)
             )
             .fillMaxWidth()
-//            .height(80.dp)
             .background(color = Color.White, shape = RoundedCornerShape(3.dp))
             .clickable {
                 clickMenuDetail()
@@ -69,43 +59,20 @@ fun MainMenuItem(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (menu.reviewImageName != null){
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://bjj.inuappcenter.kr/images/review/${menu.reviewImageName}")
-                    .memoryCacheKey(menu.reviewImageName)
-                    .diskCacheKey(menu.reviewImageName)
-                    .crossfade(true)
-                    .listener(
-                        onError = { _, result ->
-                            Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
-                        },
-                        onSuccess = { _, _ ->
-                            Log.d("ImageLoading", "Successfully loaded image")
-                        }
-                    )
-                    .build(),
-                placeholder = painterResource(R.drawable.placeholder) ,
-                contentDescription = "메인 페이지 리뷰 이미지",
-                contentScale = ContentScale.Crop, // Crop으로 변경
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 6.4.dp, bottom = 6.4.dp)
-                    .width(89.dp)
-                    .height(67.dp)
-                    .clip(RoundedCornerShape(3.dp))  // 라운드 처리 추가
-            )
-        } else {
-            Image(
-                painter = painterResource(R.drawable.placeholder),
-                contentDescription = "리뷰 이미지 없을 경우 대체 이미지",
-                contentScale = ContentScale.Crop, // Crop으로 변경
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 6.4.dp, bottom = 6.4.dp)
-                    .fillMaxHeight()
-                    .width(89.dp)
-                    .clip(RoundedCornerShape(3.dp))  // 라운드 처리 추가
+        // 이미지 로딩 부분을 ImageLoader로 대체
+        Box(
+            modifier = Modifier
+                .padding(start = 8.dp, top = 6.4.dp, bottom = 6.4.dp)
+                .width(89.dp)
+                .height(67.dp)
+        ) {
+            ImageLoader.ReviewImage(
+                imageName = menu.reviewImageName,
+                shape = RoundedCornerShape(3.dp),
+                showLoading = true
             )
         }
+
         Column(
             modifier = Modifier
                 .padding(top = 9.dp, bottom = 9.dp, end = 11.dp)

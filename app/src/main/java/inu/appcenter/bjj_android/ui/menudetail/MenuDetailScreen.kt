@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.menudetail
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
+import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
 import inu.appcenter.bjj_android.ui.menudetail.menuinfo.HeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.menuinfo.NavigationButtons
@@ -36,6 +40,7 @@ import inu.appcenter.bjj_android.ui.menudetail.review.ReviewHeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.review.ReviewItem
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
+import kotlinx.coroutines.flow.collectLatest
 
 private val VERTICAL_SPACER_HEIGHT = 19.8.dp
 private val HORIZONTAL_PADDING = 21.3.dp
@@ -48,6 +53,11 @@ fun MenuDetailScreen(
     navController: NavHostController,
     menuDetailViewModel: MenuDetailViewModel,
 ) {
+
+    ErrorHandler(menuDetailViewModel)
+    LoadingIndicator(menuDetailViewModel)
+
+    val context = LocalContext.current
     val menuDetailUiState by menuDetailViewModel.uiState.collectAsState()
     var pageNumber by remember { mutableIntStateOf(0) }
 
@@ -63,6 +73,17 @@ fun MenuDetailScreen(
                 pageNumber = 0,
                 pageSize = 3
             )
+        }
+    }
+
+
+    LaunchedEffect(key1 = true) {
+        menuDetailViewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MenuDetailUiEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

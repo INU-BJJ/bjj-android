@@ -17,43 +17,20 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 @Composable
 fun HeaderImage(
     menu: TodayDietRes
 ) {
-    if (menu.reviewImageName != null){
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://bjj.inuappcenter.kr/images/review/${menu.reviewImageName}")
-                .memoryCacheKey(menu.reviewImageName)
-                .diskCacheKey(menu.reviewImageName)
-                .crossfade(true)
-                .listener(
-                    onError = { _, result ->
-                        Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
-                    },
-                    onSuccess = { _, _ ->
-                        Log.d("ImageLoading", "Successfully loaded image")
-                    }
-                )
-                .build(),
-            placeholder = painterResource(R.drawable.big_placeholder),
-            contentDescription = "상세 메뉴 대표사진",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(257.dp)
-        )
-    } else {
-        Image(
-            painter = painterResource(R.drawable.big_placeholder),
-            contentDescription = "상세 메뉴 대표사진 대체 이미지",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(257.dp)
-        )
-    }
+    // ImageLoader를 사용하여 이미지 로딩 최적화
+    ImageLoader.ReviewImage(
+        imageName = menu.reviewImageName,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(257.dp),
+        contentScale = ContentScale.Crop,
+        showLoading = true,
+        isHeaderImage = true
+    )
 }
