@@ -7,14 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import inu.appcenter.bjj_android.LocalTypography
 
 @Composable
 fun MainText(
     text: String,
-    route: String? = null,
-    navController: NavController? = null,
     onClick: (() -> Unit)? = null
 ) {
     Text(
@@ -25,11 +22,8 @@ fun MainText(
             fontWeight = FontWeight(600),
             color = Color.Black
         ),
-        modifier = Modifier.clickable {
-            when {
-                route != null && navController != null -> navController.navigate(route)
-                onClick != null -> onClick()
-            }
+        modifier = Modifier.clickable(enabled = onClick != null) {
+            onClick?.invoke()
         }
     )
 }
