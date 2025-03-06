@@ -31,7 +31,7 @@ abstract class BaseViewModel : ViewModel() {
                 is CustomResponse.Loading -> onLoading()
                 is CustomResponse.Success -> {
                     setLoading(false)
-                    onSuccess(response.data)
+                    onSuccess(response.data as T)
                 }
                 is CustomResponse.Error -> {
                     setLoading(false)

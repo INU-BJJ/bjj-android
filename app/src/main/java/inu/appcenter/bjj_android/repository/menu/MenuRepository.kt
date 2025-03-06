@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository : BaseRepository {
     suspend fun toggleMenuLiked(mainMenuId: Long): Flow<CustomResponse<Boolean>>
-    suspend fun getLikedMenus(): Flow<CustomResponse<LikedMenu>>
+    suspend fun getLikedMenus(): Flow<CustomResponse<List<LikedMenu>>>
     suspend fun getMenusRanking(pageNumber: Int, pageSize: Int): Flow<CustomResponse<MenuRanking>>
 }

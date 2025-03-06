@@ -173,11 +173,11 @@ class AuthViewModel(
 
     fun deleteAccount() {
         viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(deleteAccountState = AuthState.Loading) }
+            setLoading(true)
+            _uiState.update { it.copy(deleteAccountState = AuthState.Loading) }
 
-                val response = memberRepository.deleteAccount()
-                if (response.isSuccessful) {
+            memberRepository.deleteAccount().handleResponse(
+                onSuccess = {
                     // 토큰 삭제 및 상태 초기화
                     dataStoreManager.clearToken()
 
@@ -190,24 +190,23 @@ class AuthViewModel(
                         }
                     }
 
-                    _uiState.update { it.copy(
-                        deleteAccountState = AuthState.Success,
-                        hasToken = false
-                    )}
-                } else {
-                    throw Exception(response.errorBody()?.string() ?: "회원 탈퇴 실패")
+                    _uiState.update {
+                        it.copy(
+                            deleteAccountState = AuthState.Success,
+                            hasToken = false
+                        )
+                    }
+                },
+                onError = { error ->
+                    Log.e("deleteAccount", error.message ?: "Unknown error")
+                    _uiState.update {
+                        it.copy(
+                            deleteAccountState = AuthState.Error(error.message ?: UNKNOWN_ERROR)
+                        )
+                    }
+                    emitError(error)
                 }
-            } catch (e: Exception) {
-                Log.e("deleteAccount", e.message.toString())
-                _uiState.update { it.copy(
-                    deleteAccountState = AuthState.Error(e.message ?: UNKNOWN_ERROR)
-                )}
-            } catch (e: RuntimeException) {
-                Log.e("deleteAccount timeout", e.message.toString())
-                _uiState.update { it.copy(
-                    deleteAccountState = AuthState.Error(TIMEOUT_ERROR)
-                )}
-            }
+            )
         }
     }
 

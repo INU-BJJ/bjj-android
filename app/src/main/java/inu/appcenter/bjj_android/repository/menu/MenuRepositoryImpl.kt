@@ -11,7 +11,7 @@ class MenuRepositoryImpl(private val apiService: APIService) : MenuRepository {
         apiService.toggleMenuLiked(mainMenuId = mainMenuId)
     }
 
-    override suspend fun getLikedMenus(): Flow<CustomResponse<LikedMenu>> = safeApiCall {
+    override suspend fun getLikedMenus(): Flow<CustomResponse<List<LikedMenu>>> = safeApiCall {
         apiService.getLikedMenus()
     }
 
