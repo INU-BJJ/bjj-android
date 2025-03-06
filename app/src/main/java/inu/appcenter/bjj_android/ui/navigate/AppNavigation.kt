@@ -157,6 +157,12 @@ fun AppNavigation(
                     onNavigateToBlockedUser = {
                         navController.navigate(AllDestination.BlockedUser.route)
                     },
+                    onNavigateToLogin = {
+                        authViewModel.logout()
+                        navController.navigate(AllDestination.Login.route) {
+                            popUpTo(AllDestination.Main.route) { inclusive = true }
+                        }
+                    },
                     onWithdrawalAccount = {
                         //TODO: 탈퇴 로직 구현
                     }
@@ -164,7 +170,7 @@ fun AppNavigation(
             }
             composable(AllDestination.LikedMenu.route) {
                 LikedMenuScreen(
-                    viewModel = likedMenuViewModel,
+                    likedMenuViewModel = likedMenuViewModel,
                     onNavigateBack = {
                         navController.popBackStack()
                     },
