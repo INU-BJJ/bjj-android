@@ -220,26 +220,24 @@ class MenuDetailViewModel(
     fun toggleReviewLiked(reviewId: Long) {
         viewModelScope.launch {
             reviewRepository.toggleReviewLiked(reviewId = reviewId).handleResponse(
-                onSuccess = { isSuccess ->
-                    if (isSuccess) {
-                        _uiState.update { currentState ->
-                            val updatedReviews = currentState.reviews?.copy(
-                                reviewDetailList = currentState.reviews.reviewDetailList.map { review ->
-                                    if (review.reviewId == reviewId) {
-                                        // Toggle the isLiked status and update likeCount
-                                        review.copy(
-                                            liked = !review.liked,
-                                            likeCount = if (!review.liked) review.likeCount + 1 else review.likeCount - 1
-                                        )
-                                    } else {
-                                        review
-                                    }
+                onSuccess = { isLiked ->
+                    _uiState.update { currentState ->
+                        val updatedReviews = currentState.reviews?.copy(
+                            reviewDetailList = currentState.reviews.reviewDetailList.map { review ->
+                                if (review.reviewId == reviewId) {
+                                    // Toggle the isLiked status and update likeCount
+                                    review.copy(
+                                        liked = isLiked,
+                                        likeCount = if (!review.liked) review.likeCount + 1 else review.likeCount - 1
+                                    )
+                                } else {
+                                    review
                                 }
-                            )
-                            currentState.copy(
-                                reviews = updatedReviews
-                            )
-                        }
+                            }
+                        )
+                        currentState.copy(
+                            reviews = updatedReviews
+                        )
                     }
                 },
                 onError = { error ->

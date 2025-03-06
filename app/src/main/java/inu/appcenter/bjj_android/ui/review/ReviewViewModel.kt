@@ -268,6 +268,7 @@ class ReviewViewModel(
         viewModelScope.launch {
             reviewRepository.deleteReview(reviewId).handleResponse(
                 onSuccess = {
+                    Log.d("deleteReviewSuccess", "deleteReviewSuccess")
                     getMyReviews()
                     onSuccess()
                 }

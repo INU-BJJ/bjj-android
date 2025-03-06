@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,7 +42,6 @@ import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewModel) {
     val scrollState = rememberScrollState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
-
 
     Scaffold(
         topBar = {

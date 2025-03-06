@@ -15,10 +15,14 @@ interface BaseRepository {
         try {
             val response = apiCall()
             if (response.isSuccessful) {
-                response.body()?.let { body ->
-                    // 명시적으로 non-null 타입으로 캐스팅
-                    emit(CustomResponse.Success(body as T))
-                } ?: emit(CustomResponse.Error(AppError.EmptyResponse()))
+                if (response.body() == null && response.code() == 204) {
+                    // 204 No Content와 같이 응답 본문이 없어도 정상적인 경우 처리
+                    emit(CustomResponse.Success(Unit as T))
+                } else {
+                    response.body()?.let { body ->
+                        emit(CustomResponse.Success(body as T))
+                    } ?: emit(CustomResponse.Error(AppError.EmptyResponse()))
+                }
             } else {
                 // 서버로부터 받은 에러 메시지 파싱
                 val errorMessage = ErrorHandler.parseErrorBody(response.errorBody()?.string())
