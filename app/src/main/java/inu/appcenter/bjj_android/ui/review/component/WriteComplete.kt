@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.review.toolsAndUtils
+package inu.appcenter.bjj_android.ui.review.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
