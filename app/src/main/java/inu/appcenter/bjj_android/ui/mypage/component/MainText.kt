@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.mypage.setting.component
+package inu.appcenter.bjj_android.ui.mypage.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text

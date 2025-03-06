@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.mypage.setting.component.MainText
+import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 

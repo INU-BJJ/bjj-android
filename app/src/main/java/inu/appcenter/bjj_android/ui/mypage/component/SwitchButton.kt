@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.mypage.setting.component
+package inu.appcenter.bjj_android.ui.mypage.component
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement

@@ -19,7 +19,7 @@ import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
-import inu.appcenter.bjj_android.ui.mypage.setting.page.LikedMenuScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen

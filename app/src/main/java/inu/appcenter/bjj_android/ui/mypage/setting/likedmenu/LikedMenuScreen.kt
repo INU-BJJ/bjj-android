@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.mypage.setting.page
+package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.mypage.setting.component.LikedMenuFrame
-import inu.appcenter.bjj_android.ui.mypage.setting.component.MainText
-import inu.appcenter.bjj_android.ui.mypage.setting.component.SwitchButton
+import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
+import inu.appcenter.bjj_android.ui.mypage.component.MainText
+import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
