@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,8 +54,8 @@ fun SettingScreen(
     if (showDeleteAccountDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAccountDialog = false },
-            title = { Text("회원 탈퇴") },
-            text = { Text("정말 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.") },
+            title = { Text(stringResource(R.string.withdraw_confirmation_title)) },
+            text = { Text(stringResource(R.string.withdraw_confirmation_message)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -65,12 +66,12 @@ fun SettingScreen(
                         containerColor = Red_FF0000
                     )
                 ) {
-                    Text("탈퇴하기", color = Color.White)
+                    Text(stringResource(R.string.withdraw_confirm), color = Color.White)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDeleteAccountDialog = false }) {
-                    Text("취소")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -80,7 +81,7 @@ fun SettingScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "설정",
+                        text = stringResource(R.string.setting_title),
                         style = LocalTypography.current.semibold18.copy(
                             textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
@@ -94,7 +95,7 @@ fun SettingScreen(
                             .offset(x = 20.dp, y = 4.5.dp)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
-                        contentDescription = "뒤로 가기",
+                        contentDescription = stringResource(R.string.back_description),
                         tint = Color.Black
                     )
 
@@ -121,15 +122,15 @@ fun SettingScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 MainText(
-                    text = "닉네임 변경하기",
+                    text = stringResource(R.string.change_nickname),
                     onClick = { onNavigeteToNickname() }
                 )
                 MainText(
-                    text = "좋아요한 메뉴",
+                    text = stringResource(R.string.liked_menu),
                     onClick = { onNavigateToLikedMenu() }
                 )
                 MainText(
-                    text = "차단한 유저 보기",
+                    text = stringResource(R.string.blocked_users),
                     onClick = { onNavigateToBlockedUser() }
                 )
             }
@@ -145,7 +146,7 @@ fun SettingScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
-                    text = "로그아웃",
+                    text = stringResource(R.string.logout),
                     style = LocalTypography.current.medium15.copy(
                         lineHeight = 18.sp,
                         letterSpacing = 0.13.sp,
@@ -155,7 +156,7 @@ fun SettingScreen(
                     modifier = Modifier.clickable { onNavigateToLogin() }
                 )
                 Text(
-                    text = "탈퇴하기",
+                    text = stringResource(R.string.withdraw),
                     style = LocalTypography.current.medium15.copy(
                         lineHeight = 18.sp,
                         letterSpacing = 0.13.sp,

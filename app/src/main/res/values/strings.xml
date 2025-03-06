@@ -3,7 +3,7 @@
 
     <!-- ReviewDetailPage.kt 문자열 -->
     <string name="review_detail_title">리뷰 상세</string>
-    <string name="back_description">뒤로 가기</string>
+    <string name="back_description">뒤로 가기</string>  <!-- 공통 "뒤로 가기" 문자열로 사용 -->
     <string name="delete_description">삭제 하기</string>
     <string name="delete_text">삭제하기</string>
     <string name="invalid_nickname">잘못된 닉네임</string>
@@ -38,4 +38,28 @@
 
     <!-- ReviewFrame.kt 문자열 -->
     <string name="full_star_description">별점</string>
+
+    <!-- 공통 에러 메시지 -->
+    <string name="generic_error">오류가 발생했습니다.</string>
+
+    <!-- MyPageScreen.kt 문자열 -->
+    <string name="my_page_title">마이페이지</string>
+    <string name="settings_icon_description">세팅 톱니바퀴</string>
+
+    <!-- SettingScreen.kt 문자열 -->
+    <string name="setting_title">설정</string>
+    <string name="change_nickname">닉네임 변경하기</string>
+    <string name="liked_menu">좋아요한 메뉴</string>
+    <string name="blocked_users">차단한 유저 보기</string>
+    <string name="logout">로그아웃</string>
+    <string name="withdraw">탈퇴하기</string>
+    <string name="withdraw_confirmation_title">회원 탈퇴</string>
+    <string name="withdraw_confirmation_message">정말 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.</string>
+    <string name="withdraw_confirm">탈퇴하기</string>
+    <string name="cancel">취소</string>
+
+    <!-- LikedMenuScreen.kt 문자열 -->
+    <string name="liked_menu_title">좋아요한 메뉴</string>
+    <string name="liked_alarm_toggle">좋아요 알람 받기</string>
+    <string name="no_liked_menu">좋아요한 메뉴가 없습니다.</string>
 </resources>

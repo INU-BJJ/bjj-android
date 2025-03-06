@@ -32,9 +32,9 @@ fun ReviewCompletedDialog(
     onDismiss: () -> Unit
 ) {
     if (show) {
-        // 10초 후 자동 닫기
+        // 1초 후 자동 닫기
         LaunchedEffect(Unit) {
-            delay(10000)
+            delay(1000)
             onDismiss()
         }
 

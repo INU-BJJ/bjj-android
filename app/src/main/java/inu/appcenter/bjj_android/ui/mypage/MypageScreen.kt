@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +61,7 @@ fun MyPageScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "마이페이지",
+                        text = stringResource(R.string.my_page_title),
                         style = LocalTypography.current.semibold18.copy(
                             textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
@@ -71,7 +72,7 @@ fun MyPageScreen(
                 actions = {
                     Icon(
                         painter = painterResource(R.drawable.setting),
-                        contentDescription = "세팅 톱니바퀴",
+                        contentDescription = stringResource(R.string.settings_icon_description),
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .padding(end = 18.dp)
@@ -80,19 +81,6 @@ fun MyPageScreen(
                             }
                     )
                 },
-//                navigationIcon = {
-//                    IconButton(
-//                        onClick = {
-//                            authViewModel.logout()
-//                        }
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.logout),
-//                            contentDescription = "logout",
-//                            tint = Color.Black
-//                        )
-//                    }
-//                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
