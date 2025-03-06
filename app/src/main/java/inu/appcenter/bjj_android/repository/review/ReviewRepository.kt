@@ -5,16 +5,13 @@ import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
+import inu.appcenter.bjj_android.repository.base.BaseRepository
 import inu.appcenter.bjj_android.utils.CustomResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 
-interface ReviewRepository {
+interface ReviewRepository : BaseRepository {
 
     suspend fun getReviews(
         menuPairId: Long,
@@ -22,36 +19,36 @@ interface ReviewRepository {
         pageSize: Int,
         sort: String,
         isWithImages: Boolean
-    ) : Response<ReviewRes>
+    ): Flow<CustomResponse<ReviewRes>>
 
     suspend fun postReview(
         reviewPost: RequestBody,
         files: List<MultipartBody.Part>?
-    ): Response<Unit>
+    ): Flow<CustomResponse<Unit>>
 
     suspend fun deleteReview(
         reviewId: Long
-    ) : Response<Unit>
+    ): Flow<CustomResponse<Unit>>
 
-    suspend fun getMyReviews() : Response<MyReviewsGroupedRes>
+    suspend fun getMyReviews(): Flow<CustomResponse<MyReviewsGroupedRes>>
 
     suspend fun getMyReviewsByCafeteria(
         cafeteriaName: String,
         pageNumber: Int,
         pageSize: Int
-    ) : Response<MyReviewsPagedRes>
+    ): Flow<CustomResponse<MyReviewsPagedRes>>
 
     suspend fun toggleReviewLiked(
         reviewId: Long
-    ) : Response<Boolean>
+    ): Flow<CustomResponse<Boolean>>
 
     suspend fun getReviewImages(
         menuPairId: Long,
         pageNumber: Int,
         pageSize: Int
-    ) : Response<ReviewImageDetailList>
+    ): Flow<CustomResponse<ReviewImageDetailList>>
 
     suspend fun getReviewDetail(
         reviewId: Long
-    ) : Flow<CustomResponse<ReviewDetailRes>>
+    ): Flow<CustomResponse<ReviewDetailRes>>
 }

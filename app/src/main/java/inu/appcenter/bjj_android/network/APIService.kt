@@ -24,7 +24,6 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-
 interface APIService {
 
     // Review API
@@ -72,10 +71,11 @@ interface APIService {
         @Query("pageSize") pageSize: Int
     ) : Response<ReviewImageDetailList>
 
+    // 이 메서드는 Response로 감싸서 일관성 있게 변경
     @GET("/api/reviews/{reviewId}")
     suspend fun getReviewDetail(
         @Path("reviewId") reviewId: Long
-    ) : ReviewDetailRes
+    ) : Response<ReviewDetailRes>  // Response<ReviewDetailRes>로 변경
 
     // Image API
     @GET("/api/images")
@@ -126,9 +126,10 @@ interface APIService {
     @GET("/api/menus/liked")
     suspend fun getLikedMenus() : Response<LikedMenu>
 
+    // 이 메서드도 Response로 감싸서 일관성 있게 변경
     @GET("/api/menus/ranking")
     suspend fun getMenusRanking(
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int
-    ) : MenuRanking
+    ) : Response<MenuRanking>  // Response<MenuRanking>으로 변경
 }

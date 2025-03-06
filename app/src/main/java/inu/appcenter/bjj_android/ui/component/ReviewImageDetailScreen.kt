@@ -43,6 +43,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,22 +174,14 @@ fun ReviewImageDetailScreen(
                 )
             )
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://bjj.inuappcenter.kr/images/review/${imageName}")
-                    .size(500) // 적절한 크기로 조정 (픽셀 단위)
-                    .scale(Scale.FILL)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .diskCachePolicy(CachePolicy.ENABLED)
-                    .memoryCacheKey(imageName)
-                    .diskCacheKey(imageName)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Selected Food Image",
+            // ImageLoader를 사용하여 이미지 로딩 최적화
+            ImageLoader.ReviewImage(
+                imageName = imageName,
                 modifier = Modifier
                     .fillMaxSize()
                     .offset(x = offset.dp),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                showLoading = true
             )
         }
 

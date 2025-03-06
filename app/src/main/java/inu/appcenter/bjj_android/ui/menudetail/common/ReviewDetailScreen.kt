@@ -39,6 +39,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.review.ReviewDetailRes
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
+import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
@@ -49,27 +52,22 @@ import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewViewModel: ReviewViewModel) {
+fun ReviewDetailScreen(
+    navController: NavHostController,
+    reviewId: Long,
+    reviewViewModel: ReviewViewModel
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-
     val uiState by reviewViewModel.reviewDetailUiState.collectAsState()
+
+    LoadingIndicator(reviewViewModel)
+    ErrorHandler(reviewViewModel)
 
     LaunchedEffect(key1 = true) {
         reviewViewModel.getReviewDetail(reviewId)
-    }
-
-    if (uiState.isLoading) {
-        // Show loading indicator
-        return
-    }
-
-    uiState.error?.let { error ->
-        // Show error message
-        return
     }
 
     val review = uiState.reviewDetail ?: return
@@ -79,8 +77,8 @@ fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewV
             .background(color = Color.White)
             .fillMaxSize()
     ) {
-        // 상단바
-        CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
             title = {
                 Text(
                     text = "리뷰 상세",
@@ -102,7 +100,6 @@ fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewV
                     contentDescription = "뒤로 가기",
                     tint = Color.Black
                 )
-
             },
             actions = {
                 Icon(
@@ -113,37 +110,32 @@ fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewV
                     contentDescription = "삭제 하기",
                     tint = Color.Black
                 )
-            })
+            }
+        )
 
         if (showBottomSheet) {
             ModalBottomSheet(
                 containerColor = Color.White,
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                dragHandle = { /* 드래그 핸들을 빈 상태로 만듦, 즉 핸들을 없앰 */ }) {
-                // Sheet content
-                Column(
-                    modifier = Modifier
-                ) {
+                dragHandle = { }
+            ) {
+                Column(modifier = Modifier) {
                     Spacer(modifier = Modifier.height(32.dp))
-                    Text(text = "신고하기",
+                    Text(
+                        text = "신고하기",
                         color = Color.Black,
                         modifier = Modifier
-                            .clickable {
-
-                                showBottomSheet = false
-                            }
+                            .clickable { showBottomSheet = false }
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp)
                     )
                     Spacer(modifier = Modifier.height(18.dp))
-                    Text(text = "차단하기",
-                        color =  Color.Black,
+                    Text(
+                        text = "차단하기",
+                        color = Color.Black,
                         modifier = Modifier
-                            .clickable {
-
-                                showBottomSheet = false
-                            }
+                            .clickable { showBottomSheet = false }
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp)
                     )
@@ -152,164 +144,144 @@ fun ReviewDetailScreen(navController: NavHostController, reviewId: Long, reviewV
             }
         }
 
+        // 리뷰 컨텐츠
+        ReviewContent(review = review, reviewId = reviewId, navController = navController)
+    }
+}
+
+@Composable
+private fun ReviewContent(
+    review: ReviewDetailRes,
+    reviewId: Long,
+    navController: NavHostController
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 29.5.dp)
+    ) {
         Spacer(Modifier.height(13.dp))
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 29.5.dp)
-                .fillMaxWidth(),
+        // 프로필 섹션
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // 본문: 유저 프로필, 이름, 별점, 날짜, 좋아요 버튼 및 숫자
-            Row(
-                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 유저 프로필 (회색 동그라미)
-                Box(
-                    modifier = Modifier
-                        .size(41.dp)
-                        .background(Gray_D9D9D9, shape = CircleShape)
+            Box(
+                modifier = Modifier
+                    .size(41.dp)
+                    .background(Gray_D9D9D9, shape = CircleShape)
+            )
+
+            Spacer(Modifier.width(10.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = review.memberNickname,
+                    style = LocalTypography.current.bold15.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
+                    color = Color.Black
                 )
+                Spacer(Modifier.height(3.dp))
 
-                Spacer(Modifier.width(10.dp))
-
-                // 유저 정보 (이름, 별점, 날짜)
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    StarRatingCalculator(rating = review.rating.toFloat())
+                    Spacer(Modifier.width(10.dp))
                     Text(
-                        text = review.memberNickname,
-                        style = LocalTypography.current.bold15.copy(
+                        text = review.createdDate.formatter(),
+                        style = LocalTypography.current.regular13.copy(
                             letterSpacing = 0.13.sp,
-                            lineHeight = 15.sp
+                            lineHeight = 17.sp
                         ),
-                        color = Color.Black
-                    )
-                    Spacer(Modifier.height(3.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        StarRatingCalculator(rating = review.rating.toFloat())
-                        Spacer(Modifier.width(10.dp))
-                        Text(
-                            text = review.createdDate.formatter(),
-                            style = LocalTypography.current.regular13.copy(
-                                letterSpacing = 0.13.sp,
-                                lineHeight = 17.sp,
-                                color = Color(0xFF999999)
-                            ),
-                            color = Gray_999999
-                        )
-                    }
-                }
-
-                // 좋아요 버튼 및 숫자
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        modifier = Modifier,
-                        painter = painterResource(id = R.drawable.thumbs),
-                        contentDescription = "좋아요",
-                        tint = Orange_FF7800
-                    )
-                    Spacer(Modifier.height(3.dp))
-                    Text(
-                        text = review.likeCount.toString(),
-                        style = LocalTypography.current.regular11.copy(
-                            letterSpacing = 0.13.sp,
-                            lineHeight = 15.sp
-                        ),
-                        color = Color.Black
+                        color = Gray_999999
                     )
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-
-            // 텍스트 영역
-            Text(
-                text = review.comment,
-                style = LocalTypography.current.medium13.copy(
-                    letterSpacing = 0.13.sp,
-                    lineHeight = 17.sp
-                ),
-                color = Color.Black
-            )
-        }   // 여기서 Column(좌우 29.5dp) 종료
-
-        Spacer(Modifier.height(12.dp))
-
-        // 이미지 영역
-        if (review.imageNames.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 29.5.dp) // 왼쪽만 29.5dp
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                DynamicReviewImages(
-                    reviewImages = review.imageNames,
-                    onClick = { imageList, index ->
-                        navController.navigate(
-                            AllDestination.MenuDetailReviewDetailPush.createRoute(
-                                imageList = review.imageNames,
-                                index = index,
-                                reviewId = reviewId,
-                                fromReviewDetail = true
-                            )
-                        )
-
-                    }
+                Icon(
+                    painter = painterResource(id = R.drawable.thumbs),
+                    contentDescription = "좋아요",
+                    tint = Orange_FF7800
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    text = review.likeCount.toString(),
+                    style = LocalTypography.current.regular11.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
+                    color = Color.Black
                 )
             }
         }
 
         Spacer(Modifier.height(12.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 29.5.dp)
-        ) {
-            Row {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Orange_FF7800, shape = RoundedCornerShape(3.dp)
-                        )
-                        .padding(horizontal = 7.dp, vertical = 5.dp)
-                ) {
-                    Text(
-                        text = review.mainMenuName,
-                        style = LocalTypography.current.medium11.copy(
-                            letterSpacing = 0.13.sp,
-                            lineHeight = 15.sp
-                        ),
-                        color = Color.Black
-                    )
-                }
-                Spacer(Modifier.width(5.dp))
+        Text(
+            text = review.comment,
+            style = LocalTypography.current.medium13.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 17.sp
+            ),
+            color = Color.Black
+        )
 
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Gray_F6F6F8, shape = RoundedCornerShape(3.dp)
+        Spacer(Modifier.height(12.dp))
+
+        if (review.imageNames.isNotEmpty()) {
+            DynamicReviewImages(
+                reviewImages = review.imageNames,
+                onClick = { imageList, index ->
+                    navController.navigate(
+                        AllDestination.MenuDetailReviewDetailPush.createRoute(
+                            imageList = review.imageNames,
+                            index = index,
+                            reviewId = reviewId,
+                            fromReviewDetail = true
                         )
-                        .padding(horizontal = 7.dp, vertical = 5.dp)
-                ) {
-                    Text(
-                        text = review.subMenuName,
-                        style = LocalTypography.current.medium11.copy(
-                            letterSpacing = 0.13.sp,
-                            lineHeight = 15.sp
-                        ),
-                        color = Color.Black
                     )
                 }
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        Row {
+            Box(
+                modifier = Modifier
+                    .background(Orange_FF7800, RoundedCornerShape(3.dp))
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+            ) {
+                Text(
+                    text = review.mainMenuName,
+                    style = LocalTypography.current.medium11.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
+                    color = Color.Black
+                )
+            }
+            Spacer(Modifier.width(5.dp))
+            Box(
+                modifier = Modifier
+                    .background(Gray_F6F6F8, RoundedCornerShape(3.dp))
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+            ) {
+                Text(
+                    text = review.subMenuName,
+                    style = LocalTypography.current.medium11.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
+                    color = Color.Black
+                )
             }
         }
     }
 }
-
