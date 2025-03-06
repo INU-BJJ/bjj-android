@@ -41,8 +41,8 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DynamicReviewDetailImages
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
+import inu.appcenter.bjj_android.ui.review.component.DynamicReviewDetailImages
+import inu.appcenter.bjj_android.ui.review.component.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8

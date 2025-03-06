@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import inu.appcenter.bjj_android.ui.components.ReviewImageDetailScreen
+import inu.appcenter.bjj_android.ui.component.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.login.LoginScreen
@@ -161,7 +161,8 @@ fun AppNavigation(
             composable(AllDestination.ReviewDetailPush.route) {
                 ReviewImageDetailScreen(
                     navController = navController,
-                    reviewViewModel = reviewViewModel
+                    reviewViewModel = reviewViewModel,
+                    fromReviewDetail = true
                 )
             }
             composable(AllDestination.MyPage.route) {

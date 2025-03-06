@@ -18,20 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,20 +44,13 @@ import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.menu.MenuRankingDetail
-import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
-import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
-import inu.appcenter.bjj_android.ui.theme.Brown_C09470
-import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
+import inu.appcenter.bjj_android.ui.review.component.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 import inu.appcenter.bjj_android.ui.theme.RacingSansOne
-import inu.appcenter.bjj_android.ui.theme.Yellow_FFC421
-import java.util.Date
-import kotlin.math.round
 
 @Composable
 fun RankingScreen(
