@@ -207,6 +207,7 @@ fun ReviewItem(
             Spacer(Modifier.width(5.dp))
             ReviewMenuText(
                 text = review.subMenuName,
+                isSame = review.subMenuName == menu.restMenu?.split(" ")?.first()
             )
         }
     }
