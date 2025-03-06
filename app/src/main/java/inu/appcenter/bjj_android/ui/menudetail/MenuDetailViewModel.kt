@@ -243,7 +243,9 @@ class MenuDetailViewModel(
                     }
                 },
                 onError = { error ->
+                    // 에러 발생 시 UI 상태를 업데이트하지 않고 오류 메시지만 표시
                     emitError(error)
+                    // 단일 이벤트로 토스트 메시지 전달
                     viewModelScope.launch {
                         _eventFlow.emit(MenuDetailUiEvent.ShowToast(
                             error.message ?: "좋아요 처리 중 오류가 발생했습니다."

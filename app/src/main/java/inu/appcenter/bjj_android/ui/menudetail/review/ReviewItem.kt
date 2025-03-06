@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,11 +62,18 @@ fun ReviewItem(
 ) {
     val context = LocalContext.current
 
+    var lastEventTime by remember { mutableStateOf(0L) }
+
     LaunchedEffect(true) {
         menuDetailViewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MenuDetailUiEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    val currentTime = System.currentTimeMillis()
+                    // 토스트 중복 표시 방지 (1초 이내 중복 토스트 차단)
+                    if (currentTime - lastEventTime > 1000) {
+                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                        lastEventTime = currentTime
+                    }
                 }
             }
         }
@@ -138,7 +146,12 @@ fun ReviewItem(
                     tint = Color.Unspecified,
                     modifier = Modifier
                         .clickable {
-                            menuDetailViewModel.toggleReviewLiked(reviewId = review.reviewId)
+                            // 중복 클릭 방지 로직 추가
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastEventTime > 1000) {
+                                menuDetailViewModel.toggleReviewLiked(reviewId = review.reviewId)
+                                lastEventTime = currentTime
+                            }
                         }
                 )
                 Text(
