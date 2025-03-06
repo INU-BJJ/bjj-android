@@ -30,7 +30,7 @@ import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.HorizontalDivider
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
+import inu.appcenter.bjj_android.ui.review.component.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800

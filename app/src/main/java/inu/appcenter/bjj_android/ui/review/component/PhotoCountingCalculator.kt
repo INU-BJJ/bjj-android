@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.review.toolsAndUtils
+package inu.appcenter.bjj_android.ui.review.component
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

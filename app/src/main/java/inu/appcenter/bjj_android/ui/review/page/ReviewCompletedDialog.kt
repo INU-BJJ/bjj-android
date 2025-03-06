@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.CircleRectShape
+import inu.appcenter.bjj_android.ui.review.component.CircleRectShape
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
 import kotlinx.coroutines.delay
 

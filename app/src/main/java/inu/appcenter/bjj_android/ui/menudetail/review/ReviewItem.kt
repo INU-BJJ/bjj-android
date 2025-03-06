@@ -45,7 +45,7 @@ import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.formatter
+import inu.appcenter.bjj_android.ui.review.component.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8

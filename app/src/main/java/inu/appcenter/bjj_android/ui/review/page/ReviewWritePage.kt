@@ -46,14 +46,14 @@ import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DashedBorderBox
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DropdownMenuBox
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.DropdownType
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.ReviewTextField
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.StarRatingCalculatorBig
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.WriteComplete
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.addImageToList
-import inu.appcenter.bjj_android.ui.review.toolsAndUtils.getFileFromUri
+import inu.appcenter.bjj_android.ui.review.component.DashedBorderBox
+import inu.appcenter.bjj_android.ui.review.component.DropdownMenuBox
+import inu.appcenter.bjj_android.ui.review.component.DropdownType
+import inu.appcenter.bjj_android.ui.review.component.ReviewTextField
+import inu.appcenter.bjj_android.ui.review.component.StarRatingCalculatorBig
+import inu.appcenter.bjj_android.ui.review.component.WriteComplete
+import inu.appcenter.bjj_android.ui.review.component.addImageToList
+import inu.appcenter.bjj_android.ui.review.component.getFileFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 
