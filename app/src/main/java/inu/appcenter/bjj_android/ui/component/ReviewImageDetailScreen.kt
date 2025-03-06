@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.components
+package inu.appcenter.bjj_android.ui.component
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -30,15 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Scale
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
@@ -137,6 +132,7 @@ fun ReviewImageDetailScreen(
                                 offsetX > size.width * 0.1f && currentIndex > 0 -> {
                                     currentIndex--
                                 }
+
                                 offsetX < -size.width * 0.1f && currentIndex < totalImages - 1 -> {
                                     currentIndex++
                                 }
