@@ -22,17 +22,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
-import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    navController: NavHostController
+    onNavigateBack: () -> Unit,
+    onNavigeteToNickname: () -> Unit = {},
+    onNavigateToLikedMenu: () -> Unit,
+    onNavigateToBlockedUser: () -> Unit,
+    onWithdrawalAccount: () -> Unit = {} // 탈퇴
 ) {
     Scaffold(
         topBar = {
@@ -51,9 +53,7 @@ fun SettingScreen(
                     Icon(
                         modifier = Modifier
                             .offset(x = 20.dp, y = 4.5.dp)
-                            .clickable {
-                                navController.popBackStack()
-                            },
+                            .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = "뒤로 가기",
                         tint = Color.Black
@@ -78,17 +78,16 @@ fun SettingScreen(
         ) {
             MainText(
                 text = "닉네임 변경하기",
-                onClick = {
-                    //ToDO
-                })
-            MainText(
-                text = "리뷰 작성하기",
-                route = AllDestination.ReviewWrite.route,
-                navController = navController)
+                onClick = { onNavigeteToNickname() }
+            )
             MainText(
                 text = "좋아요한 메뉴",
-                route = AllDestination.LikedMenu.route,
-                navController = navController)
+                onClick = { onNavigateToLikedMenu() }
+            )
+            MainText(
+                text = "차단한 유저 보기",
+                onClick = { onNavigateToBlockedUser() }
+            )
             Spacer(Modifier.height(400.dp))
             Text(
                 text = "탈퇴하기",
@@ -98,9 +97,7 @@ fun SettingScreen(
                     fontWeight = FontWeight(400),
                     color = Red_FF0000
                 ),
-                modifier = Modifier.clickable {
-                    //ToDO
-                }
+                modifier = Modifier.clickable { onWithdrawalAccount() }
             )
         }
     }
