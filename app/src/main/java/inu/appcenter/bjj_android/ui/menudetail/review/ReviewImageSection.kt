@@ -31,30 +31,35 @@ fun ReviewImagesSection(
     modifier: Modifier = Modifier
 ) {
     val totalSlots = 3
-    val filledSlots = reviewImages.size.coerceAtMost(totalSlots)
-    val emptySlots = (totalSlots - filledSlots).coerceAtLeast(0)
+    val groupedImages = reviewImages.groupBy { it.reviewId }
+    val filledSlots = groupedImages.size // 모든 리뷰 그룹 표시
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
     ) {
-        items(filledSlots) { index ->
-            ReviewImageItem(
-                image = reviewImages[index],
-                onClick = {
-                    navController.navigate(
-                        AllDestination.MenuDetailReviewDetailPush.createRoute(
-                            imageList = listOf(reviewImages[index].imageName),
-                            index = 0,
-                            reviewId = reviewImages[index].reviewId,
-                            fromReviewDetail = false
+        groupedImages.keys.forEach { reviewId -> // 모든 그룹 순회
+            val imagesInReview = groupedImages[reviewId] ?: emptyList()
+            val reversedImagesInReview = imagesInReview.reversed()
+
+            item {
+                ReviewImageItem(
+                    image = reversedImagesInReview.first(),
+                    onClick = {
+                        navController.navigate(
+                            AllDestination.MenuDetailReviewDetailPush.createRoute(
+                                imageList = reversedImagesInReview.map { it.imageName }, // 같은 리뷰의 모든 이미지 포함
+                                index = 0, // 시작 인덱스는 0
+                                reviewId = reviewId,
+                                fromReviewDetail = false
+                            )
                         )
-                    )
-                }
-            )
+                    }
+                )
+            }
         }
 
-        items(emptySlots) {
+        items((totalSlots - filledSlots).coerceAtLeast(0)) {
             EmptyReviewSlot()
         }
 

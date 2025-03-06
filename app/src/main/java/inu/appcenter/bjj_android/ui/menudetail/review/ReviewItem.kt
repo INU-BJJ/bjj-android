@@ -136,6 +136,7 @@ fun ReviewItem(
             }
             Column(
                 modifier = Modifier
+                    .size(30.dp)
                     .padding(end = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -205,7 +206,7 @@ fun ReviewItem(
             )
             Spacer(Modifier.width(5.dp))
             ReviewMenuText(
-                text = review.subMenuName
+                text = review.subMenuName,
             )
         }
     }

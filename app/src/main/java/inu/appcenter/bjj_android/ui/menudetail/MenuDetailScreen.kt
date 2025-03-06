@@ -71,7 +71,7 @@ fun MenuDetailScreen(
             menuDetailViewModel.getReviewImages(
                 menuPairId = menu.menuPairId,
                 pageNumber = 0,
-                pageSize = 3
+                pageSize = 12
             )
         }
     }
