@@ -95,7 +95,7 @@ fun SettingScreen(
                             .offset(x = 20.dp, y = 4.5.dp)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
-                        contentDescription = stringResource(R.string.back_icon),
+                        contentDescription = stringResource(R.string.back_description),
                         tint = Color.Black
                     )
 
