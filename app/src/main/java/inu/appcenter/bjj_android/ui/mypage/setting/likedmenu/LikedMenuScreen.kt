@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +60,7 @@ fun LikedMenuScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "좋아요한 메뉴",
+                        text = stringResource(R.string.liked_menu_title),
                         style = LocalTypography.current.semibold18.copy(
                             textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
@@ -73,7 +74,7 @@ fun LikedMenuScreen(
                             .offset(x = 20.dp, y = 4.5.dp)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
-                        contentDescription = "뒤로 가기",
+                        contentDescription = stringResource(R.string.back_icon),
                         tint = Color.Black
                     )
                 },
@@ -101,7 +102,7 @@ fun LikedMenuScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MainText(text = "좋아요 알람 받기")
+                MainText(text = stringResource(R.string.liked_alarm_toggle))
                 SwitchButton(
                     checked = notificationEnabled,
                     onCheckedChange = { enabled ->
@@ -128,7 +129,7 @@ fun LikedMenuScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.error ?: "오류가 발생했습니다.",
+                        text = uiState.error ?: stringResource(R.string.generic_error),
                         color = Color.Red
                     )
                 }
@@ -151,7 +152,7 @@ fun LikedMenuScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "좋아요한 메뉴가 없습니다.",
+                        text = stringResource(R.string.no_liked_menu),
                         style = LocalTypography.current.medium15,
                         color = Color.Gray
                     )
