@@ -20,6 +20,7 @@ import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
@@ -35,7 +36,8 @@ fun AppNavigation(
     mainViewModel: MainViewModel,
     menuDetailViewModel: MenuDetailViewModel,
     reviewViewModel: ReviewViewModel,
-    rankingViewModel: RankingViewModel
+    rankingViewModel: RankingViewModel,
+    likedMenuViewModel: LikedMenuViewModel
 ) {
 
     val navController = rememberNavController()
@@ -142,10 +144,35 @@ fun AppNavigation(
                 MyPageScreen(navController = navController, authViewModel = authViewModel)
             }
             composable(AllDestination.Setting.route) {
-                SettingScreen(navController)
+                SettingScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigeteToNickname = {
+                        navController.navigate(AllDestination.Nickname.route)
+                    },
+                    onNavigateToLikedMenu = {
+                        navController.navigate(AllDestination.LikedMenu.route)
+                    },
+                    onNavigateToBlockedUser = {
+                        navController.navigate(AllDestination.BlockedUser.route)
+                    },
+                    onWithdrawalAccount = {
+                        //TODO: 탈퇴 로직 구현
+                    }
+                )
             }
             composable(AllDestination.LikedMenu.route) {
-                LikedMenuScreen(navController)
+                LikedMenuScreen(
+                    viewModel = likedMenuViewModel,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+//                    onNavigateToMenuDetail = { menuId ->
+//                        // 메뉴 상세 페이지로 이동 (필요한 경우)
+//                        // 예: navController.navigate("menuDetail/$menuId")
+//                    }
+                )
             }
             composable(
                 route = "moreImage/{menuPairId}",

@@ -30,7 +30,11 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object ReviewWrite : AllDestination("reviewWrite", R.drawable.review, "리뷰 작성")
     data object ReviewDetail : AllDestination("reviewDetail", R.drawable.review, "리뷰 디테일")
     data object ReviewDetailPush : AllDestination("reviewDetailPush", R.drawable.review, "리뷰 디테일 누르면")
+
+    // 마이페이지
     data object MyPage : AllDestination("myPage", R.drawable.mypage, "마이페이지")
     data object Setting : AllDestination("setting", R.drawable.mypage, "설정")
     data object LikedMenu : AllDestination("likedMenu", R.drawable.mypage, "좋아요한 메뉴")
+    data object Nickname : AllDestination("nickname", R.drawable.mypage, "닉네임 변경")
+    data object BlockedUser : AllDestination("blockedUser", R.drawable.mypage, "차단한 유저")
 }
