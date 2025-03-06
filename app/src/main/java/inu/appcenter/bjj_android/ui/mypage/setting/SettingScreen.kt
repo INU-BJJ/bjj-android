@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.HorizontalDivider
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 
@@ -34,7 +35,8 @@ fun SettingScreen(
     onNavigeteToNickname: () -> Unit = {},
     onNavigateToLikedMenu: () -> Unit,
     onNavigateToBlockedUser: () -> Unit,
-    onWithdrawalAccount: () -> Unit = {} // 탈퇴
+    onNavigateToLogin: () -> Unit,
+    onWithdrawalAccount: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -89,6 +91,17 @@ fun SettingScreen(
                 onClick = { onNavigateToBlockedUser() }
             )
             Spacer(Modifier.height(400.dp))
+            HorizontalDivider()
+            Text(
+                text = "로그아웃",
+                style = LocalTypography.current.medium15.copy(
+                    lineHeight = 18.sp,
+                    letterSpacing = 0.13.sp,
+                    fontWeight = FontWeight(400),
+                    color = Color.Black
+                ),
+                modifier = Modifier.clickable { onNavigateToLogin()}
+            )
             Text(
                 text = "탈퇴하기",
                 style = LocalTypography.current.medium15.copy(
