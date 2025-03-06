@@ -38,4 +38,8 @@
 
     <!-- ReviewFrame.kt 문자열 -->
     <string name="full_star_description">별점</string>
+
+    <!-- MyPageScreen.kt 문자열 -->
+    <string name="my_page_title">마이페이지</string>
+    <string name="settings_icon_description">세팅 톱니바퀴</string>
 </resources>
