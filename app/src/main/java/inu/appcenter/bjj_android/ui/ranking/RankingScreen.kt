@@ -161,24 +161,30 @@ fun RankingScreen(
             }
             Spacer(Modifier.height(7.dp))
             LazyColumn {
-                itemsIndexed(rankingUiState.rankingList) { index, rankingItem ->
-                    if (index + 1 <= 3) {
-                        TopThreeRankingItem(
-                            menu = rankingItem,
-                            ranking = index + 1,
-                            itemClick = handleItemClick
-                        )
-                    } else {
-                        NormalRankingItem(
-                            menu = rankingItem,
-                            ranking = index + 1,
-                            itemClick = handleItemClick
-                        )
+                if (rankingUiState.rankingList.isEmpty()) {
+                    item {
+                        EmptyRankingContent()
                     }
+                } else {
+                    itemsIndexed(rankingUiState.rankingList) { index, rankingItem ->
+                        if (index + 1 <= 3) {
+                            TopThreeRankingItem(
+                                menu = rankingItem,
+                                ranking = index + 1,
+                                itemClick = handleItemClick
+                            )
+                        } else {
+                            NormalRankingItem(
+                                menu = rankingItem,
+                                ranking = index + 1,
+                                itemClick = handleItemClick
+                            )
+                        }
 
-                    if (index == rankingUiState.rankingList.size - 1 && !rankingUiState.isLoading) {
-                        LaunchedEffect(Unit) {
-                            rankingViewModel.getMenuRankingList()
+                        if (index == rankingUiState.rankingList.size - 1 && !rankingUiState.isLoading) {
+                            LaunchedEffect(Unit) {
+                                rankingViewModel.getMenuRankingList()
+                            }
                         }
                     }
                 }
