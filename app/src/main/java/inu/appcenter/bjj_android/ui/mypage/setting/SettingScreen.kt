@@ -99,13 +99,12 @@ fun SettingScreen(
             Spacer(Modifier.height(391.dp))
             // Divider (padding 없이 전체 너비 차지)
             HorizontalDivider()
-            Spacer(Modifier.height(24.dp))
 
             // 하단 메뉴 항목들 (로그아웃, 탈퇴하기)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 24.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
