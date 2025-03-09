@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.ui.review.component
 
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,13 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.theme.Black_1E1E1E
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 @Composable
 fun DashedBorderBox(
@@ -98,13 +96,14 @@ fun DashedBorderBox(
         } else {
             // 이미지가 있을 경우 이미지 꽉 채우기
             Box(modifier = Modifier.fillMaxSize()) {
-                Image(
-                    painter = rememberAsyncImagePainter(model = imageUri),
-                    contentDescription = "선택된 이미지",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(cornerRadius), // 이미지에도 클리핑 적용
-                    contentScale = ContentScale.Crop
+                // URI를 파일 이름으로 변환하는 대신, 로컬 이미지 처리
+                // 임시 URI를 직접 사용하는 방식이므로 null 처리
+                ImageLoader.ReviewImage(
+                    imageName = null, // 서버 이미지가 아니므로 null 사용
+                    modifier = Modifier.fillMaxSize(),
+                    shape = cornerRadius,
+                    localUri = imageUri, // 로컬 URI 전달 (ImageLoader에 이 매개변수 추가 필요)
+                    isLocalImage = true // 로컬 이미지임을 명시 (ImageLoader에 이 매개변수 추가 필요)
                 )
 
                 if (showRemoveButton) {

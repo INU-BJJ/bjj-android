@@ -1,7 +1,7 @@
 package inu.appcenter.bjj_android.utils
 
+import android.net.Uri
 import android.util.Log
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.R
@@ -33,16 +34,16 @@ object ImageLoader {
     private const val PROFILE_IMAGE_PATH = "profile/"
 
     // 다양한 이미지 유형에 대한 URL 생성 헬퍼 함수들
-    fun getReviewImageUrl(imageName: String): String {
+    private fun getReviewImageUrl(imageName: String): String {
         return BASE_URL + REVIEW_IMAGE_PATH + imageName
     }
 
-    fun getProfileImageUrl(imageName: String): String {
+    private fun getProfileImageUrl(imageName: String): String {
         return BASE_URL + PROFILE_IMAGE_PATH + imageName
     }
 
     // 이미지 로딩 요청 빌더
-    fun buildImageRequest(
+    private fun buildImageRequest(
         context: android.content.Context,
         imageName: String,
         imageUrl: String,
@@ -75,6 +76,7 @@ object ImageLoader {
     /**
      * Compose용 리뷰 이미지 로딩 컴포저블
      * 로딩 상태와 에러 처리가 통합되어 있습니다.
+     * - 이미지가 로컬 이미지인 경우 처리 추가
      */
     @Composable
     fun ReviewImage(
@@ -85,7 +87,9 @@ object ImageLoader {
         showLoading: Boolean = true,
         clickable: Boolean = false,
         isHeaderImage: Boolean = false,
-        onClick: (() -> Unit)? = null
+        onClick: (() -> Unit)? = null,
+        isLocalImage: Boolean = false,
+        localUri: Uri? = null
     ) {
         val context = LocalContext.current
 
@@ -103,6 +107,26 @@ object ImageLoader {
             finalModifier
         }
 
+        // 로컬 이미지인 경우 (갤러리에서 선택한 이미지)
+        if (isLocalImage && localUri != null) {
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(context)
+                    .data(localUri)
+                    .crossfade(true)
+                    .build()
+            )
+
+            Image(
+                painter = painter,
+                contentDescription = "로컬 이미지",
+                contentScale = contentScale,
+                modifier = clickableModifier
+            )
+
+            return
+        }
+
+        // 서버 이미지 처리 (기존 코드)
         if (imageName == null) {
             // 이미지가 없는 경우 기본 이미지 표시 (동일한 modifier 사용)
             Image(
