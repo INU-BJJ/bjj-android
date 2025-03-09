@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +10,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 /**
  * 서버에서 받아온 이미지 이름 리스트 [imageNames]를 기반으로
@@ -36,19 +33,19 @@ fun DynamicReviewDetailImages(
         1 -> {
             SingleImage(
                 imageName = imageNames.first(),
-                onImageClick = onImageClick
+                onImageClick = { onImageClick(0) }
             )
         }
         2 -> {
             DoubleImages(
                 imageNames = imageNames,
-                onImageClick = onImageClick
+                onImageClick = { index -> onImageClick(index) }
             )
         }
         else -> {
             MultipleImages(
                 imageNames = imageNames,
-                onImageClick = onImageClick
+                onImageClick = { index -> onImageClick(index) }
             )
         }
     }
@@ -60,19 +57,22 @@ fun DynamicReviewDetailImages(
 @Composable
 fun SingleImage(
     imageName: String,
-    onImageClick: (index: Int) -> Unit
+    onImageClick: () -> Unit
 ) {
-    // index = 0으로 고정
-    AsyncImage(
-        model = "https://bjj.inuappcenter.kr/images/review/$imageName",
-        contentDescription = "싱글 리뷰 이미지",
-        contentScale = ContentScale.Crop,
+    Box(
         modifier = Modifier
             .height(250.dp)
             .width(301.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { onImageClick(0) }
-    )
+    ) {
+        // ImageLoader 사용
+        ImageLoader.ReviewImage(
+            imageName = imageName,
+            modifier = Modifier.fillMaxSize(),
+            shape = RoundedCornerShape(10.dp),
+            clickable = true,
+            onClick = onImageClick
+        )
+    }
 }
 
 /**
@@ -89,7 +89,7 @@ fun DoubleImages(
     ) {
         itemsIndexed(imageNames) { index, name ->
             ReviewDetailImage(
-                imageUrl = "https://bjj.inuappcenter.kr/images/review/$name",
+                imageName = name,
                 width = 149.5.dp,
                 isFirst = index == 0,
                 isLast = index == imageNames.size - 1,
@@ -112,7 +112,7 @@ fun MultipleImages(
     ) {
         itemsIndexed(imageNames) { index, name ->
             ReviewDetailImage(
-                imageUrl = "https://bjj.inuappcenter.kr/images/review/$name",
+                imageName = name,
                 width = 140.7.dp,
                 isFirst = index == 0,
                 isLast = index == imageNames.size - 1,
@@ -129,7 +129,7 @@ fun MultipleImages(
  */
 @Composable
 fun ReviewDetailImage(
-    imageUrl: String,
+    imageName: String,
     width: Dp,
     isFirst: Boolean,
     isLast: Boolean,
@@ -139,22 +139,22 @@ fun ReviewDetailImage(
         modifier = Modifier
             .height(250.dp)
             .width(width)
-            .clip(
-                RoundedCornerShape(
-                    topStart = if (isFirst) 10.dp else 0.dp,
-                    bottomStart = if (isFirst) 10.dp else 0.dp,
-                    topEnd = if (isLast) 10.dp else 0.dp,
-                    bottomEnd = if (isLast) 10.dp else 0.dp
-                )
-            )
-            .clickable { onImageClick() }
     ) {
-        // Coil AsyncImage로 서버 이미지 로드
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "리뷰 이미지",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+        // 모서리 처리를 위한 Shape 정의
+        val shape = RoundedCornerShape(
+            topStart = if (isFirst) 10.dp else 0.dp,
+            bottomStart = if (isFirst) 10.dp else 0.dp,
+            topEnd = if (isLast) 10.dp else 0.dp,
+            bottomEnd = if (isLast) 10.dp else 0.dp
+        )
+
+        // ImageLoader 사용
+        ImageLoader.ReviewImage(
+            imageName = imageName,
+            modifier = Modifier.fillMaxSize(),
+            shape = shape,
+            clickable = true,
+            onClick = onImageClick
         )
     }
 }
