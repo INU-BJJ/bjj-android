@@ -34,16 +34,16 @@ object ImageLoader {
     private const val PROFILE_IMAGE_PATH = "profile/"
 
     // 다양한 이미지 유형에 대한 URL 생성 헬퍼 함수들
-    fun getReviewImageUrl(imageName: String): String {
+    private fun getReviewImageUrl(imageName: String): String {
         return BASE_URL + REVIEW_IMAGE_PATH + imageName
     }
 
-    fun getProfileImageUrl(imageName: String): String {
+    private fun getProfileImageUrl(imageName: String): String {
         return BASE_URL + PROFILE_IMAGE_PATH + imageName
     }
 
     // 이미지 로딩 요청 빌더
-    fun buildImageRequest(
+    private fun buildImageRequest(
         context: android.content.Context,
         imageName: String,
         imageUrl: String,
