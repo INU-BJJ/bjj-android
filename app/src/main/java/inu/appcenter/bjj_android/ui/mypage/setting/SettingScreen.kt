@@ -1,9 +1,11 @@
 package inu.appcenter.bjj_android.ui.mypage.setting
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -28,14 +30,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.HorizontalDivider
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
+
+private val COMMONHEIGHT = 24.dp
+private val BIGHEIGHT = 415.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +88,6 @@ fun SettingScreen(
                     Text(
                         text = stringResource(R.string.setting_title),
                         style = LocalTypography.current.semibold18.copy(
-                            textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp,
                         )
@@ -92,7 +96,8 @@ fun SettingScreen(
                 navigationIcon = {
                     Icon(
                         modifier = Modifier
-                            .offset(x = 20.dp, y = 4.5.dp)
+                            .padding(start = 20.dp)
+                            .offset(y = 4.5.dp)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description),
@@ -103,23 +108,23 @@ fun SettingScreen(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
-                ),
+                    navigationIconContentColor = Color.Black
+                )
             )
-        },
-        containerColor = Color.White,
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(color = Color.White)
                 .padding(innerPadding)
         ) {
             // 상단 메뉴 항목들
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                    .padding(COMMONHEIGHT),
+                verticalArrangement = Arrangement.spacedBy(COMMONHEIGHT)
             ) {
                 MainText(
                     text = stringResource(R.string.change_nickname),
@@ -134,7 +139,7 @@ fun SettingScreen(
                     onClick = { onNavigateToBlockedUser() }
                 )
             }
-            Spacer(Modifier.height(391.dp))
+            Spacer(Modifier.height(BIGHEIGHT - (2 * COMMONHEIGHT)))
             // Divider (padding 없이 전체 너비 차지)
             HorizontalDivider()
 
@@ -142,8 +147,8 @@ fun SettingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                    .padding(COMMONHEIGHT),
+                verticalArrangement = Arrangement.spacedBy(COMMONHEIGHT)
             ) {
                 Text(
                     text = stringResource(R.string.logout),
