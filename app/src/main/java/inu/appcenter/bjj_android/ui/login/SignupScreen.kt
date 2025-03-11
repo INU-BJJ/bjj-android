@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,6 +52,7 @@ import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.ui.theme.paddings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,6 +88,8 @@ fun SignupScreen(
                         painter = painterResource(R.drawable.arrowback),
                         contentDescription = "backToLogin",
                         modifier = Modifier
+                            .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
+                            .offset(y = MaterialTheme.paddings.iconOffset)
                             .clickable {
                                 navController.popBackStack()
                             }
