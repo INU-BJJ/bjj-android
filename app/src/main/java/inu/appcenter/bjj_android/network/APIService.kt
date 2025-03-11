@@ -115,7 +115,7 @@ interface APIService {
         @Query("nickname") nickname : String
     ) : Response<Boolean>
 
-    @PATCH("/api/members/check-nickname")
+    @PATCH("/api/members/nickname")
     suspend fun modifyNickname(
         @Query("nickname") nickname : String
     ) : Response<Unit>
