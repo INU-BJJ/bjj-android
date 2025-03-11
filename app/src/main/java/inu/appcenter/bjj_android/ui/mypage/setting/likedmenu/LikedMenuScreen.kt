@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +39,10 @@ import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
+import inu.appcenter.bjj_android.ui.theme.paddings
+
+private val AlarmToText = 28.dp
+private val ErrorBoxPadding = 50.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +67,6 @@ fun LikedMenuScreen(
                     Text(
                         text = stringResource(R.string.liked_menu_title),
                         style = LocalTypography.current.semibold18.copy(
-                            textAlign = TextAlign.Center,
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp,
                         )
@@ -71,34 +75,34 @@ fun LikedMenuScreen(
                 navigationIcon = {
                     Icon(
                         modifier = Modifier
-                            .offset(x = 20.dp, y = 4.5.dp)
+                            .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
+                            .offset(y = MaterialTheme.paddings.iconOffset)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
-                        contentDescription = stringResource(R.string.back_description),
-                        tint = Color.Black
+                        contentDescription = stringResource(R.string.back_description)
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
-                ),
+                    navigationIconContentColor = Color.Black
+                )
             )
-        },
-        containerColor = Color.White,
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(color = Color.White)
                 .padding(innerPadding)
-                .padding(horizontal = 15.dp, vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(horizontal = MaterialTheme.paddings.large, vertical = MaterialTheme.paddings.xlarge),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.paddings.medium)
         ) {
             // 알림 설정 Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 9.dp),
+                    .padding(horizontal = MaterialTheme.paddings.xlarge - MaterialTheme.paddings.large),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -111,7 +115,7 @@ fun LikedMenuScreen(
                     }
                 )
             }
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(AlarmToText - MaterialTheme.paddings.medium))
 
             // 로딩 상태 표시
             if (uiState.isLoading) {
@@ -148,7 +152,7 @@ fun LikedMenuScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 50.dp),
+                        .padding(vertical = ErrorBoxPadding),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

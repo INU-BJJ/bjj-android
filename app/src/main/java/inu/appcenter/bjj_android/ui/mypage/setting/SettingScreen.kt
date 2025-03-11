@@ -102,10 +102,8 @@ fun SettingScreen(
                             .offset(y = MaterialTheme.paddings.iconOffset)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
-                        contentDescription = stringResource(R.string.back_description),
-                        tint = Color.Black
+                        contentDescription = stringResource(R.string.back_description)
                     )
-
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,

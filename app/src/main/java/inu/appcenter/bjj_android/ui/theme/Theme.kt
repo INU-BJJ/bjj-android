@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 // 패딩 값들을 위한 클래스 정의
 data class AppPadding(
 //    val small: androidx.compose.ui.unit.Dp = 4.dp,
-//    val medium: androidx.compose.ui.unit.Dp = 8.dp,
-//    val large: androidx.compose.ui.unit.Dp = 16.dp,
+    val medium: androidx.compose.ui.unit.Dp = 10.dp,
+    val large: androidx.compose.ui.unit.Dp = 15.dp,
     val xlarge: androidx.compose.ui.unit.Dp = 24.dp,
     val topBarPadding: androidx.compose.ui.unit.Dp = 20.dp,
     val iconOffset: androidx.compose.ui.unit.Dp = 4.5.dp
