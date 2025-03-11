@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,8 +39,8 @@ import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.HorizontalDivider
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
+import inu.appcenter.bjj_android.ui.theme.paddings
 
-private val COMMONHEIGHT = 24.dp
 private val BIGHEIGHT = 415.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,8 +97,9 @@ fun SettingScreen(
                 navigationIcon = {
                     Icon(
                         modifier = Modifier
-                            .padding(start = 20.dp)
-                            .offset(y = 4.5.dp)
+                            // 원래 20dp값 이지만 아이콘 자체에 내부 패딩이 있어서 16dp로 함
+                            .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
+                            .offset(y = MaterialTheme.paddings.iconOffset)
                             .clickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description),
@@ -123,8 +125,8 @@ fun SettingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(COMMONHEIGHT),
-                verticalArrangement = Arrangement.spacedBy(COMMONHEIGHT)
+                    .padding(MaterialTheme.paddings.xlarge),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.paddings.xlarge)
             ) {
                 MainText(
                     text = stringResource(R.string.change_nickname),
@@ -139,7 +141,7 @@ fun SettingScreen(
                     onClick = { onNavigateToBlockedUser() }
                 )
             }
-            Spacer(Modifier.height(BIGHEIGHT - (2 * COMMONHEIGHT)))
+            Spacer(Modifier.height(BIGHEIGHT - (2 * MaterialTheme.paddings.xlarge)))
             // Divider (padding 없이 전체 너비 차지)
             HorizontalDivider()
 
@@ -147,8 +149,8 @@ fun SettingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(COMMONHEIGHT),
-                verticalArrangement = Arrangement.spacedBy(COMMONHEIGHT)
+                    .padding(MaterialTheme.paddings.xlarge),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.paddings.xlarge)
             ) {
                 Text(
                     text = stringResource(R.string.logout),
