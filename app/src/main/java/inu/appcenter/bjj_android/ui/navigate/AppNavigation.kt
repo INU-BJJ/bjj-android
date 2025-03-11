@@ -23,6 +23,8 @@ import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
@@ -39,7 +41,8 @@ fun AppNavigation(
     menuDetailViewModel: MenuDetailViewModel,
     reviewViewModel: ReviewViewModel,
     rankingViewModel: RankingViewModel,
-    likedMenuViewModel: LikedMenuViewModel
+    likedMenuViewModel: LikedMenuViewModel,
+    nicknameChangeViewModel: NicknameChangeViewModel
 ) {
 
     val navController = rememberNavController()
@@ -202,6 +205,17 @@ fun AppNavigation(
 //                        // 메뉴 상세 페이지로 이동 (필요한 경우)
 //                        // 예: navController.navigate("menuDetail/$menuId")
 //                    }
+                )
+            }
+            // 네비게이션 설정 코드에서:
+            composable(AllDestination.Nickname.route) {
+                NicknameChangeScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    nicknameChangeViewModel = nicknameChangeViewModel,
+                    successChange = {
+                        // 성공 후 처리 (예: 토스트 메시지 표시 및 이전 화면으로 이동)
+                        navController.popBackStack()
+                    }
                 )
             }
             composable(
