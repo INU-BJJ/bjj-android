@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">밥점줘</string>
 
@@ -62,4 +63,16 @@
     <string name="liked_menu_title">좋아요한 메뉴</string>
     <string name="liked_alarm_toggle">좋아요 알람 받기</string>
     <string name="no_liked_menu">좋아요한 메뉴가 없습니다.</string>
+
+    <!-- NicknameChangeScreen.kt 추가 문자열 -->
+    <string name="nickname_change_title">닉네임 변경하기</string>
+    <string name="nickname_label">닉네임</string>
+    <string name="nickname_max_length_hint">닉네임은 12글자까지 가능합니다.</string>
+    <string name="nickname_placeholder">닉네임</string>
+    <string name="check_duplicate">중복 확인</string>
+    <string name="available_nickname_icon">사용 가능한 닉네임 아이콘</string>
+    <string name="unavailable_nickname_icon">사용 불가능한 닉네임 아이콘</string>
+    <string name="nickname_available">사용 가능한 닉네임입니다.</string>
+    <string name="nickname_unavailable">사용 불가능한 닉네임입니다.</string>
+    <string name="change_nickname_button">닉네임 변경하기</string>
 </resources>
