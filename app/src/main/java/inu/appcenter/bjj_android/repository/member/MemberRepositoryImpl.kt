@@ -8,7 +8,7 @@ import inu.appcenter.bjj_android.utils.CustomResponse
 import kotlinx.coroutines.flow.Flow
 
 class MemberRepositoryImpl(private val apiService: APIService) : MemberRepository {
-    override suspend fun getAllMembers(): Flow<CustomResponse<MemberResponseDTO>> = safeApiCall {
+    override suspend fun getMyInfo(): Flow<CustomResponse<MemberResponseDTO>> = safeApiCall {
         apiService.getAllMembers()
     }
 
