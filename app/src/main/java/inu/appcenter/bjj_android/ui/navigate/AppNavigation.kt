@@ -210,7 +210,10 @@ fun AppNavigation(
             // 네비게이션 설정 코드에서:
             composable(AllDestination.Nickname.route) {
                 NicknameChangeScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = {
+                        nicknameChangeViewModel.resetState()
+                        navController.popBackStack()
+                    },
                     nicknameChangeViewModel = nicknameChangeViewModel,
                     successChange = {
                         // 성공 후 처리 (예: 토스트 메시지 표시 및 이전 화면으로 이동)
