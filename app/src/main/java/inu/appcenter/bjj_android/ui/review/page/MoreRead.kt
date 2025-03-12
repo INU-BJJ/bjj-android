@@ -22,7 +22,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -43,6 +45,7 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.ui.theme.paddings
 
 private val BOTTOM_SPACER_HEIGHT = 28.dp
 
@@ -62,39 +65,42 @@ fun MoreReadScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .background(color = Color.White)
-            .fillMaxSize()
-    ) {
-        // 상단바
-        CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
-            title = {
-                Text(
-                    text = reviewUiState.selectedRestaurant ?: "",
-                    style = LocalTypography.current.bold18.copy(
-                        letterSpacing = 0.13.sp,
-                        lineHeight = 15.sp,
-                    ),
-                    color = Color.Black
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = reviewUiState.selectedRestaurant ?: "",
+                        style = LocalTypography.current.semibold18.copy(
+                            lineHeight = 15.sp,
+                            letterSpacing = 0.13.sp,
+                        )
+                    )
+                },
+                navigationIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
+                            .offset(y = MaterialTheme.paddings.iconOffset)
+                            .clickable { onNavigateBack() },
+                        painter = painterResource(id = R.drawable.leftarrow),
+                        contentDescription = stringResource(R.string.back_description)
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black,
+                    navigationIconContentColor = Color.Black
                 )
-            },
-            navigationIcon = {
-                Icon(
-                    modifier = Modifier
-                        .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { onNavigateBack() },
-                    painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = stringResource(id = R.string.back_description),
-                    tint = Color.Black
-                )
-            })
-        Spacer(Modifier.height(21.dp))
-
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(horizontal = 15.dp)
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .background(color = Color.White)
+                .padding(innerPadding)
+                .padding(horizontal = MaterialTheme.paddings.medium, vertical = MaterialTheme.paddings.large)
         ) {
             LazyColumn(
                 userScrollEnabled = true
@@ -131,12 +137,14 @@ fun MoreReadScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(text = item.createdDate.format(),
+                                    Text(
+                                        text = item.createdDate.format(),
                                         style = LocalTypography.current.regular13.copy(
                                             letterSpacing = 0.13.sp,
                                             lineHeight = 17.sp,
                                         ),
-                                        color = Gray_999999)
+                                        color = Gray_999999
+                                    )
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
                                             painter = painterResource(R.drawable.star),
@@ -171,6 +179,7 @@ fun MoreReadScreen(
                     }
                 }
             }
+
         }
     }
 }

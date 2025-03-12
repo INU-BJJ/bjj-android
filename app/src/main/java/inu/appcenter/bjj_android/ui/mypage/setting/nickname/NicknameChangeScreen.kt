@@ -116,7 +116,7 @@ fun NicknameChangeScreen(
                 .fillMaxSize()
                 .background(color = Color.White)
                 .padding(contentPadding)
-                .padding(horizontal = 21.dp),
+                .padding(horizontal = MaterialTheme.paddings.large),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(

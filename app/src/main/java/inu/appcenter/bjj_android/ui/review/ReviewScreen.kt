@@ -43,24 +43,27 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
     val scrollState = rememberScrollState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         reviewViewModel.getMyReviews()
     }
 
     Scaffold(
         topBar = {
-            // 상단바
-            CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.review_page_title),
                         style = LocalTypography.current.semibold18.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
-                        ),
-                        color = Color.Black
+                        )
                     )
-                })
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black
+                )
+            )
         },
         // 밑에 버튼에 icon 넣는법 찾기
         floatingActionButton = {
@@ -82,8 +85,8 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .background(color = Color.White)
                 .fillMaxSize()
+                .background(color = Color.White)
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
         ) {

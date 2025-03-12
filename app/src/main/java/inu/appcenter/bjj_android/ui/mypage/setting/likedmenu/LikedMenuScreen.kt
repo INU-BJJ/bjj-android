@@ -95,14 +95,14 @@ fun LikedMenuScreen(
                 .fillMaxSize()
                 .background(color = Color.White)
                 .padding(innerPadding)
-                .padding(horizontal = MaterialTheme.paddings.large, vertical = MaterialTheme.paddings.xlarge),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.paddings.medium)
+                .padding(horizontal = MaterialTheme.paddings.medium, vertical = MaterialTheme.paddings.xlarge),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.paddings.xsmall)
         ) {
             // 알림 설정 Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.paddings.xlarge - MaterialTheme.paddings.large),
+                    .padding(horizontal = MaterialTheme.paddings.xlarge - MaterialTheme.paddings.medium),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -115,7 +115,7 @@ fun LikedMenuScreen(
                     }
                 )
             }
-            Spacer(Modifier.height(AlarmToText - MaterialTheme.paddings.medium))
+            Spacer(Modifier.height(AlarmToText - MaterialTheme.paddings.xsmall))
 
             // 로딩 상태 표시
             if (uiState.isLoading) {
