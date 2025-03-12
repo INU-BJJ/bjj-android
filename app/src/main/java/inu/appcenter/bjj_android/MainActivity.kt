@@ -33,6 +33,7 @@ import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
+import inu.appcenter.bjj_android.utils.NotificationPermissionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        //FCM토큰 가져오기 및 저장
+        // FCM토큰 가져오기 및 저장
         retrieveAndSaveFcmToken()
 
         setContent {
@@ -64,7 +65,10 @@ class MainActivity : ComponentActivity() {
             val likedMenuViewModel: LikedMenuViewModel by viewModel()
             val nicknameChangeViewModel: NicknameChangeViewModel by viewModel()
 
-            //하단 바 제거
+            // Handle notification permissions
+            NotificationPermissionHandler()
+
+            // 하단 바 제거
             val view = LocalView.current
 
             val insetsController = WindowCompat.getInsetsController(window, view)
@@ -90,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                 Log.d("MainActivityFcmToken", fcmToken)
                                 apiService.registerFcmToken(FcmTokenRequest(fcmToken))
                             } catch (e: Exception){
-
+                                Log.e("MainActivityFcmToken", "Error registering FCM token", e)
                             }
                         }
                     }
@@ -120,6 +124,7 @@ class MainActivity : ComponentActivity() {
     private fun retrieveAndSaveFcmToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
+                Log.e("FCM", "Failed to get FCM token", task.exception)
                 return@addOnCompleteListener
             }
 
@@ -127,8 +132,8 @@ class MainActivity : ComponentActivity() {
             val token = task.result
             CoroutineScope(Dispatchers.IO).launch {
                 dataStoreManager.saveFcmToken(token)
+                Log.d("FCM", "Saved FCM token: $token")
             }
         }
     }
 }
-
