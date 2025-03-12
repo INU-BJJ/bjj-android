@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +35,7 @@ import inu.appcenter.bjj_android.ui.review.component.formatter
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.ui.theme.paddings
 
 @Composable
 fun ReviewFrameScreen(
@@ -45,12 +47,12 @@ fun ReviewFrameScreen(
 
     Column(
         modifier = Modifier
-            .padding(horizontal = 15.dp)
+            .padding(horizontal = MaterialTheme.paddings.medium)
             .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 9.dp)
+                .padding(horizontal = MaterialTheme.paddings.xlarge - MaterialTheme.paddings.medium)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

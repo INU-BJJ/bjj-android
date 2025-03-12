@@ -86,7 +86,7 @@ fun NicknameChangeScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "닉네임 변경하기",
+                        text = stringResource(R.string.nickname_change_title),
                         style = LocalTypography.current.semibold18.copy(
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp
@@ -116,7 +116,7 @@ fun NicknameChangeScreen(
                 .fillMaxSize()
                 .background(color = Color.White)
                 .padding(contentPadding)
-                .padding(horizontal = 21.dp),
+                .padding(horizontal = MaterialTheme.paddings.large),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
@@ -126,7 +126,7 @@ fun NicknameChangeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "닉네임",
+                        text = stringResource(R.string.nickname_label),
                         style = LocalTypography.current.medium15.copy(
                             lineHeight = 18.sp,
                             letterSpacing = 0.13.sp,
@@ -135,7 +135,7 @@ fun NicknameChangeScreen(
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "닉네임은 12글자까지 가능합니다.",
+                        text = stringResource(R.string.nickname_max_length_hint),
                         style = LocalTypography.current.regular13.copy(
                             lineHeight = 17.sp,
                             letterSpacing = 0.13.sp,
@@ -157,7 +157,7 @@ fun NicknameChangeScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "닉네임",
+                                text = stringResource(R.string.nickname_placeholder),
                                 style = LocalTypography.current.regular13.copy(
                                     lineHeight = 17.sp,
                                     letterSpacing = 0.13.sp,
@@ -202,7 +202,7 @@ fun NicknameChangeScreen(
                             .height(27.dp)
                     ) {
                         Text(
-                            text = "중복 확인",
+                            text = stringResource(R.string.check_duplicate),
                             style = LocalTypography.current.regular13.copy(
                                 lineHeight = 17.sp,
                                 letterSpacing = 0.13.sp,
@@ -220,11 +220,11 @@ fun NicknameChangeScreen(
                             Icon(
                                 painter = painterResource(R.drawable.success_with_background),
                                 tint = Color.Unspecified,
-                                contentDescription = "available nickname"
+                                contentDescription = stringResource(R.string.available_nickname_icon)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                text = "사용 가능한 닉네임입니다.",
+                                text = stringResource(R.string.nickname_available),
                                 style = LocalTypography.current.regular11.copy(
                                     lineHeight = 15.sp,
                                     letterSpacing = 0.13.sp,
@@ -240,11 +240,11 @@ fun NicknameChangeScreen(
                             Icon(
                                 painter = painterResource(R.drawable.fail_with_background),
                                 tint = Color.Unspecified,
-                                contentDescription = "unavailable nickname"
+                                contentDescription = stringResource(R.string.unavailable_nickname_icon)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                text = "사용 불가능한 닉네임입니다.",
+                                text = stringResource(R.string.nickname_unavailable),
                                 style = LocalTypography.current.regular11.copy(
                                     lineHeight = 15.sp,
                                     letterSpacing = 0.13.sp,
@@ -276,7 +276,7 @@ fun NicknameChangeScreen(
                 shape = RoundedCornerShape(11.dp)
             ) {
                 Text(
-                    text = "닉네임 변경하기",
+                    text = stringResource(R.string.change_nickname_button),
                     style = LocalTypography.current.semibold15.copy(
                         lineHeight = 18.sp,
                         letterSpacing = 0.13.sp

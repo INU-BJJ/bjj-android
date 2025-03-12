@@ -25,6 +25,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -56,6 +58,7 @@ import inu.appcenter.bjj_android.ui.review.component.addImageToList
 import inu.appcenter.bjj_android.ui.review.component.getFileFromUri
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
+import inu.appcenter.bjj_android.ui.theme.paddings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,37 +115,42 @@ fun ReviewWriteScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .background(color = Color.White)
-            .fillMaxSize()
-    ) {
-        // 상단바
-        CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
-            title = {
-                Text(
-                    text = stringResource(R.string.write_review_title),
-                    style = LocalTypography.current.semibold18.copy(
-                        letterSpacing = 0.13.sp,
-                        lineHeight = 15.sp
-                    ),
-                    color = Color.Black
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.write_review_title),
+                        style = LocalTypography.current.semibold18.copy(
+                            lineHeight = 15.sp,
+                            letterSpacing = 0.13.sp,
+                        )
+                    )
+                },
+                navigationIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
+                            .offset(y = MaterialTheme.paddings.iconOffset)
+                            .clickable { onNavigateBack() },
+                        painter = painterResource(id = R.drawable.leftarrow),
+                        contentDescription = stringResource(R.string.back_description)
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black,
+                    navigationIconContentColor = Color.Black
                 )
-            }, navigationIcon = {
-                Icon(
-                    modifier = Modifier
-                        .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { onNavigateBack() },
-                    painter = painterResource(id = R.drawable.leftarrow),
-                    contentDescription = stringResource(R.string.back_description),
-                    tint = Color.Black
-                )
-            })
-
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(horizontal = 21.dp)
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .background(color = Color.White)
+                .padding(innerPadding)
+                .padding(horizontal = MaterialTheme.paddings.large, vertical = MaterialTheme.paddings.xsmall)
         ) {
             // 식당 위치 드롭다운
             DropdownMenuBox(
