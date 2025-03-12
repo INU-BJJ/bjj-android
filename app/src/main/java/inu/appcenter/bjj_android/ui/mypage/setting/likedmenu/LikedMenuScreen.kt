@@ -1,5 +1,10 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
+import android.Manifest
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +46,7 @@ import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
 import inu.appcenter.bjj_android.ui.theme.paddings
+import inu.appcenter.bjj_android.utils.hasNotificationPermission
 
 private val AlarmToText = 28.dp
 private val ErrorBoxPadding = 50.dp
@@ -50,6 +57,7 @@ fun LikedMenuScreen(
     likedMenuViewModel: LikedMenuViewModel,
     onNavigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by likedMenuViewModel.uiState.collectAsStateWithLifecycle()
 
     // 알림 설정 상태
@@ -58,6 +66,19 @@ fun LikedMenuScreen(
     // 화면 진입 시 데이터 로드
     LaunchedEffect(Unit) {
         likedMenuViewModel.getLikedMenus()
+    }
+
+    // 권한 요청 런처 추가
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // 권한이 허용되면 알림 설정 활성화
+            likedMenuViewModel.toggleNotification(true)
+        } else {
+            // 권한이 거부되면 알림 설정은 활성화되지만, 실제로는 작동하지 않음을 알림
+            Toast.makeText(context, "알림을 받으려면 설정에서 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Scaffold(
@@ -111,6 +132,12 @@ fun LikedMenuScreen(
                     checked = notificationEnabled,
                     onCheckedChange = { enabled ->
                         notificationEnabled = enabled
+                        // 권한 확인 및 요청 로직
+                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            if (!hasNotificationPermission(context)) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        }
                         likedMenuViewModel.toggleNotification(enabled)
                     }
                 )

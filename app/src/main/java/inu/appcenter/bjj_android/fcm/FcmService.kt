@@ -15,6 +15,7 @@ import inu.appcenter.bjj_android.MainActivity
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
+import inu.appcenter.bjj_android.utils.hasNotificationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -36,12 +37,15 @@ class FcmService : FirebaseMessagingService() {
 
         CoroutineScope(Dispatchers.IO).launch {
             val notificationEnabled = dataStoreManager.getLikedMenuNotification.first()
-            if (notificationEnabled) {
-                //알림이 활성화되어 있으면 처리
+
+            // 알림 설정 확인 및 권한 확인
+            if (notificationEnabled && hasNotificationPermission(this@FcmService)) {
+                // 알림이 활성화되어 있고 권한이 있는 경우 처리
                 remoteMessage.notification?.let { notification ->
                     sendNotification(notification.title, notification.body)
                 }
-
+            } else {
+                Log.d("FcmService", "알림 설정 비활성화 또는 권한 없음")
             }
         }
     }

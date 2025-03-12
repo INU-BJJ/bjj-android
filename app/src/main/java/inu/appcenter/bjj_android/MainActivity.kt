@@ -1,10 +1,14 @@
 package inu.appcenter.bjj_android
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -34,6 +38,7 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
 import inu.appcenter.bjj_android.utils.NotificationPermissionHandler
+import inu.appcenter.bjj_android.utils.hasNotificationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -68,6 +73,33 @@ class MainActivity : ComponentActivity() {
             // Handle notification permissions
             NotificationPermissionHandler()
 
+            val coroutineScope = rememberCoroutineScope()
+            val uiState by authViewModel.uiState.collectAsState()
+
+
+            val requestPermissionLauncher = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission()
+                ) { isGranted ->
+                    if (isGranted) {
+                        // 권한이 허용된 경우 FCM 토큰 등록 시도
+                        coroutineScope.launch {
+                            val fcmToken = dataStoreManager.fcmToken.first()
+                            val notificationsEnabled = dataStoreManager.getLikedMenuNotification.first()
+
+                            if (fcmToken != null && notificationsEnabled && uiState.hasToken == true) {
+                                try {
+                                    apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                                    Log.d("MainActivityFcmToken", "FCM token registered after permission granted")
+                                } catch (e: Exception) {
+                                    Log.e("MainActivityFcmToken", "Error registering FCM token", e)
+                                }
+                            }
+                        }
+                    }
+                }
+            } else null
+
             // 하단 바 제거
             val view = LocalView.current
 
@@ -81,9 +113,7 @@ class MainActivity : ComponentActivity() {
                 isAppearanceLightStatusBars = true
             }
 
-            val uiState by authViewModel.uiState.collectAsState()
 
-            val coroutineScope = rememberCoroutineScope()
 
             LaunchedEffect(uiState.hasToken) {
                 if (uiState.hasToken == true) {
@@ -91,8 +121,28 @@ class MainActivity : ComponentActivity() {
                         val fcmToken = dataStoreManager.fcmToken.first()
                         fcmToken?.let {
                             try {
-                                Log.d("MainActivityFcmToken", fcmToken)
-                                apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                                // 안드로이드 13 이상에서는 권한 확인 추가
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    val notificationsEnabled = dataStoreManager.getLikedMenuNotification.first()
+
+                                    if (notificationsEnabled) {
+                                        if (hasNotificationPermission(this@MainActivity)) {
+                                            Log.d("MainActivityFcmToken", fcmToken)
+                                            apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                                        } else {
+                                            // 권한이 없는 경우 권한 요청
+                                            requestPermissionLauncher?.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        }
+                                    } else {
+                                        // 알림 설정이 꺼져 있을 때도 토큰은 등록
+                                        Log.d("MainActivityFcmToken", fcmToken)
+                                        apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                                    }
+                                } else {
+                                    // 안드로이드 13 미만에서는 기존 로직 유지
+                                    Log.d("MainActivityFcmToken", fcmToken)
+                                    apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                                }
                             } catch (e: Exception){
                                 Log.e("MainActivityFcmToken", "Error registering FCM token", e)
                             }
