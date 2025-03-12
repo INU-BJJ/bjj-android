@@ -42,6 +42,6 @@ val viewModelModule = module {
     viewModel{ MypageViewModel() }
     viewModel{ ReviewViewModel(get(), get(), get()) }
     viewModel{ RankingViewModel(get(), get()) }
-    viewModel{ LikedMenuViewModel(get()) }
+    viewModel{ LikedMenuViewModel(get(), get()) }
     viewModel { NicknameChangeViewModel(get()) }
 }

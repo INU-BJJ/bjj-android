@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.model.menu.LikedMenu
 import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
@@ -24,7 +25,8 @@ data class LikedMenuUiState(
 )
 
 class LikedMenuViewModel(
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
+    private val dataStoreManager: DataStoreManager
 ) : BaseViewModel() {
 
     private val _eventFlow = MutableSharedFlow<LikedMenuUiEvent>()
@@ -88,10 +90,24 @@ class LikedMenuViewModel(
         }
     }
 
+    // 알림 설정 불러오기
+    private fun getNotificationSettings() {
+        viewModelScope.launch {
+            dataStoreManager.getLikedMenuNotification.collect { enabled ->
+                _uiState.update {
+                    it.copy(notificationEnabled = enabled)
+                }
+            }
+        }
+    }
+
     // 알림 설정 업데이트
     fun toggleNotification(enabled: Boolean) {
-        _uiState.update {
-            it.copy(notificationEnabled = enabled)
+        viewModelScope.launch {
+            dataStoreManager.saveLikedMenuNotification(enabled)
+            _uiState.update {
+                it.copy(notificationEnabled = enabled)
+            }
         }
         // TODO: 알림 설정 저장 로직 구현 (Repository 또는 DataStore 활용)
     }

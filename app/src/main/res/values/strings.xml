@@ -36,6 +36,8 @@
     <string name="review_caution_title">리뷰 작성 유의사항</string>
     <string name="restaurant_not_open_warning">식당 오픈 전에는 식사 리뷰를 작성하실 수 없습니다.</string>
 
+    <string name="menu_notification_channel_id">liked_menu_notifications</string>
+
     <!-- ReviewFrame.kt 문자열 -->
     <string name="full_star_description">별점</string>
 

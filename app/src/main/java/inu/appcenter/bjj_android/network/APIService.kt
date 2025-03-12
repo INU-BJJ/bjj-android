@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.network
 
+import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
@@ -135,4 +136,12 @@ interface APIService {
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int
     ) : Response<MenuRanking>  // Response<MenuRanking>으로 변경
+
+
+
+    //임시로 fcm 테스트
+    @POST("/api/members/fcm-token")
+    suspend fun registerFcmToken(
+        @Body fcmTokenRequest: FcmTokenRequest
+    ): Response<Unit>
 }
