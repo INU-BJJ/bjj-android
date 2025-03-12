@@ -43,6 +43,10 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
     val scrollState = rememberScrollState()
     val reviewUiState by reviewViewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit){
+        reviewViewModel.getMyReviews()
+    }
+
     Scaffold(
         topBar = {
             // 상단바

@@ -149,7 +149,7 @@ class ReviewViewModel(
         }
     }
 
-    private fun getMyReviews() {
+    fun getMyReviews() {
         viewModelScope.launch {
             reviewRepository.getMyReviews().handleResponse(
                 onSuccess = { myReviews ->
