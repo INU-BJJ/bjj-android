@@ -8,7 +8,23 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+
+// 패딩 값들을 위한 클래스 정의
+data class AppPadding(
+//    val small: androidx.compose.ui.unit.Dp = 4.dp,
+    val medium: androidx.compose.ui.unit.Dp = 10.dp,
+    val large: androidx.compose.ui.unit.Dp = 15.dp,
+    val xlarge: androidx.compose.ui.unit.Dp = 24.dp,
+    val topBarPadding: androidx.compose.ui.unit.Dp = 20.dp,
+    val iconOffset: androidx.compose.ui.unit.Dp = 4.5.dp
+)
+
+// CompositionLocal 생성
+val LocalAppPadding = staticCompositionLocalOf { AppPadding() }
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -51,11 +67,19 @@ fun Bjj_androidTheme(
         else -> LightColorScheme
     }
 
-
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    // AppPadding 제공
+    CompositionLocalProvider(
+        LocalAppPadding provides AppPadding(),
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
+
+// MaterialTheme에 paddings 확장 프로퍼티 추가
+val MaterialTheme.paddings: AppPadding
+    @Composable
+    get() = LocalAppPadding.current

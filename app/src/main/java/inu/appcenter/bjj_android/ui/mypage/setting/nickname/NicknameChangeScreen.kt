@@ -1,17 +1,14 @@
-package inu.appcenter.bjj_android.ui.login
+package inu.appcenter.bjj_android.ui.mypage.setting.nickname
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -31,7 +28,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,34 +39,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
-import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
-import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.paddings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(
-    navController: NavHostController,
-    authViewModel: AuthViewModel,
-    successSignup: () -> Unit,
-    uiState: AuthUiState
-){
-
-
+fun NicknameChangeScreen(
+    onNavigateBack: () -> Unit,
+    nicknameChangeViewModel: NicknameChangeViewModel,
+    successChange: () -> Unit,
+) {
+    val uiState by nicknameChangeViewModel.uiState.collectAsState()
     var nickname by remember { mutableStateOf("") }
-    LaunchedEffect(uiState.signupState) {
-        if (uiState.signupState == AuthState.Success) {
-            successSignup()
+
+    // 화면에 진입할 때 닉네임 정보 불러오기
+    LaunchedEffect(Unit) {
+        nicknameChangeViewModel.fetchCurrentNickname()
+    }
+
+    // 화면을 나갈 때 상태 초기화
+    DisposableEffect(Unit) {
+        onDispose {
+            nicknameChangeViewModel.resetState()
+        }
+    }
+
+    // 닉네임 변경 성공 시 처리
+    LaunchedEffect(uiState.changeNicknameState) {
+        if (uiState.changeNicknameState == NicknameState.Success) {
+            // 상태 리셋 후 성공 콜백 호출
+            nicknameChangeViewModel.resetChangeNicknameState()
+            successChange()
         }
     }
 
@@ -76,7 +86,7 @@ fun SignupScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "회원가입하기",
+                        text = "닉네임 변경하기",
                         style = LocalTypography.current.semibold18.copy(
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp
@@ -85,14 +95,12 @@ fun SignupScreen(
                 },
                 navigationIcon = {
                     Icon(
-                        painter = painterResource(R.drawable.arrowback),
-                        contentDescription = "backToLogin",
                         modifier = Modifier
                             .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
                             .offset(y = MaterialTheme.paddings.iconOffset)
-                            .clickable {
-                                navController.popBackStack()
-                            }
+                            .clickable { onNavigateBack() },
+                        painter = painterResource(id = R.drawable.leftarrow),
+                        contentDescription = stringResource(R.string.back_description)
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -102,7 +110,7 @@ fun SignupScreen(
                 )
             )
         }
-    ) {contentPadding ->
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -114,43 +122,6 @@ fun SignupScreen(
             Column(
                 modifier = Modifier
             ) {
-                Text(
-                    text = "이메일",
-                    style = LocalTypography.current.medium15.copy(
-                        lineHeight = 18.sp,
-                        letterSpacing = 0.13.sp,
-                        color = Color.Black
-                    )
-                )
-                Spacer(Modifier.height(6.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(36.dp)
-                        .background(
-                            color = Gray_F6F8F8,
-                            shape = RoundedCornerShape(3.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = Gray_D9D9D9,
-                            shape = RoundedCornerShape(3.dp)
-                        )
-                        .padding(horizontal = 11.dp)
-                ){
-                    Text(
-                        text = uiState.signupEmail,
-                        style = LocalTypography.current.regular13.copy(
-                            lineHeight = 17.sp,
-                            letterSpacing = 0.13.sp,
-                            color = Gray_B9B9B9,
-                            textAlign = TextAlign.Left
-                        ),
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                    )
-                }
-                Spacer(Modifier.height(33.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -181,7 +152,7 @@ fun SignupScreen(
                         onValueChange = {
                             if (it.length <= 12) {
                                 nickname = it
-                                authViewModel.resetNicknameCheckState()
+                                nicknameChangeViewModel.resetNicknameCheckState()
                             }
                         },
                         placeholder = {
@@ -217,8 +188,9 @@ fun SignupScreen(
                     Spacer(Modifier.width(6.5.dp))
                     OutlinedButton(
                         onClick = {
-                            authViewModel.checkNickname(nickname = nickname)
+                            nicknameChangeViewModel.checkNickname(nickname = nickname)
                         },
+                        enabled = nickname.isNotBlank(),
                         border = BorderStroke(width = 1.dp, color = Orange_FF7800),
                         shape = RoundedCornerShape(100.dp),
                         contentPadding = PaddingValues(
@@ -240,8 +212,8 @@ fun SignupScreen(
                     }
                 }
                 Spacer(Modifier.height(7.5.dp))
-                when(uiState.checkNicknameState){
-                    AuthState.Success->{
+                when(uiState.checkNicknameState) {
+                    NicknameState.Success -> {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -261,7 +233,7 @@ fun SignupScreen(
                             )
                         }
                     }
-                    AuthState.Error(message = "중복") -> {
+                    is NicknameState.Error -> {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -281,28 +253,20 @@ fun SignupScreen(
                             )
                         }
                     }
-                    AuthState.Idle->{
-                    }
-                    else->{
-
+                    else -> {
+                        // Idle 또는 Loading 상태에서는 아무것도 표시하지 않음
                     }
                 }
-
             }
+
             Button(
                 onClick = {
-                    if (uiState.checkNicknameState == AuthState.Success){
-                        authViewModel.signup(
-                            signupReq = SignupReq(
-                                nickname = nickname,
-                                email = uiState.signupEmail,
-                                provider = uiState.socialName
-                            )
-                        )
+                    if (uiState.checkNicknameState == NicknameState.Success) {
+                        nicknameChangeViewModel.changeNickname(nickname)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (uiState.checkNicknameState == AuthState.Success) Orange_FF7800 else Gray_B9B9B9,
+                    containerColor = if (uiState.checkNicknameState == NicknameState.Success) Orange_FF7800 else Gray_B9B9B9,
                     contentColor = Color.White
                 ),
                 modifier = Modifier
@@ -312,7 +276,7 @@ fun SignupScreen(
                 shape = RoundedCornerShape(11.dp)
             ) {
                 Text(
-                    text = "밥점줘 시작하기",
+                    text = "닉네임 변경하기",
                     style = LocalTypography.current.semibold15.copy(
                         lineHeight = 18.sp,
                         letterSpacing = 0.13.sp

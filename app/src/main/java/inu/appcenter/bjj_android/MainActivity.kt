@@ -18,6 +18,7 @@ import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
 import inu.appcenter.bjj_android.ui.navigate.AppNavigation
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
             val reviewViewModel: ReviewViewModel by viewModel()
             val rankingViewModel: RankingViewModel by viewModel()
             val likedMenuViewModel: LikedMenuViewModel by viewModel()
+            val nicknameChangeViewModel: NicknameChangeViewModel by viewModel()
 
             //하단 바 제거
             val view = LocalView.current
@@ -65,7 +67,8 @@ class MainActivity : ComponentActivity() {
                         menuDetailViewModel = menuDetailViewModel,
                         reviewViewModel = reviewViewModel,
                         rankingViewModel = rankingViewModel,
-                        likedMenuViewModel = likedMenuViewModel
+                        likedMenuViewModel = likedMenuViewModel,
+                        nicknameChangeViewModel = nicknameChangeViewModel
                     )
                 }
             }
