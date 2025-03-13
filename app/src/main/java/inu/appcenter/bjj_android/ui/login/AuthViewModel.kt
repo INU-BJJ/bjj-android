@@ -1,8 +1,8 @@
 package inu.appcenter.bjj_android.ui.login
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.fcm.FcmManager
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.repository.member.MemberRepository
@@ -40,7 +40,8 @@ data class AuthUiState(
 
 class AuthViewModel(
     private val memberRepository: MemberRepository,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
+    private val fcmManager: FcmManager
 ) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -55,7 +56,14 @@ class AuthViewModel(
             dataStoreManager.token
                 .map { !it.isNullOrEmpty() }
                 .collect { hasToken ->
+                    val previousState = _uiState.value.hasToken
                     _uiState.update { it.copy(hasToken = hasToken) }
+
+                    // 토큰 상태가 변경될 때만 FCM 처리 (이전 상태와 현재 상태가 다를 때)
+                    if (hasToken && hasToken != previousState) {
+                        // 사용자가 로그인했을 때 FCM 토큰 등록
+                        fcmManager.onUserLogin()
+                    }
                 }
         }
     }
@@ -94,6 +102,9 @@ class AuthViewModel(
                             socialName = ""
                         )
                     }
+
+                    // 회원가입 성공 후 FCM 토큰 등록
+                    fcmManager.onUserLogin()
                 },
                 onError = { error ->
                     Log.e("signup", error.message ?: "Unknown error")
@@ -144,7 +155,7 @@ class AuthViewModel(
                 dataStoreManager.clearToken()
 
                 // 다른 ViewModel 상태 초기화
-                getKoin().getAll<ViewModel>().forEach {
+                getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
                     when (it) {
                         is MainViewModel -> it.resetState()
                         is MenuDetailViewModel -> it.resetState()
@@ -182,7 +193,7 @@ class AuthViewModel(
                     dataStoreManager.clearToken()
 
                     // 다른 ViewModel 상태 초기화
-                    getKoin().getAll<ViewModel>().forEach {
+                    getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
                         when (it) {
                             is MainViewModel -> it.resetState()
                             is MenuDetailViewModel -> it.resetState()
@@ -228,6 +239,7 @@ class AuthViewModel(
             )
         }
     }
+
     fun resetDeleteAccountState() {
         _uiState.update { it.copy(deleteAccountState = AuthState.Idle) }
     }

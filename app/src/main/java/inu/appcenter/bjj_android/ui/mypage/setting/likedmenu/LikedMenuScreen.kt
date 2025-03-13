@@ -1,10 +1,6 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
-import android.Manifest
-import android.os.Build
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,11 +38,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.fcm.FcmManager
 import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
 import inu.appcenter.bjj_android.ui.theme.paddings
-import inu.appcenter.bjj_android.utils.hasNotificationPermission
+import inu.appcenter.bjj_android.utils.PermissionManager
+import org.koin.compose.koinInject
 
 private val AlarmToText = 28.dp
 private val ErrorBoxPadding = 50.dp
@@ -59,6 +57,8 @@ fun LikedMenuScreen(
 ) {
     val context = LocalContext.current
     val uiState by likedMenuViewModel.uiState.collectAsStateWithLifecycle()
+    val permissionManager = koinInject<PermissionManager>()
+    val fcmManager = koinInject<FcmManager>()
 
     // 알림 설정 상태
     var notificationEnabled by remember { mutableStateOf(uiState.notificationEnabled) }
@@ -68,16 +68,14 @@ fun LikedMenuScreen(
         likedMenuViewModel.getLikedMenus()
     }
 
-    // 권한 요청 런처 추가
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            // 권한이 허용되면 알림 설정 활성화
-            likedMenuViewModel.toggleNotification(true)
-        } else {
-            // 권한이 거부되면 알림 설정은 활성화되지만, 실제로는 작동하지 않음을 알림
-            Toast.makeText(context, "알림을 받으려면 설정에서 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+    // 이벤트 처리
+    LaunchedEffect(Unit) {
+        likedMenuViewModel.eventFlow.collect { event ->
+            when (event) {
+                is LikedMenuUiEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -132,13 +130,19 @@ fun LikedMenuScreen(
                     checked = notificationEnabled,
                     onCheckedChange = { enabled ->
                         notificationEnabled = enabled
-                        // 권한 확인 및 요청 로직
-                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            if (!hasNotificationPermission(context)) {
-                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                            }
+
+                        if (enabled && !permissionManager.hasNotificationPermission()) {
+                            // 알림 권한이 없는 경우 안내 메시지를 표시하지만 설정은 저장
+                            Toast.makeText(
+                                context,
+                                "알림을 받으려면 설정에서 권한을 허용해주세요",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+
+                        // 설정 저장 및 FCM 관리자에게 알림
                         likedMenuViewModel.toggleNotification(enabled)
+                        fcmManager.onNotificationPermissionChanged(permissionManager.hasNotificationPermission())
                     }
                 )
             }
@@ -170,7 +174,10 @@ fun LikedMenuScreen(
                 uiState.likedMenus.forEach { likedMenu ->
                     LikedMenuFrame(
                         menu = likedMenu.menuName,
-                        onHeartClick = { likedMenuViewModel.toggleLike(likedMenu.menuId) }
+                        onHeartClick = { likedMenuViewModel.toggleLike(likedMenu.menuId) },
+                        onMenuClick = {
+                            // 메뉴 상세 페이지로 이동 기능 (필요 시 구현)
+                        }
                     )
                 }
             }
