@@ -35,11 +35,11 @@ fun MyPageScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    val uiState by authViewModel.uiState.collectAsState()
+    val authUiState by authViewModel.uiState.collectAsState()
 
     // 로그아웃 상태 관찰
-    LaunchedEffect(uiState.logoutState) {
-        when (uiState.logoutState) {
+    LaunchedEffect(authUiState.logoutState) {
+        when (authUiState.logoutState) {
             is AuthState.Success -> {
                 // 로그아웃 성공 시 로그인 화면으로 이동하고 백스택 클리어
                 navController.navigate(AllDestination.Login.route) {
@@ -96,6 +96,7 @@ fun MyPageScreen(
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
+
         }
     }
 }

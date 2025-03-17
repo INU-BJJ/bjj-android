@@ -1,6 +1,10 @@
 package inu.appcenter.bjj_android.network
 
 import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
+import inu.appcenter.bjj_android.model.item.ItemResponse
+import inu.appcenter.bjj_android.model.item.ItemResponseItem
+import inu.appcenter.bjj_android.model.item.ItemType
+import inu.appcenter.bjj_android.model.item.MyPageResponse
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
@@ -144,4 +148,27 @@ interface APIService {
     suspend fun registerFcmToken(
         @Body fcmTokenRequest: FcmTokenRequest
     ): Response<Unit>
+
+
+    // Item API
+    @GET("/api/items")
+    suspend fun getAllItemsInfo() : Response<ItemResponse>
+
+    @POST("/api/items")
+    suspend fun drawItem(
+        @Query("itemType") itemType: ItemType
+    ): Response<ItemResponseItem>
+
+    @GET("/api/items/{itemId}")
+    suspend fun getItemInfo(
+        @Path("itemId") itemId: Long
+    ): Response<ItemResponseItem>
+
+    @PATCH("/api/items/{itemId}")
+    suspend fun wearItem(
+        @Path("itemId") itemId: Long
+    ): Response<Unit>
+
+    @GET("/api/items/my")
+    suspend fun getMyPageInfo(): Response<MyPageResponse>
 }
