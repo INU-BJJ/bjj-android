@@ -1,7 +1,11 @@
 package inu.appcenter.bjj_android.ui.mypage
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -14,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -21,11 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import inu.appcenter.bjj_android.ui.mypage.component.MyPageBackground
+import inu.appcenter.bjj_android.ui.mypage.component.ShopButton
+import inu.appcenter.bjj_android.ui.mypage.component.UserInfoBar
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 
@@ -33,9 +42,12 @@ import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 @Composable
 fun MyPageScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    myPageViewModel: MyPageViewModel,
+    navigateToShop: () -> Unit
 ) {
-    val authUiState by authViewModel.uiState.collectAsState()
+    val authUiState by authViewModel.uiState.collectAsStateWithLifecycle()
+    val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
 
     // 로그아웃 상태 관찰
     LaunchedEffect(authUiState.logoutState) {
@@ -48,10 +60,12 @@ fun MyPageScreen(
                 // 로그아웃 상태 초기화
                 authViewModel.resetState()
             }
+
             is AuthState.Error -> {
                 // 에러 처리가 필요한 경우 여기에 추가
                 authViewModel.resetState()
             }
+
             else -> {}
         }
     }
@@ -93,9 +107,38 @@ fun MyPageScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(innerPadding)
+                .fillMaxSize()
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                MyPageBackground(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    backgroundImageName = myPageUiState.wearingBackgroundImageName
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 30.dp)
+                ) {
+                    UserInfoBar(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        userName = myPageUiState.userName
+                    )
+                    ShopButton(
+                        modifier = Modifier,
+                        onClick = {
+                            navigateToShop()
+                        }
+                    )
+                }
+            }
+
 
         }
     }

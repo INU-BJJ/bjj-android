@@ -42,6 +42,11 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
     private val _uiState = MutableStateFlow(MyPageUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        getMyPageInfo()
+        getAllItemsInfo()
+    }
+
     fun getMyPageInfo() {
         viewModelScope.launch {
             setLoading(true)

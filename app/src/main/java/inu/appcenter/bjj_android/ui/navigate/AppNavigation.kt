@@ -20,11 +20,13 @@ import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
+import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
+import inu.appcenter.bjj_android.ui.mypage.shop.ShopScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewScreen
@@ -42,7 +44,8 @@ fun AppNavigation(
     reviewViewModel: ReviewViewModel,
     rankingViewModel: RankingViewModel,
     likedMenuViewModel: LikedMenuViewModel,
-    nicknameChangeViewModel: NicknameChangeViewModel
+    nicknameChangeViewModel: NicknameChangeViewModel,
+    myPageViewModel: MyPageViewModel
 ) {
 
     val navController = rememberNavController()
@@ -121,15 +124,24 @@ fun AppNavigation(
                 )
             }
             composable(AllDestination.MenuDetail.route) {
-                MenuDetailScreen(navController = navController, menuDetailViewModel = menuDetailViewModel)
+                MenuDetailScreen(
+                    navController = navController,
+                    menuDetailViewModel = menuDetailViewModel
+                )
             }
             composable(AllDestination.Ranking.route) {
-                RankingScreen(navController, rankingViewModel = rankingViewModel)
+                RankingScreen(
+                    navController,
+                    rankingViewModel = rankingViewModel
+                )
             }
             composable(AllDestination.Review.route) {
-                ReviewScreen(navController = navController, reviewViewModel = reviewViewModel)
+                ReviewScreen(
+                    navController = navController,
+                    reviewViewModel = reviewViewModel
+                )
             }
-            composable(AllDestination.ReviewMore.route){
+            composable(AllDestination.ReviewMore.route) {
                 MoreReadScreen(
                     onNavigateBack = {
                         navController.popBackStack()
@@ -141,7 +153,7 @@ fun AppNavigation(
                     reviewViewModel = reviewViewModel
                 )
             }
-            composable(AllDestination.ReviewWrite.route){
+            composable(AllDestination.ReviewWrite.route) {
                 ReviewWriteScreen(
                     onNavigateBack = {
                         navController.popBackStack()
@@ -149,7 +161,7 @@ fun AppNavigation(
                     reviewViewModel = reviewViewModel
                 )
             }
-            composable(AllDestination.ReviewDetail.route){
+            composable(AllDestination.ReviewDetail.route) {
                 ReviewDetailScreen(
                     onNavigateBack = {
                         navController.popBackStack()
@@ -169,7 +181,12 @@ fun AppNavigation(
                 )
             }
             composable(AllDestination.MyPage.route) {
-                MyPageScreen(navController = navController, authViewModel = authViewModel)
+                MyPageScreen(
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    myPageViewModel = myPageViewModel,
+                    navigateToShop = { navController.navigate(AllDestination.Shop.route) }
+                )
             }
             composable(AllDestination.Setting.route) {
                 SettingScreen(
@@ -225,7 +242,8 @@ fun AppNavigation(
                 route = "moreImage/{menuPairId}",
                 arguments = listOf(navArgument("menuPairId") { type = NavType.LongType })
             ) { backStackEntry ->
-                val menuPairId = backStackEntry.arguments?.getLong("menuPairId") ?: return@composable
+                val menuPairId =
+                    backStackEntry.arguments?.getLong("menuPairId") ?: return@composable
                 MoreImageScreen(
                     navController = navController,
                     menuDetailViewModel = menuDetailViewModel,
@@ -243,14 +261,15 @@ fun AppNavigation(
                     navArgument("reviewId") { type = NavType.LongType },
                     navArgument("fromReviewDetail") { type = NavType.BoolType },
 
-                )
+                    )
             ) { backStackEntry ->
                 val imageListString = backStackEntry.arguments?.getString("imageList") ?: ""
                 // 쉼표로 구분된 문자열을 다시 리스트로 변환
                 val imageList = imageListString.split(",").filter { it.isNotEmpty() }
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
                 val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
-                val fromReviewDetail = backStackEntry.arguments?.getBoolean("fromReviewDetail") ?: false
+                val fromReviewDetail =
+                    backStackEntry.arguments?.getBoolean("fromReviewDetail") ?: false
 
                 ReviewImageDetailScreen(
                     navController = navController,
@@ -273,6 +292,16 @@ fun AppNavigation(
                     navController = navController,
                     reviewId = reviewId,
                     reviewViewModel = reviewViewModel
+                )
+            }
+            composable(
+                route = AllDestination.Shop.route
+            ) {
+                ShopScreen(
+                    myPageViewModel = myPageViewModel,
+                    popBackStack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

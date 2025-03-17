@@ -23,6 +23,7 @@ import inu.appcenter.bjj_android.notification.NotificationManager
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
 import inu.appcenter.bjj_android.ui.navigate.AppNavigation
@@ -67,6 +68,7 @@ class MainActivity : ComponentActivity() {
             val rankingViewModel: RankingViewModel by viewModel()
             val likedMenuViewModel: LikedMenuViewModel by viewModel()
             val nicknameChangeViewModel: NicknameChangeViewModel by viewModel()
+            val myPageViewModel: MyPageViewModel by viewModel()
 
             // 권한 관리자를 통한 알림 권한 처리
             NotificationPermissionHandler(permissionManager)
@@ -99,7 +101,8 @@ class MainActivity : ComponentActivity() {
                         reviewViewModel = reviewViewModel,
                         rankingViewModel = rankingViewModel,
                         likedMenuViewModel = likedMenuViewModel,
-                        nicknameChangeViewModel = nicknameChangeViewModel
+                        nicknameChangeViewModel = nicknameChangeViewModel,
+                        myPageViewModel = myPageViewModel
                     )
                 }
             }

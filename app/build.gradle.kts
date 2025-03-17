@@ -104,4 +104,7 @@ dependencies {
     // FCM
     implementation("com.google.firebase:firebase-messaging-ktx:24.1.0")
 
+    // System UI
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
 }

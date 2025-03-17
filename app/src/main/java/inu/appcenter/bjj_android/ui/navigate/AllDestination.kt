@@ -37,4 +37,7 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object LikedMenu : AllDestination("likedMenu", R.drawable.mypage, "좋아요한 메뉴")
     data object Nickname : AllDestination("nickname", R.drawable.mypage, "닉네임 변경")
     data object BlockedUser : AllDestination("blockedUser", R.drawable.mypage, "차단한 유저")
+
+    data object Shop : AllDestination("shop", R.drawable.mypage, "상점")
+
 }

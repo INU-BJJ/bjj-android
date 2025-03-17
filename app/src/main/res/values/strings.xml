@@ -77,4 +77,11 @@
     <string name="nickname_available">사용 가능한 닉네임입니다.</string>
     <string name="nickname_unavailable">사용 불가능한 닉네임입니다.</string>
     <string name="change_nickname_button">닉네임 변경하기</string>
+    <string name="defaultBackground">기본 배경 이미지</string>
+    <string name="shop">상점</string>
+    <string name="shop_background">상점 배경</string>
+    <string name="point">포인트</string>
+    <string name="draw_machine">뽑기 기계</string>
+    <string name="draw">뽑기하기 !</string>
+    <string name="draw_text">뽑기 글자</string>
 </resources>
