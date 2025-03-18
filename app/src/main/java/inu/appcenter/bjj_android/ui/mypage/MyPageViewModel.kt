@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.repository.item.ItemRepository
-import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
 
 
 sealed class MyPageUiEvent {
@@ -25,15 +23,21 @@ data class MyPageUiState(
     val wearingCharacterImageName: String? = null,
     val wearingBackgroundId: Long? = null,
     val wearingCharacterId: Long? = null,
+    val selectedCategory: ItemType = ItemType.CHARACTER,
     val point: Int = 0,
     val items: List<ItemResponseItem> = emptyList(),
+
+    val isDrawSuccess: Boolean = false,
+    val drawnItemName: String? = null,
+    val drawnItemImageName: String? = null,
+    val drawnItemId: Long? = null
 )
 
 class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewModel() {
 
     companion object {
-        private const val CHARACTER_COST = 100
-        private const val BACKGROUND_COST = 150
+        private const val CHARACTER_COST = 50
+        private const val BACKGROUND_COST = 100
     }
 
     private val _eventFlow = MutableSharedFlow<MyPageUiEvent>()
@@ -149,12 +153,9 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
     }
 
     fun drawItem(itemType: ItemType) {
-        // 뽑기 전 포인트 저장 (롤백을 위해)
         val currentPoint = _uiState.value.point
-        // 아이템 가격 (실제 서비스의 가격 정책에 맞게 조정 필요)
         val itemCost = getItemCost(itemType)
 
-        // 포인트가 부족한 경우 체크
         if (currentPoint < itemCost) {
             viewModelScope.launch {
                 _eventFlow.emit(MyPageUiEvent.ShowToast("포인트가 부족합니다."))
@@ -167,15 +168,9 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         viewModelScope.launch {
             setLoading(true)
             itemRepository.drawItem(itemType).handleResponse(
-                onLoading = {
-
-                },
                 onError = {
                     setLoading(false)
-
-                    // 에러 발생 시 원래 포인트로 롤백
-                    _uiState.update { it.copy(point = currentPoint) }
-
+                    _uiState.update { it.copy(point = currentPoint) } // 롤백
                     emitError(it)
                     viewModelScope.launch {
                         _eventFlow.emit(MyPageUiEvent.ShowToast(it.message ?: "오류가 발생했습니다."))
@@ -184,18 +179,17 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                 onSuccess = { newItem ->
                     setLoading(false)
 
-                    val updatedItems = _uiState.value.items.map { existingItem ->
-                        if (existingItem.itemId == newItem.itemId) {
-                            // 이미 목록에 있는 아이템이라면 소유 상태 등을 업데이트
-                            existingItem.copy(isOwned = true) // 실제 모델에 맞게 조정 필요
-                        } else {
-                            existingItem
-                        }
+                    // 뽑은 아이템 성공 다이얼로그 상태 업데이트
+                    _uiState.update {
+                        it.copy(
+                            isDrawSuccess = true,
+                            drawnItemName = newItem.itemName,
+                            drawnItemImageName = newItem.imageName,
+                            drawnItemId = newItem.itemId
+                        )
                     }
 
-                    _uiState.update { it.copy(items = updatedItems) }
-
-                    // 아이템 획득 후 전체 아이템 목록과 마이페이지 정보를 새로 가져옴
+                    // 아이템 목록 갱신
                     getAllItemsInfo()
                     getMyPageInfo()
                 }
@@ -203,10 +197,31 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         }
     }
 
+    fun resetDrawState() {
+        _uiState.update {
+            it.copy(
+                isDrawSuccess = false,
+                drawnItemName = null,
+                drawnItemImageName = null,
+                drawnItemId = null
+            )
+        }
+    }
+
+    fun equipDrawnItem() {
+        _uiState.value.drawnItemId?.let { wearItem(it) }
+    }
+
     private fun getItemCost(itemType: ItemType): Int {
         return when (itemType) {
             ItemType.CHARACTER -> CHARACTER_COST
             ItemType.BACKGROUND -> BACKGROUND_COST
+        }
+    }
+
+    fun selectCategory(itemType: ItemType) {
+        _uiState.update {
+            it.copy(selectedCategory = itemType)
         }
     }
 
