@@ -2,7 +2,6 @@ package inu.appcenter.bjj_android.ui.mypage.setting.nickname
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
@@ -98,7 +98,7 @@ fun NicknameChangeScreen(
                         modifier = Modifier
                             .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
                             .offset(y = MaterialTheme.paddings.iconOffset)
-                            .clickable { onNavigateBack() },
+                            .noRippleClickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description)
                     )

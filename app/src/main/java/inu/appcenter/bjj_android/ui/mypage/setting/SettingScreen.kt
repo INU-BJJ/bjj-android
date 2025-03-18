@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.times
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.HorizontalDivider
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 import inu.appcenter.bjj_android.ui.theme.paddings
@@ -100,7 +101,7 @@ fun SettingScreen(
                             // 원래 20dp값 이지만 아이콘 자체에 내부 패딩이 있어서 16dp로 함
                             .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
                             .offset(y = MaterialTheme.paddings.iconOffset)
-                            .clickable { onNavigateBack() },
+                            .noRippleClickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description)
                     )

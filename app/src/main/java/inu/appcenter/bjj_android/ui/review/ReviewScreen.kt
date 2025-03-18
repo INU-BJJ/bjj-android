@@ -12,8 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.review.reviewPagePart.ReviewFrameScreen
@@ -67,19 +66,13 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
         },
         // 밑에 버튼에 icon 넣는법 찾기
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(AllDestination.ReviewWrite.route)
-                },
-                containerColor = Color.Transparent, // 배경색을 투명하게 설정
-                elevation = FloatingActionButtonDefaults.elevation(0.dp) // 그림자 제거
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.writeplusbutton),
-                    contentDescription = stringResource(R.string.write_review_button),
-                    tint = Color.Unspecified,
-                )
-            }
+            Icon(
+                painter = painterResource(id = R.drawable.writeplusbutton),
+                contentDescription = stringResource(R.string.write_review_button),
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .noRippleClickable { navController.navigate(AllDestination.ReviewWrite.route) },
+            )
         },
         bottomBar = { AppBottomBar(navController) }
     ) { innerPadding ->
