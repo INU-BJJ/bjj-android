@@ -1,10 +1,7 @@
 package inu.appcenter.bjj_android.ui.mypage
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.mypage.component.MyPageBackground
@@ -90,9 +87,7 @@ fun MyPageScreen(
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .padding(end = 18.dp)
-                            .clickable {
-                                navController.navigate(AllDestination.Setting.route)
-                            }
+                            .noRippleClickable { navController.navigate(AllDestination.Setting.route) },
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

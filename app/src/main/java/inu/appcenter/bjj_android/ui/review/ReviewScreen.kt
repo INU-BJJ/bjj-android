@@ -1,8 +1,6 @@
 package inu.appcenter.bjj_android.ui.review
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.review.reviewPagePart.ReviewFrameScreen
@@ -73,12 +71,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                 contentDescription = stringResource(R.string.write_review_button),
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null // 리플 효과를 완전히 제거합니다
-                    ) {
-                        navController.navigate(AllDestination.ReviewWrite.route)
-                    }
+                    .noRippleClickable { navController.navigate(AllDestination.ReviewWrite.route) },
             )
         },
         bottomBar = { AppBottomBar(navController) }

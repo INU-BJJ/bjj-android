@@ -2,7 +2,6 @@ package inu.appcenter.bjj_android.ui.mypage.setting.likedmenu
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.fcm.FcmManager
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.mypage.component.LikedMenuFrame
 import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.mypage.component.SwitchButton
@@ -96,7 +96,7 @@ fun LikedMenuScreen(
                         modifier = Modifier
                             .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
                             .offset(y = MaterialTheme.paddings.iconOffset)
-                            .clickable { onNavigateBack() },
+                            .noRippleClickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description)
                     )

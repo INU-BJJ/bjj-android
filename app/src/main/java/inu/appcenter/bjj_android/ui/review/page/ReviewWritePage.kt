@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.component.DashedBorderBox
 import inu.appcenter.bjj_android.ui.review.component.DropdownMenuBox
@@ -132,7 +133,7 @@ fun ReviewWriteScreen(
                         modifier = Modifier
                             .padding(start = MaterialTheme.paddings.topBarPadding - MaterialTheme.paddings.iconOffset)
                             .offset(y = MaterialTheme.paddings.iconOffset)
-                            .clickable { onNavigateBack() },
+                            .noRippleClickable { onNavigateBack() },
                         painter = painterResource(id = R.drawable.leftarrow),
                         contentDescription = stringResource(R.string.back_description)
                     )

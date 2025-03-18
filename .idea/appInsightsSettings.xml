@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="inu.appcenter.bjj_android" />
+                  <option name="mobileSdkAppId" value="1:814551611678:android:b164ca04354c26f748f10f" />
+                  <option name="projectId" value="inu-bjj-project" />
+                  <option name="projectNumber" value="814551611678" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

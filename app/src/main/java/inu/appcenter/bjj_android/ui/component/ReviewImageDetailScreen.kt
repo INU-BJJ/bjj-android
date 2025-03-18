@@ -101,7 +101,7 @@ fun ReviewImageDetailScreen(
                 Icon(
                     modifier = Modifier
                         .offset(x = 19.4.dp, y = 4.5.dp)
-                        .clickable { navController.popBackStack() },
+                        .noRippleClickable { navController.popBackStack() },
                     painter = painterResource(id = R.drawable.leftarrow),
                     contentDescription = "뒤로 가기",
                     tint = Color.White
@@ -111,7 +111,7 @@ fun ReviewImageDetailScreen(
                 Icon(
                     modifier = Modifier
                         .offset(x = -(12.1).dp)
-                        .clickable { navController.popBackStack() },
+                        .noRippleClickable { navController.popBackStack() },
                     painter = painterResource(id = R.drawable.xbutton),
                     contentDescription = "닫기",
                     tint = Color.White
