@@ -89,7 +89,8 @@ fun ReviewItemCard(
                             letterSpacing = 0.13.sp,
                             lineHeight = 18.sp,
                         ),
-                        color = Color.Black
+                        color = Color.Black,
+                        modifier = Modifier.width(13.dp) // 고정된 너비 설정해서 숫자에 따른 별 위치가 안 바뀌게 보이도록함 
                     )
                 }
             }
