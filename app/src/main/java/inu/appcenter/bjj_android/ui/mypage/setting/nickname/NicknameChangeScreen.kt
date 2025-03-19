@@ -2,12 +2,16 @@ package inu.appcenter.bjj_android.ui.mypage.setting.nickname
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -18,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -45,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.noRippleClickable
+import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
@@ -59,6 +65,8 @@ fun NicknameChangeScreen(
 ) {
     val uiState by nicknameChangeViewModel.uiState.collectAsState()
     var nickname by remember { mutableStateOf("") }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     // 화면에 진입할 때 닉네임 정보 불러오기
     LaunchedEffect(Unit) {
@@ -116,7 +124,7 @@ fun NicknameChangeScreen(
                 .fillMaxSize()
                 .background(color = Color.White)
                 .padding(contentPadding)
-                .padding(horizontal = MaterialTheme.paddings.large),
+                .padding(horizontal = MaterialTheme.paddings.large, vertical = MaterialTheme.paddings.xlarge),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
@@ -147,44 +155,58 @@ fun NicknameChangeScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextField(
-                        value = nickname,
-                        onValueChange = {
-                            if (it.length <= 12) {
-                                nickname = it
-                                nicknameChangeViewModel.resetNicknameCheckState()
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.nickname_placeholder),
-                                style = LocalTypography.current.regular13.copy(
-                                    lineHeight = 17.sp,
-                                    letterSpacing = 0.13.sp,
-                                    color = Gray_D9D9D9
+                    Box(modifier = Modifier.weight(1f)) {
+                        TextField(
+                            value = nickname,
+                            onValueChange = {
+                                if (it.length <= 12) {
+                                    nickname = it
+                                    nicknameChangeViewModel.resetNicknameCheckState()
+                                }
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.nickname_placeholder),
+                                    style = LocalTypography.current.regular13.copy(
+                                        lineHeight = 17.sp,
+                                        letterSpacing = 0.13.sp,
+                                        color = Gray_D9D9D9
+                                    )
                                 )
-                            )
-                        },
-                        textStyle = LocalTypography.current.regular13.copy(
-                            lineHeight = 15.sp,
-                            letterSpacing = 0.13.sp,
-                            color = Color.Black,
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            unfocusedPlaceholderColor = Gray_D9D9D9,
-                            unfocusedIndicatorColor = Gray_D9D9D9,
-                            focusedPlaceholderColor = Gray_D9D9D9,
-                            focusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Gray_D9D9D9
-                        ),
-                        modifier = Modifier
-                            .weight(1f),
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Done
+                            },
+                            textStyle = LocalTypography.current.regular13.copy(
+                                lineHeight = 15.sp,
+                                letterSpacing = 0.13.sp,
+                                color = Color.Black,
+                            ),
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.Transparent,
+                                unfocusedPlaceholderColor = Gray_D9D9D9,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedPlaceholderColor = Gray_D9D9D9,
+                                focusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                // TextField 기본 수평 패딩값이 16.dp이고 피그마에서는 왼쪽부터 6.dp만큼 패딩이 있어서 왼쪽으로 10.dp를 줘야함
+                                .offset(x = (-10).dp),
+                            maxLines = 1,
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done
+                            ),
+                            interactionSource = interactionSource // 추가: focus 상태 추적
                         )
-                    )
+
+                        // 커스텀 indicator 추가
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = (-14).dp), // 원하는 위치로 조정
+                            thickness = 1.dp,
+                            color = if (isFocused) Gray_999999 else Gray_D9D9D9 // focus 상태에 따라 색상 변경
+                        )
+                    }
                     Spacer(Modifier.width(6.5.dp))
                     OutlinedButton(
                         onClick = {
@@ -211,7 +233,8 @@ fun NicknameChangeScreen(
                         )
                     }
                 }
-                Spacer(Modifier.height(7.5.dp))
+                // 기존에는 indicator와의 거리때문에 Spacer 넣었지만 새로 만든 Divider를 offset으로 올려서 추가적으로 Spacer 안줘도 충분한 패딩값을 가지게 됌
+//                Spacer(Modifier.height(7.5.dp))
                 when(uiState.checkNicknameState) {
                     NicknameState.Success -> {
                         Row(
