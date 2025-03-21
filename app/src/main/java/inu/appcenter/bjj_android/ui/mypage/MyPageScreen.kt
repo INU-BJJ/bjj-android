@@ -1,7 +1,9 @@
 package inu.appcenter.bjj_android.ui.mypage
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -118,21 +120,29 @@ fun MyPageScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight()
                         .align(Alignment.TopCenter)
-                        .padding(horizontal = 30.dp)
+                        .padding(horizontal = 30.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    UserInfoBar(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        userName = myPageUiState.userName
-                    )
-                    ShopButton(
-                        modifier = Modifier,
-                        onClick = {
-                            navigateToShop()
-                        }
-                    )
+                    Column {
+                        UserInfoBar(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            userName = myPageUiState.userName
+                        )
+                        ShopButton(
+                            modifier = Modifier,
+                            onClick = {
+                                navigateToShop()
+                            }
+                        )
+                    }
                     CharacterView(
+                        modifier = Modifier
+                            .padding(bottom = 70.dp)
+                            .fillMaxWidth(0.33f),
                         imageName = myPageUiState.wearingCharacterImageName
                     )
                 }

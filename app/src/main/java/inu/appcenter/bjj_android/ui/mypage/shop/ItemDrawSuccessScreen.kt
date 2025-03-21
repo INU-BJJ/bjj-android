@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.ui.mypage.shop
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -86,6 +87,10 @@ fun ItemDrawSuccessScreen(
                             contentDescription = null,
                             tint = Color.Black,
                             modifier = Modifier
+                                .clickable {
+                                    myPageViewModel.resetDrawState()
+                                    popBackStack()
+                                }
                                 .padding(start = 21.dp)
                         )
                     },
@@ -122,8 +127,6 @@ fun ItemDrawSuccessScreen(
                         ImageLoader.CharacterItem(
                             imageName = uiState.drawnItem?.imageName ?: "",
                             modifier = Modifier
-                                .width(136.dp)
-                                .height(165.dp)
                         )
                     }
 
@@ -134,7 +137,7 @@ fun ItemDrawSuccessScreen(
                             topEnd = 16.dp
                         ),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
                     ) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),

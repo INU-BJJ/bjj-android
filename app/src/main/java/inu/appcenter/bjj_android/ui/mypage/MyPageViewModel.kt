@@ -25,7 +25,7 @@ data class MyPageUiState(
     val wearingBackgroundId: Long? = null,
     val wearingCharacterId: Long? = null,
     val selectedCategory: ItemType = ItemType.CHARACTER,
-    val point: Int = 0,
+    val point: Long = 0,
     val items: List<ItemResponseItem> = emptyList(),
 
     val isDrawSuccess: Boolean = false,
@@ -73,7 +73,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                 onSuccess = { myPageInfo ->
                     setLoading(false)
                     _uiState.update {
-                        it.copy(userName = myPageInfo.nickname, point = myPageInfo.point)
+                        it.copy(userName = myPageInfo.nickname, point = myPageInfo.point, wearingCharacterId = myPageInfo.itemId, wearingCharacterImageName = myPageInfo.imageName)
                     }
                 }
             )
