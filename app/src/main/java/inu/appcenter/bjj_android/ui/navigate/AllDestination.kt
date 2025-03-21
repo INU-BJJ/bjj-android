@@ -39,5 +39,7 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object BlockedUser : AllDestination("blockedUser", R.drawable.mypage, "차단한 유저")
 
     data object Shop : AllDestination("shop", R.drawable.mypage, "상점")
+    data object ItemDrawSuccess : AllDestination("itemDrawSuccess", R.drawable.mypage, "아이템 뽑기 성공")
+
 
 }

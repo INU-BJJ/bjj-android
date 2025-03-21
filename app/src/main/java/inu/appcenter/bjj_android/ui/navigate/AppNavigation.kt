@@ -26,6 +26,7 @@ import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
+import inu.appcenter.bjj_android.ui.mypage.shop.ItemDrawSuccessScreen
 import inu.appcenter.bjj_android.ui.mypage.shop.ShopScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
@@ -301,6 +302,25 @@ fun AppNavigation(
                     myPageViewModel = myPageViewModel,
                     popBackStack = {
                         navController.popBackStack()
+                    },
+                    navigateToDrawSuccess = {
+                        navController.navigate(AllDestination.ItemDrawSuccess.route)
+                    }
+                )
+            }
+            composable(
+                route = AllDestination.ItemDrawSuccess.route
+            ) {
+                ItemDrawSuccessScreen (
+                    myPageViewModel = myPageViewModel,
+                    popBackStack = {
+                        navController.popBackStack()
+                    },
+                    onEquip = {
+                        navController.navigate(AllDestination.MyPage.route) {
+                            // Shop 화면으로 돌아가서 그 이후 백스택 제거 (뽑기 성공 화면 포함)
+                            popUpTo(AllDestination.Shop.route) { inclusive = true }
+                        }
                     }
                 )
             }

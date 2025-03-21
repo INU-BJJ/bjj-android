@@ -29,6 +29,7 @@ import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import inu.appcenter.bjj_android.ui.mypage.component.CharacterView
 import inu.appcenter.bjj_android.ui.mypage.component.MyPageBackground
 import inu.appcenter.bjj_android.ui.mypage.component.ShopButton
 import inu.appcenter.bjj_android.ui.mypage.component.UserInfoBar
@@ -130,6 +131,9 @@ fun MyPageScreen(
                         onClick = {
                             navigateToShop()
                         }
+                    )
+                    CharacterView(
+                        imageName = myPageUiState.wearingCharacterImageName
                     )
                 }
             }

@@ -67,7 +67,7 @@ fun ItemCard(
             ) {
                 // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
                 if (item.imageName.isNotEmpty()) {
-                    ImageLoader.ReviewImage(
+                    ImageLoader.CharacterItem(
                         imageName = item.imageName,
                         showLoading = true,
                         modifier = Modifier
@@ -100,7 +100,8 @@ fun ItemCard(
                                 color = Color.Black.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
                             )
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .align(Alignment.TopCenter),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
