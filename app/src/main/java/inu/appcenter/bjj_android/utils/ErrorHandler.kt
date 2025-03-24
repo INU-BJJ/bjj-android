@@ -1,63 +1,94 @@
 package inu.appcenter.bjj_android.utils
 
+import android.util.Log
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
 import java.io.IOException
 
 
 object ErrorHandler {
+    private const val TAG = "ErrorHandler"
+
     fun handleApiError(response: Response<*>): AppError {
+        Log.e(TAG, "API 오류: ${response.code()} - ${response.message()}")
+
         return when (response.code()) {
-            401 -> AppError.UnauthorizedError("인증이 필요합니다. 다시 로그인해주세요.")
-            404 -> AppError.EmptyResponse("요청한 데이터를 찾을 수 없습니다.")
+            401 -> AppError.AuthError(isExpired = true)
+            403 -> AppError.AuthError(message = "접근 권한이 없습니다.")
+            404 -> AppError.NotFoundError()
+            500, 502, 503 -> AppError.ApiError(
+                message = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+                statusCode = response.code()
+            )
+            503 -> AppError.MaintenanceError()
             in 400..499 -> {
-                val errorMessage = parseErrorBody(response.errorBody()?.string())
-                AppError.ApiError(errorMessage, response.code())
+                // 클라이언트 오류
+                val errorBody = parseErrorBody(response.errorBody()?.string())
+                val errorCode = parseErrorCode(response.errorBody()?.string())
+                AppError.ApiError(
+                    message = errorBody,
+                    statusCode = response.code(),
+                    errorCode = errorCode
+                )
             }
-            in 500..599 -> AppError.ApiError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", response.code())
-            else -> AppError.UnknownError("오류 코드: ${response.code()}")
+            else -> AppError.ApiError(
+                message = "알 수 없는 오류가 발생했습니다. (${response.code()})",
+                statusCode = response.code()
+            )
         }
     }
 
-    fun parseErrorBody(errorBody: String?): String {
+    fun handleNetworkError(error: IOException): AppError.NetworkError {
+        Log.e(TAG, "네트워크 오류: ${error.message}", error)
+        return AppError.NetworkError()
+    }
+
+    fun handleUnknownError(error: Throwable): AppError.GeneralError {
+        Log.e(TAG, "알 수 없는 오류: ${error.message}", error)
+        return AppError.GeneralError(
+            message = error.message ?: "알 수 없는 오류가 발생했습니다."
+        )
+    }
+
+    private fun parseErrorBody(errorBody: String?): String {
         return try {
             errorBody?.let {
-                // JSON 형식으로 파싱
                 val jsonObject = JSONObject(it)
-                // "msg" 필드가 배열인 경우
-                if (jsonObject.has("msg") && jsonObject.get("msg") is org.json.JSONArray) {
-                    val msgArray = jsonObject.getJSONArray("msg")
-                    if (msgArray.length() > 0) {
-                        return msgArray.getString(0)
+                if (jsonObject.has("msg")) {
+                    if (jsonObject.get("msg") is JSONArray) {
+                        val msgArray = jsonObject.getJSONArray("msg")
+                        if (msgArray.length() > 0) {
+                            return msgArray.getString(0)
+                        }
+                    } else {
+                        return jsonObject.getString("msg")
                     }
+                } else if (jsonObject.has("message")) {
+                    return jsonObject.getString("message")
+                } else if (jsonObject.has("error")) {
+                    return jsonObject.getString("error")
                 }
-                // "msg" 필드가 문자열인 경우
-                else if (jsonObject.has("msg")) {
-                    return jsonObject.getString("msg")
-                }
-                // "code" 필드만 있는 경우
-                else if (jsonObject.has("code")) {
-                    return "오류 코드: ${jsonObject.getString("code")}"
-                }
-
                 "서버 오류가 발생했습니다"
             } ?: "서버 오류가 발생했습니다"
         } catch (e: Exception) {
-            "서버 오류가 발생했습니다: ${e.message}"
+            Log.e(TAG, "에러 응답 파싱 오류: ${e.message}", e)
+            "서버 오류가 발생했습니다"
         }
     }
 
-    fun getUserFriendlyMessage(error: Throwable): String {
-        // Convert any error to user-friendly message
-        return when (error) {
-            is AppError.NetworkError -> "네트워크 연결을 확인해주세요."
-            is AppError.UnauthorizedError -> "로그인 후 이용해주세요."
-            is AppError.EmptyResponse -> error.message
-            is AppError.ApiError -> error.message
-            is AppError.ValidationError -> error.message
-            is AppError.UnknownError -> "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
-            is IOException -> "인터넷 연결을 확인해주세요."
-            else -> "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+    private fun parseErrorCode(errorBody: String?): String? {
+        return try {
+            errorBody?.let {
+                val jsonObject = JSONObject(it)
+                if (jsonObject.has("code")) {
+                    jsonObject.getString("code")
+                } else {
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

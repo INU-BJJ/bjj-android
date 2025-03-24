@@ -21,18 +21,19 @@ interface BaseRepository {
                 } else {
                     response.body()?.let { body ->
                         emit(CustomResponse.Success(body as T))
-                    } ?: emit(CustomResponse.Error(AppError.EmptyResponse()))
+                    } ?: emit(CustomResponse.Error(AppError.NotFoundError()))
                 }
             } else {
-                // 서버로부터 받은 에러 메시지 파싱
-                val errorMessage = ErrorHandler.parseErrorBody(response.errorBody()?.string())
-                val apiError = AppError.ApiError(errorMessage, response.code())
-                emit(CustomResponse.Error(apiError))
+                // 서버로부터 받은 에러 메시지 파싱 및 처리
+                val error = ErrorHandler.handleApiError(response)
+                emit(CustomResponse.Error(error))
             }
         } catch (e: IOException) {
-            emit(CustomResponse.Error(AppError.NetworkError("네트워크 연결 실패: ${e.message}")))
+            // 네트워크 오류 처리
+            emit(CustomResponse.Error(ErrorHandler.handleNetworkError(e)))
         } catch (e: Exception) {
-            emit(CustomResponse.Error(AppError.UnknownError(e.message ?: "알 수 없는 오류")))
+            // 알 수 없는 오류 처리
+            emit(CustomResponse.Error(ErrorHandler.handleUnknownError(e)))
         }
     }
 }

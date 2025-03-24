@@ -38,9 +38,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         private const val BACKGROUND_COST = 100
     }
 
-    private val _eventFlow = MutableSharedFlow<MyPageUiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
-
+    // MyPageUiEvent를 사용하지 않고 BaseViewModel의 toastEvent 사용
     private val _uiState = MutableStateFlow(MyPageUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -49,27 +47,11 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         getAllItemsInfo()
     }
 
-
     fun getMyPageInfo() {
         viewModelScope.launch {
             setLoading(true)
             itemRepository.getMyPageInfo().handleResponse(
-                onLoading = {
-
-                },
-                onError = {
-                    setLoading(false)
-                    emitError(it)
-                    viewModelScope.launch {
-                        _eventFlow.emit(
-                            MyPageUiEvent.ShowToast(
-                                it.message ?: "오류가 발생했습니다."
-                            )
-                        )
-                    }
-                },
                 onSuccess = { myPageInfo ->
-                    setLoading(false)
                     _uiState.update {
                         it.copy(
                             userName = myPageInfo.nickname,
@@ -81,6 +63,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                         )
                     }
                 }
+                // onError는 기본 처리 사용
             )
         }
     }
@@ -89,55 +72,33 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         viewModelScope.launch {
             setLoading(true)
             itemRepository.getAllItemsInfo(uiState.value.selectedCategory).handleResponse(
-                onLoading = {
-
-                },
-                onError = {
-                    setLoading(false)
-                    emitError(it)
-                    viewModelScope.launch {
-                        _eventFlow.emit(MyPageUiEvent.ShowToast(it.message ?: "오류가 발생했습니다."))
-                    }
-                },
                 onSuccess = { items ->
-                    setLoading(false)
                     _uiState.update {
                         it.copy(items = items)
                     }
                 }
+                // onError는 기본 처리 사용
             )
         }
     }
 
     fun wearItem(item: ItemResponseItem) {
-
         val itemToWear = _uiState.value.items.find { it.itemId == item.itemId } ?: return
 
         viewModelScope.launch {
-            setLoading(true)
             updateWearingItemLocally(itemToWear)
 
             itemRepository.wearItem(itemType = item.itemType.toItemType(), itemId = item.itemId).handleResponse(
-                onLoading = {
-
-                },
-                onError = {
-                    Log.d("WearItemError", it.message.toString())
-                    setLoading(false)
-                    emitError(it)
-                    viewModelScope.launch {
-                        _eventFlow.emit(MyPageUiEvent.ShowToast(it.message ?: "오류가 발생했습니다."))
-                    }
-
-                    getMyPageInfo()
-                },
                 onSuccess = {
-                    Log.d("WearItemSuccess", it.toString())
-                    setLoading(false)
-                    viewModelScope.launch {
-                        _eventFlow.emit(MyPageUiEvent.ShowToast("아이템이 장착되었습니다."))
-                    }
+                    Log.d("WearItemSuccess", "아이템 장착 성공")
+                    showToast("아이템이 장착되었습니다.")
                     getAllItemsInfo()
+                },
+                onError = { error ->
+                    Log.d("WearItemError", error.message.toString())
+                    getMyPageInfo()  // 장착 실패 시 원래 상태로 복원
+                    // 기본 오류 처리 외에도 상태 복원 로직 추가
+                    handleError(error)
                 }
             )
         }
@@ -152,7 +113,6 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                     wearingCharacterId = item.itemId
                 )
             }
-
             "BACKGROUND" -> _uiState.update {
                 it.copy(
                     wearingBackgroundImageName = item.imageName,
@@ -167,28 +127,15 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         val itemCost = getItemCost(itemType)
 
         if (currentPoint < itemCost) {
-            viewModelScope.launch {
-                _eventFlow.emit(MyPageUiEvent.ShowToast("포인트가 부족합니다."))
-            }
+            showToast("포인트가 부족합니다.")
             return
         }
 
         _uiState.update { it.copy(point = currentPoint - itemCost) }
 
         viewModelScope.launch {
-            setLoading(true)
             itemRepository.drawItem(itemType).handleResponse(
-                onError = {
-                    setLoading(false)
-                    _uiState.update { it.copy(point = currentPoint) } // 롤백
-                    emitError(it)
-                    viewModelScope.launch {
-                        _eventFlow.emit(MyPageUiEvent.ShowToast(it.message ?: "오류가 발생했습니다."))
-                    }
-                },
                 onSuccess = { newItem ->
-                    setLoading(false)
-
                     // 뽑은 아이템 성공 다이얼로그 상태 업데이트
                     _uiState.update {
                         it.copy(
@@ -196,10 +143,13 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                             drawnItem = newItem,
                         )
                     }
-
                     // 아이템 목록 갱신
                     getAllItemsInfo()
                     getMyPageInfo()
+                },
+                onError = { error ->
+                    _uiState.update { it.copy(point = currentPoint) } // 롤백
+                    handleError(error)
                 }
             )
         }
@@ -231,7 +181,6 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         }
         getAllItemsInfo()
     }
-
 }
 
 fun String.toItemType(): ItemType {
