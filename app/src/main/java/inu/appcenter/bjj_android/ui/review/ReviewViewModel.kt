@@ -258,7 +258,7 @@ class ReviewViewModel(
                 )
             } catch (e: Exception) {
                 setLoading(false)
-                emitError(AppError.UnknownError(e.message ?: "리뷰 작성 중 오류가 발생했습니다."))
+                emitError(AppError.NotFoundError(e.message ?: "리뷰 작성 중 오류가 발생했습니다."))
             }
         }
     }

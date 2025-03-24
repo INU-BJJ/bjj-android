@@ -83,7 +83,7 @@ class AuthViewModel(
                 _uiState.update { it.copy(saveTokenState = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(saveTokenState = false) }
-                emitError(AppError.UnknownError(e.message ?: "토큰 저장 중 오류가 발생했습니다."))
+                emitError(AppError.NotFoundError(e.message ?: "토큰 저장 중 오류가 발생했습니다."))
             }
         }
     }
@@ -175,7 +175,7 @@ class AuthViewModel(
                         logoutState = AuthState.Error(e.message ?: "Unknown error")
                     )
                 }
-                emitError(AppError.UnknownError(e.message ?: "로그아웃 중 오류가 발생했습니다."))
+                emitError(AppError.NotFoundError(e.message ?: "로그아웃 중 오류가 발생했습니다."))
             } finally {
                 setLoading(false)
             }
