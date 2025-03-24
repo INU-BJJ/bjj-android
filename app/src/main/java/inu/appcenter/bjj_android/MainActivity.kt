@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import coil.Coil
 import inu.appcenter.bjj_android.fcm.FcmManager
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.notification.NotificationManager
@@ -31,8 +32,14 @@ import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
+import inu.appcenter.bjj_android.utils.ImageLoader
 import inu.appcenter.bjj_android.utils.PermissionManager
 import inu.appcenter.bjj_android.utils.NotificationPermissionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.android.ext.android.inject
 
@@ -43,11 +50,23 @@ class MainActivity : ComponentActivity() {
     private val fcmManager: FcmManager by inject()
     private val notificationManager: NotificationManager by inject()
     private val permissionManager: PermissionManager by inject()
+    private val dataStoreManager: DataStoreManager by inject() // DataStoreManager 주입
+
+    // 액티비티 코루틴 스코프
+    private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Coil의 기본 ImageLoader 설정
+        Coil.setImageLoader(
+            ImageLoader.createImageLoader(this)
+        )
+
+        // 토큰 설정 초기화
+        initializeImageLoaderWithToken()
 
         // 앱 시작 시 알림 채널 생성
         notificationManager.createNotificationChannels()
@@ -105,6 +124,28 @@ class MainActivity : ComponentActivity() {
                         myPageViewModel = myPageViewModel
                     )
                 }
+            }
+        }
+    }
+
+    // ImageLoader 토큰 초기화 함수
+    private fun initializeImageLoaderWithToken() {
+        activityScope.launch {
+            try {
+                // 데이터스토어에서 토큰 불러오기
+                val token = dataStoreManager.token.first()
+                // ImageLoader에 토큰 설정
+                ImageLoader.setAuthToken(token)
+
+                // 토큰 변경 감지하여 ImageLoader 업데이트
+                launch {
+                    dataStoreManager.token.collect { newToken ->
+                        ImageLoader.setAuthToken(newToken)
+                        Log.d("MainActivity", "토큰 업데이트: ${if (newToken != null) "설정됨" else "없음"}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "토큰 초기화 오류", e)
             }
         }
     }

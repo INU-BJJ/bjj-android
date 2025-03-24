@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -67,12 +68,13 @@ fun ItemCard(
             ) {
                 // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
                 if (item.imageName.isNotEmpty()) {
-                    ImageLoader.ReviewImage(
+                    ImageLoader.CharacterItem(
                         imageName = item.imageName,
                         showLoading = true,
                         modifier = Modifier
                             .width(cardWidth * 0.8f) // 이미지 크기는 카드 너비의 80%
-                            .height(cardWidth * 0.8f) // 정사각형 비율
+                            .height(cardWidth * 0.8f), // 정사각형 비율
+                        contentScale = ContentScale.Fit
                     )
                 } else {
                     // 기본 이미지 (아이템 타입에 따라 다른 기본 이미지 사용)
@@ -100,7 +102,8 @@ fun ItemCard(
                                 color = Color.Black.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
                             )
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .align(Alignment.TopCenter),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(

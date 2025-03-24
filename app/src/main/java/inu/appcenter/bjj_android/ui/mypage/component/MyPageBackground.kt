@@ -26,7 +26,7 @@ fun MyPageBackground(
             contentScale = ContentScale.Crop
         )
     } else {
-        ImageLoader.ReviewImage(
+        ImageLoader.BackgroundItem(
             imageName = backgroundImageName,
             showLoading = false,
             modifier = modifier

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,17 +19,31 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.component.ShopBackground
 import inu.appcenter.bjj_android.ui.mypage.dialog.ItemDrawDialog
-import inu.appcenter.bjj_android.ui.mypage.dialog.ItemDrawSuccessDialog
 
 @Composable
 fun ShopScreen(
     myPageViewModel: MyPageViewModel,
-    popBackStack: () -> Unit
+    popBackStack: () -> Unit,
+    navigateToDrawSuccess: () -> Unit // 뽑기 성공 화면으로 이동하는 함수 추가
 ) {
     val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
 
     // 뽑기 다이얼로그 상태
     var showDrawDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(
+        key1 = true
+    ) {
+        myPageViewModel.getMyPageInfo()
+    }
+
+    // 뽑기 성공 상태가 변경될 때 ItemDrawSuccessScreen으로 이동
+    LaunchedEffect(myPageUiState.isDrawSuccess) {
+        if (myPageUiState.isDrawSuccess && myPageUiState.drawnItem != null) {
+            // 뽑기 성공 화면으로 네비게이션
+            navigateToDrawSuccess()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -84,17 +99,6 @@ fun ShopScreen(
 
                     // 다이얼로그 닫기
                     showDrawDialog = false
-                }
-            )
-        }
-        if (myPageUiState.isDrawSuccess) {
-            ItemDrawSuccessDialog(
-                itemName = myPageUiState.drawnItemName.orEmpty(),
-                imageName = myPageUiState.drawnItemImageName.orEmpty(),
-                onDismiss = { myPageViewModel.resetDrawState() },
-                onEquip = {
-                    myPageViewModel.equipDrawnItem()
-                    myPageViewModel.resetDrawState()
                 }
             )
         }

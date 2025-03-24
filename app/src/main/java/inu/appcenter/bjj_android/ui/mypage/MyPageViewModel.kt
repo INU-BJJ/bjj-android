@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.repository.item.ItemRepository
+import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +25,11 @@ data class MyPageUiState(
     val wearingBackgroundId: Long? = null,
     val wearingCharacterId: Long? = null,
     val selectedCategory: ItemType = ItemType.CHARACTER,
-    val point: Int = 0,
+    val point: Long = 0,
     val items: List<ItemResponseItem> = emptyList(),
 
     val isDrawSuccess: Boolean = false,
-    val drawnItemName: String? = null,
-    val drawnItemImageName: String? = null,
-    val drawnItemId: Long? = null
+    val drawnItem: ItemResponseItem? = null,
 )
 
 class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewModel() {
@@ -50,6 +49,8 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         getMyPageInfo()
         getAllItemsInfo()
     }
+
+
 
     fun getMyPageInfo() {
         viewModelScope.launch {
@@ -72,7 +73,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                 onSuccess = { myPageInfo ->
                     setLoading(false)
                     _uiState.update {
-                        it.copy(userName = myPageInfo.nickname, point = myPageInfo.point)
+                        it.copy(userName = myPageInfo.nickname, point = myPageInfo.point, wearingCharacterId = myPageInfo.itemId, wearingCharacterImageName = myPageInfo.imageName)
                     }
                 }
             )
@@ -129,6 +130,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                     viewModelScope.launch {
                         _eventFlow.emit(MyPageUiEvent.ShowToast("아이템이 장착되었습니다."))
                     }
+                    getAllItemsInfo()
                 }
             )
         }
@@ -183,9 +185,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                     _uiState.update {
                         it.copy(
                             isDrawSuccess = true,
-                            drawnItemName = newItem.itemName,
-                            drawnItemImageName = newItem.imageName,
-                            drawnItemId = newItem.itemId
+                            drawnItem = newItem,
                         )
                     }
 
@@ -201,15 +201,13 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         _uiState.update {
             it.copy(
                 isDrawSuccess = false,
-                drawnItemName = null,
-                drawnItemImageName = null,
-                drawnItemId = null
+                drawnItem = null,
             )
         }
     }
 
     fun equipDrawnItem() {
-        _uiState.value.drawnItemId?.let { wearItem(it) }
+        _uiState.value.drawnItem?.let { wearItem(it.itemId) }
     }
 
     private fun getItemCost(itemType: ItemType): Int {

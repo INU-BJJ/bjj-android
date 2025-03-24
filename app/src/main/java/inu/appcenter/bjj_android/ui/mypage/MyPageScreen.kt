@@ -1,7 +1,9 @@
 package inu.appcenter.bjj_android.ui.mypage
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +31,7 @@ import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
+import inu.appcenter.bjj_android.ui.mypage.component.CharacterView
 import inu.appcenter.bjj_android.ui.mypage.component.MyPageBackground
 import inu.appcenter.bjj_android.ui.mypage.component.ShopButton
 import inu.appcenter.bjj_android.ui.mypage.component.UserInfoBar
@@ -117,19 +120,30 @@ fun MyPageScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight()
                         .align(Alignment.TopCenter)
-                        .padding(horizontal = 30.dp)
+                        .padding(horizontal = 30.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    UserInfoBar(
+                    Column {
+                        UserInfoBar(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            userName = myPageUiState.userName
+                        )
+                        ShopButton(
+                            modifier = Modifier,
+                            onClick = {
+                                navigateToShop()
+                            }
+                        )
+                    }
+                    CharacterView(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        userName = myPageUiState.userName
-                    )
-                    ShopButton(
-                        modifier = Modifier,
-                        onClick = {
-                            navigateToShop()
-                        }
+                            .padding(bottom = 70.dp)
+                            .fillMaxWidth(0.33f),
+                        imageName = myPageUiState.wearingCharacterImageName
                     )
                 }
             }

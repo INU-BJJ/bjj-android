@@ -31,7 +31,7 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 @Composable
 fun ShopTopContent(
     modifier: Modifier = Modifier,
-    point: Int,
+    point: Long,
     popBackStack: () -> Unit
 ) {
     Row(
