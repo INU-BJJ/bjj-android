@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
@@ -90,7 +91,8 @@ fun ReviewItemCard(
                             lineHeight = 18.sp,
                         ),
                         color = Color.Black,
-                        modifier = Modifier.width(13.dp) // 고정된 너비 설정해서 숫자에 따른 별 위치가 안 바뀌게 보이도록함 
+                        modifier = Modifier.width(13.dp), // 고정된 너비 설정해서 숫자에 따른 별 위치가 안 바뀌게 보이도록함
+                        textAlign = TextAlign.Center
                     )
                 }
             }
