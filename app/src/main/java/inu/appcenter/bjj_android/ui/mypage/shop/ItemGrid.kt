@@ -42,7 +42,7 @@ fun ItemGrid(
                 .fillMaxWidth()
                 .background(color = Brown_F2D9AF, shape = RoundedCornerShape(10.dp))
                 .border(width = 1.dp, color = Brown_C49A6C, shape = RoundedCornerShape(10.dp))
-                .padding(vertical = 10.dp)
+                .padding(vertical = 14.dp)
         ) {
             // 각 레벨별로 아이템 섹션 생성
             item {
@@ -54,7 +54,7 @@ fun ItemGrid(
             }
 
             item {
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(54.dp))
                 ItemSection(
                     levelTitle = ItemLevel.NORMAL.toKorean(),
                     items = normalItems,

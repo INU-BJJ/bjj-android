@@ -50,7 +50,8 @@ fun ReviewImageDetailScreen(
     reviewId: Long = -1L,
     fromReviewDetail: Boolean = false,
     // 두 번째 사용 방식: ReviewViewModel 사용 (기존 리뷰 상세보기 용)
-    reviewViewModel: ReviewViewModel? = null
+    reviewViewModel: ReviewViewModel? = null,
+    menuId: Long = -1L
 ) {
     // ReviewViewModel이 있으면 ViewModel의 상태를 수집
     val reviewUiState = reviewViewModel?.uiState?.collectAsState()
@@ -200,7 +201,8 @@ fun ReviewImageDetailScreen(
                         } else {
                             navController.navigate(
                                 AllDestination.MenuDetailReviewDetail.createRoute(
-                                    reviewId = reviewId
+                                    reviewId = reviewId,
+                                    menuId = menuId
                                 )
                             )
                         }

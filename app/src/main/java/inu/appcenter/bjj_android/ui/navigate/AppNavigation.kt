@@ -261,40 +261,50 @@ fun AppNavigation(
                     navArgument("index") { type = NavType.IntType },
                     navArgument("reviewId") { type = NavType.LongType },
                     navArgument("fromReviewDetail") { type = NavType.BoolType },
-
-                    )
+                    navArgument("menuId") { type = NavType.LongType }
+                )
             ) { backStackEntry ->
                 val imageListString = backStackEntry.arguments?.getString("imageList") ?: ""
                 // 쉼표로 구분된 문자열을 다시 리스트로 변환
                 val imageList = imageListString.split(",").filter { it.isNotEmpty() }
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
                 val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
-                val fromReviewDetail =
-                    backStackEntry.arguments?.getBoolean("fromReviewDetail") ?: false
+                val fromReviewDetail = backStackEntry.arguments?.getBoolean("fromReviewDetail") ?: false
+                val menuId = backStackEntry.arguments?.getLong("menuId") ?: -1L
 
                 ReviewImageDetailScreen(
                     navController = navController,
                     imageList = imageList,
                     index = index,
                     reviewId = reviewId,
-                    fromReviewDetail = fromReviewDetail
+                    fromReviewDetail = fromReviewDetail,
+                    menuId = menuId
                 )
             }
 
             composable(
                 route = AllDestination.MenuDetailReviewDetail.route,
                 arguments = listOf(
-                    navArgument("reviewId") { type = NavType.LongType }
+                    navArgument("reviewId") { type = NavType.LongType },
+                    navArgument("menuId") { type = NavType.LongType }
                 )
             ) { backStackEntry ->
                 val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
+                val menuId = backStackEntry.arguments?.getLong("menuId") ?: -1
+
+                // -1은 메뉴 ID가 없음을 의미
+                val currentMenu = if (menuId != -1L) {
+                    menuDetailViewModel.uiState.collectAsState().value.selectedMenu
+                } else null
 
                 inu.appcenter.bjj_android.ui.menudetail.common.ReviewDetailScreen(
                     navController = navController,
                     reviewId = reviewId,
-                    reviewViewModel = reviewViewModel
+                    reviewViewModel = reviewViewModel,
+                    currentMenu = currentMenu
                 )
             }
+
             composable(
                 route = AllDestination.Shop.route
             ) {

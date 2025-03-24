@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.mypage.shop
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,7 +50,10 @@ fun ItemCard(
                 color = Orange_FF7800,
                 shape = RoundedCornerShape(10.dp)
             )
-            .clickable { onItemClick(item) }
+            .clickable {
+                onItemClick(item)
+                Log.d("clickItem", item.toString())
+            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

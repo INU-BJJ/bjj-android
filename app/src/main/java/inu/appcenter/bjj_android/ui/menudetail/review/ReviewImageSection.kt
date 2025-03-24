@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,26 +29,24 @@ fun ReviewImagesSection(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val totalSlots = 3
-    val groupedImages = reviewImages.groupBy { it.reviewId }
-    val filledSlots = groupedImages.size // 모든 리뷰 그룹 표시
-
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
     ) {
-        groupedImages.keys.forEach { reviewId -> // 모든 그룹 순회
-            val imagesInReview = groupedImages[reviewId] ?: emptyList()
-            val reversedImagesInReview = imagesInReview.reversed()
+        // 그룹화된 이미지 중 최대 3개만 표시
+        val groupedImages = reviewImages.groupBy { it.reviewId }
+        val displayGroups = groupedImages.entries.take(3)
 
+        // 이미지 표시
+        displayGroups.forEach { (reviewId, images) ->
             item {
                 ReviewImageItem(
-                    image = reversedImagesInReview.first(),
+                    image = images.first(),
                     onClick = {
                         navController.navigate(
                             AllDestination.MenuDetailReviewDetailPush.createRoute(
-                                imageList = reversedImagesInReview.map { it.imageName }, // 같은 리뷰의 모든 이미지 포함
-                                index = 0, // 시작 인덱스는 0
+                                imageList = images.map { it.imageName },
+                                index = 0,
                                 reviewId = reviewId,
                                 fromReviewDetail = false
                             )
@@ -59,10 +56,13 @@ fun ReviewImagesSection(
             }
         }
 
-        items((totalSlots - filledSlots).coerceAtLeast(0)) {
+        // 빈 슬롯 채우기 (필요한 경우만)
+        val emptySlots = (3 - displayGroups.size).coerceAtLeast(0)
+        items(emptySlots) {
             EmptyReviewSlot()
         }
 
+        // 마지막 위치에 더보기 버튼 추가
         item {
             MoreImagesButton(
                 menu = menu,

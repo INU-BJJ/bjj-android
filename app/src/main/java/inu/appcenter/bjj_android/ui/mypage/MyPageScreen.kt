@@ -70,6 +70,12 @@ fun MyPageScreen(
         }
     }
 
+    LaunchedEffect(
+        key1 = true
+    ) {
+        myPageViewModel.getMyPageInfo()
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
