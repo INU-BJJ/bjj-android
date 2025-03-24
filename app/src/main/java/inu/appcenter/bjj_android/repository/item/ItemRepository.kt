@@ -9,9 +9,9 @@ import inu.appcenter.bjj_android.utils.CustomResponse
 import kotlinx.coroutines.flow.Flow
 
 interface ItemRepository: BaseRepository {
-    suspend fun getAllItemsInfo(): Flow<CustomResponse<ItemResponse>>
+    suspend fun getAllItemsInfo(itemType: ItemType): Flow<CustomResponse<ItemResponse>>
     suspend fun drawItem(itemType: ItemType): Flow<CustomResponse<ItemResponseItem>>
-    suspend fun getItemInfo(itemId: Long): Flow<CustomResponse<ItemResponseItem>>
+    suspend fun getItemInfo(itemType: ItemType,itemId: Long): Flow<CustomResponse<ItemResponseItem>>
     suspend fun getMyPageInfo(): Flow<CustomResponse<MyPageResponse>>
-    suspend fun wearItem(itemId: Long): Flow<CustomResponse<Unit>>
+    suspend fun wearItem(itemType: ItemType, itemId: Long): Flow<CustomResponse<Unit>>
 }

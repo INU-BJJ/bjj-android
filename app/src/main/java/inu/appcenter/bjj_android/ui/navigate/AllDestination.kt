@@ -9,17 +9,16 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object MenuDetail : AllDestination("menuDetail", R.drawable.mypage, "메뉴 디테일")
     data object Ranking : AllDestination("ranking", R.drawable.tier, "랭킹")
     data object Review : AllDestination("review", R.drawable.review, "리뷰")
-    data object MenuDetailReviewDetailPush : AllDestination("menuDetailReviewDetailPush/{imageList}/{index}/{reviewId}/{fromReviewDetail}", R.drawable.review, "리뷰") {
-        fun createRoute(imageList: List<String>, index: Int, reviewId: Long, fromReviewDetail: Boolean): String {
-            // List를 쉼표로 구분된 문자열로 변환
+    data object MenuDetailReviewDetailPush : AllDestination("menuDetailReviewDetailPush/{imageList}/{index}/{reviewId}/{fromReviewDetail}/{menuId}", R.drawable.review, "리뷰") {
+        fun createRoute(imageList: List<String>, index: Int, reviewId: Long, fromReviewDetail: Boolean, menuId: Long = -1L): String {
+            // 쉼표로 구분된 문자열로 변환
             val imageListString = imageList.joinToString(",")
-            return "menuDetailReviewDetailPush/$imageListString/$index/$reviewId/$fromReviewDetail"
+            return "menuDetailReviewDetailPush/$imageListString/$index/$reviewId/$fromReviewDetail/$menuId"
         }
     }
-    data object MenuDetailReviewDetail : AllDestination("reviewImageDetailPush/{reviewId}", R.drawable.review, "리뷰 디테일"){
-        fun createRoute(reviewId: Long): String {
-            // List를 쉼표로 구분된 문자열로 변환
-            return "reviewImageDetailPush/$reviewId"
+    data object MenuDetailReviewDetail : AllDestination("reviewImageDetailPush/{reviewId}/{menuId}", R.drawable.review, "리뷰 디테일") {
+        fun createRoute(reviewId: Long, menuId: Long? = null): String {
+            return "reviewImageDetailPush/$reviewId/${menuId ?: -1}"
         }
     }
 

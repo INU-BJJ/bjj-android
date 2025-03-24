@@ -1,10 +1,10 @@
 package inu.appcenter.bjj_android.ui.mypage
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.repository.item.ItemRepository
-import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +27,6 @@ data class MyPageUiState(
     val selectedCategory: ItemType = ItemType.CHARACTER,
     val point: Long = 0,
     val items: List<ItemResponseItem> = emptyList(),
-
     val isDrawSuccess: Boolean = false,
     val drawnItem: ItemResponseItem? = null,
 )
@@ -51,7 +50,6 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
     }
 
 
-
     fun getMyPageInfo() {
         viewModelScope.launch {
             setLoading(true)
@@ -73,17 +71,24 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                 onSuccess = { myPageInfo ->
                     setLoading(false)
                     _uiState.update {
-                        it.copy(userName = myPageInfo.nickname, point = myPageInfo.point, wearingCharacterId = myPageInfo.itemId, wearingCharacterImageName = myPageInfo.imageName)
+                        it.copy(
+                            userName = myPageInfo.nickname,
+                            point = myPageInfo.point,
+                            wearingCharacterId = myPageInfo.characterId,
+                            wearingCharacterImageName = myPageInfo.characterImageName,
+                            wearingBackgroundId = myPageInfo.backgroundId,
+                            wearingBackgroundImageName = myPageInfo.backgroundImageName
+                        )
                     }
                 }
             )
         }
     }
 
-    fun getAllItemsInfo(){
+    fun getAllItemsInfo() {
         viewModelScope.launch {
             setLoading(true)
-            itemRepository.getAllItemsInfo().handleResponse(
+            itemRepository.getAllItemsInfo(uiState.value.selectedCategory).handleResponse(
                 onLoading = {
 
                 },
@@ -104,19 +109,20 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         }
     }
 
-    fun wearItem(itemId: Long) {
+    fun wearItem(item: ItemResponseItem) {
 
-        val itemToWear = _uiState.value.items.find { it.itemId == itemId } ?: return
+        val itemToWear = _uiState.value.items.find { it.itemId == item.itemId } ?: return
 
         viewModelScope.launch {
             setLoading(true)
             updateWearingItemLocally(itemToWear)
 
-            itemRepository.wearItem(itemId).handleResponse(
+            itemRepository.wearItem(itemType = item.itemType.toItemType(), itemId = item.itemId).handleResponse(
                 onLoading = {
 
                 },
                 onError = {
+                    Log.d("WearItemError", it.message.toString())
                     setLoading(false)
                     emitError(it)
                     viewModelScope.launch {
@@ -126,6 +132,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                     getMyPageInfo()
                 },
                 onSuccess = {
+                    Log.d("WearItemSuccess", it.toString())
                     setLoading(false)
                     viewModelScope.launch {
                         _eventFlow.emit(MyPageUiEvent.ShowToast("아이템이 장착되었습니다."))
@@ -145,6 +152,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                     wearingCharacterId = item.itemId
                 )
             }
+
             "BACKGROUND" -> _uiState.update {
                 it.copy(
                     wearingBackgroundImageName = item.imageName,
@@ -207,7 +215,7 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
     }
 
     fun equipDrawnItem() {
-        _uiState.value.drawnItem?.let { wearItem(it.itemId) }
+        _uiState.value.drawnItem?.let { wearItem(it) }
     }
 
     private fun getItemCost(itemType: ItemType): Int {
@@ -221,6 +229,15 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         _uiState.update {
             it.copy(selectedCategory = itemType)
         }
+        getAllItemsInfo()
     }
 
+}
+
+fun String.toItemType(): ItemType {
+    return when (this.uppercase()) {
+        "CHARACTER" -> ItemType.CHARACTER
+        "BACKGROUND" -> ItemType.BACKGROUND
+        else -> throw IllegalArgumentException("Unknown item type: $this")
+    }
 }

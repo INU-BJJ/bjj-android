@@ -30,7 +30,8 @@ data class MenuDetailUiState(
     val isWithImages: Boolean = false,
     val sort: SortingRules = SortingRules.BEST_MATCH,
     val reviewImages: List<ReviewImageDetail>? = null,
-    val moreReviewImages: List<ReviewImageDetail>? = null
+    val moreReviewImages: List<ReviewImageDetail>? = null,
+    val isLoadingMoreReviews: Boolean = false // 추가된 부분
 )
 
 enum class SortingRules {
@@ -94,6 +95,9 @@ class MenuDetailViewModel(
         isWithImages: Boolean = false
     ) {
         viewModelScope.launch {
+            // 로딩 상태 시작
+            _uiState.update { it.copy(isLoadingMoreReviews = true) }
+
             reviewRepository.getReviews(
                 menuPairId = menuPairId,
                 pageNumber = pageNumber,
@@ -107,11 +111,14 @@ class MenuDetailViewModel(
                             reviews = ReviewRes(
                                 reviewDetailList = (currentState.reviews?.reviewDetailList ?: emptyList()) + moreReviews.reviewDetailList,
                                 lastPage = moreReviews.lastPage
-                            )
+                            ),
+                            isLoadingMoreReviews = false // 로딩 상태 종료
                         )
                     }
                 },
                 onError = { error ->
+                    // 로딩 상태 종료 및 에러 처리
+                    _uiState.update { it.copy(isLoadingMoreReviews = false) }
                     emitError(error)
                     viewModelScope.launch {
                         _eventFlow.emit(MenuDetailUiEvent.ShowToast(

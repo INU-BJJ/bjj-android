@@ -40,6 +40,7 @@ import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
+import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.ui.component.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
@@ -57,7 +58,8 @@ import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 fun ReviewDetailScreen(
     navController: NavHostController,
     reviewId: Long,
-    reviewViewModel: ReviewViewModel
+    reviewViewModel: ReviewViewModel,
+    currentMenu: TodayDietRes? = null
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -145,7 +147,7 @@ fun ReviewDetailScreen(
         }
 
         // 리뷰 컨텐츠
-        ReviewContent(review = review, reviewId = reviewId, navController = navController)
+        ReviewContent(review = review, reviewId = reviewId, navController = navController, currentMenu = currentMenu)
     }
 }
 
@@ -153,7 +155,8 @@ fun ReviewDetailScreen(
 private fun ReviewContent(
     review: ReviewDetailRes,
     reviewId: Long,
-    navController: NavHostController
+    navController: NavHostController,
+    currentMenu: TodayDietRes? = null
 ) {
     Column(
         modifier = Modifier
@@ -253,9 +256,15 @@ private fun ReviewContent(
         Spacer(Modifier.height(12.dp))
 
         Row {
+            // 메인메뉴 비교 - 현재 메뉴가 있고 메인메뉴 이름이 일치하는 경우
+            val isMainMenuSame = currentMenu != null && review.mainMenuName == currentMenu.mainMenuName
+
             Box(
                 modifier = Modifier
-                    .background(Orange_FF7800, RoundedCornerShape(3.dp))
+                    .background(
+                        if (isMainMenuSame) Orange_FF7800 else Gray_F6F6F8,
+                        RoundedCornerShape(3.dp)
+                    )
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
                 Text(
@@ -267,10 +276,19 @@ private fun ReviewContent(
                     color = Color.Black
                 )
             }
+
             Spacer(Modifier.width(5.dp))
+
+            // 서브메뉴 비교 - 현재 메뉴가 있고 서브메뉴 이름이 일치하는 경우
+            val isSubMenuSame = currentMenu != null &&
+                    currentMenu.restMenu?.split(" ")?.firstOrNull() == review.subMenuName
+
             Box(
                 modifier = Modifier
-                    .background(Gray_F6F6F8, RoundedCornerShape(3.dp))
+                    .background(
+                        if (isSubMenuSame) Orange_FF7800 else Gray_F6F6F8,
+                        RoundedCornerShape(3.dp)
+                    )
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
                 Text(

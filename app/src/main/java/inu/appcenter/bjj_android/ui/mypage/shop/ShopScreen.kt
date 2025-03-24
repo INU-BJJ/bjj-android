@@ -35,6 +35,7 @@ fun ShopScreen(
         key1 = true
     ) {
         myPageViewModel.getMyPageInfo()
+        myPageViewModel.getAllItemsInfo()
     }
 
     // 뽑기 성공 상태가 변경될 때 ItemDrawSuccessScreen으로 이동
@@ -82,7 +83,7 @@ fun ShopScreen(
                 selectedCategory = myPageUiState.selectedCategory,
                 itemList = myPageUiState.items,
                 selectCategory = { myPageViewModel.selectCategory(it) },
-                onItemClick = { myPageViewModel.wearItem(it.itemId) }
+                onItemClick = { myPageViewModel.wearItem(it) }
             )
         }
 

@@ -2,7 +2,6 @@ package inu.appcenter.bjj_android.ui.menudetail.review
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -52,18 +49,18 @@ import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import kotlinx.coroutines.flow.collectLatest
 
-
 @Composable
 fun ReviewItem(
     review: ReviewDetailRes,
     menu: TodayDietRes,
     menuDetailViewModel: MenuDetailViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-
     var lastEventTime by remember { mutableStateOf(0L) }
 
+    // 이벤트 토스트 메시지 처리
     LaunchedEffect(true) {
         menuDetailViewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -80,93 +77,25 @@ fun ReviewItem(
     }
 
     Column(
-        modifier = Modifier
-            .padding(horizontal = 29.5.dp)
-            .fillMaxWidth(),
+        modifier = modifier
+            .padding(horizontal = 29.5.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (review.memberImageName != null) {
-                Image(
-                    painter = painterResource(R.drawable.mypage),
-                    contentDescription = "리뷰 이미지",
-                    modifier = Modifier
-                        .size(41.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(41.dp)
-                        .background(Gray_D9D9D9, CircleShape),
-                )
-            }
-            Spacer(Modifier.width(10.dp))
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(
-                    text = review.memberNickname ?: "null",
-                    style = LocalTypography.current.bold15.copy(
-                        letterSpacing = 0.13.sp,
-                        lineHeight = 15.sp,
-                    ),
-                    color = Color.Black
-                )
-                Spacer(Modifier.height(5.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    StarRatingCalculator(rating = review.rating.toFloat())
-                    Spacer(Modifier.width(10.dp))
-                    Text(
-                        text = review.createdDate.formatter(),
-                        style = LocalTypography.current.regular13.copy(
-                            letterSpacing = 0.13.sp,
-                            lineHeight = 17.sp,
-                            color = Color(0xFF999999)
-                        )
-                    )
+        // 프로필 및 유저 정보 섹션
+        UserInfoSection(
+            review = review,
+            onLikeClick = {
+                // 중복 클릭 방지 로직 추가
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastEventTime > 1000) {
+                    menuDetailViewModel.toggleReviewLiked(reviewId = review.reviewId)
+                    lastEventTime = currentTime
                 }
             }
-            Column(
-                modifier = Modifier
-                    .size(30.dp)
-                    .padding(end = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource( if (review.liked) R.drawable.filled_good else R.drawable.unfilled_good),
-                    contentDescription = "리뷰 별 좋아요 수",
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-                        .clickable {
-                            // 중복 클릭 방지 로직 추가
-                            val currentTime = System.currentTimeMillis()
-                            if (currentTime - lastEventTime > 1000) {
-                                menuDetailViewModel.toggleReviewLiked(reviewId = review.reviewId)
-                                lastEventTime = currentTime
-                            }
-                        }
-                )
-                Text(
-                    text = review.likeCount.toString(),
-                    style = LocalTypography.current.regular11.copy(
-                        letterSpacing = 0.13.sp,
-                        lineHeight = 15.sp,
-                    ),
-                    color = Color.Black
-                )
-            }
-        }
+        )
+
         Spacer(Modifier.height(12.dp))
-        //리뷰 본문
+
+        // 리뷰 본문
         ExpandableText(
             text = review.comment,
             maxLines = 3,
@@ -177,10 +106,12 @@ fun ReviewItem(
             )
         )
 
-
         Spacer(Modifier.height(12.dp))
-        if (!review.imageNames.isNullOrEmpty()){
-            DynamicReviewImages(
+
+        // 리뷰 이미지
+        if (!review.imageNames.isNullOrEmpty()) {
+            // 이미지 미리 로드하기 위한 지연 렌더링
+            OptimizedReviewImages(
                 reviewImages = review.imageNames,
                 onClick = { imageList, index ->
                     navController.navigate(
@@ -191,11 +122,12 @@ fun ReviewItem(
                             fromReviewDetail = false
                         )
                     )
-
                 }
             )
             Spacer(Modifier.height(12.dp))
         }
+
+        // 메뉴 태그
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
@@ -207,13 +139,130 @@ fun ReviewItem(
             Spacer(Modifier.width(5.dp))
             ReviewMenuText(
                 text = review.subMenuName,
-                isSame = review.subMenuName == menu.restMenu?.split(" ")?.first()
+                isSame = review.subMenuName == menu.restMenu?.split(" ")?.firstOrNull()
             )
         }
     }
 }
 
+@Composable
+private fun UserInfoSection(
+    review: ReviewDetailRes,
+    onLikeClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 프로필 이미지
+        Box(
+            modifier = Modifier
+                .size(41.dp)
+                .background(Gray_D9D9D9, CircleShape),
+        )
 
+        Spacer(Modifier.width(10.dp))
+
+        // 유저 정보
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = review.memberNickname,
+                style = LocalTypography.current.bold15.copy(
+                    letterSpacing = 0.13.sp,
+                    lineHeight = 15.sp,
+                ),
+                color = Color.Black
+            )
+
+            Spacer(Modifier.height(5.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // 별점 표시
+                StarRatingCalculator(rating = review.rating.toFloat())
+
+                Spacer(Modifier.width(10.dp))
+
+                // 날짜 표시
+                Text(
+                    text = review.createdDate.formatter(),
+                    style = LocalTypography.current.regular13.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 17.sp,
+                        color = Gray_999999
+                    )
+                )
+            }
+        }
+
+        // 좋아요 버튼 및 카운트
+        LikeButton(
+            isLiked = review.liked,
+            likeCount = review.likeCount,
+            onClick = onLikeClick
+        )
+    }
+}
+
+@Composable
+private fun LikeButton(
+    isLiked: Boolean,
+    likeCount: Long,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .size(30.dp)
+            .padding(end = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(
+                if (isLiked) R.drawable.filled_good else R.drawable.unfilled_good
+            ),
+            contentDescription = "리뷰 좋아요",
+            tint = Color.Unspecified,
+            modifier = Modifier.clickable(onClick = onClick)
+        )
+
+        Text(
+            text = likeCount.toString(),
+            style = LocalTypography.current.regular11.copy(
+                letterSpacing = 0.13.sp,
+                lineHeight = 15.sp,
+            ),
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+private fun OptimizedReviewImages(
+    reviewImages: List<String>,
+    onClick: (List<String>, Int) -> Unit
+) {
+    // 지연 로딩을 위한 플래그
+    var isVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isVisible = true
+    }
+
+    if (isVisible) {
+        DynamicReviewImages(
+            reviewImages = reviewImages,
+            onClick = onClick
+        )
+    } else {
+        // 이미지 로딩 전 플레이스홀더 표시
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .background(Gray_D9D9D9, RoundedCornerShape(10.dp))
+        )
+    }
+}
 
 @Composable
 fun ExpandableText(
@@ -226,6 +275,7 @@ fun ExpandableText(
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var needsExpansion by rememberSaveable { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -233,7 +283,6 @@ fun ExpandableText(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
         Text(
             text = text,
             style = style,
@@ -241,7 +290,7 @@ fun ExpandableText(
             overflow = TextOverflow.Ellipsis,
             onTextLayout = { textLayoutResult ->
                 needsExpansion = textLayoutResult.hasVisualOverflow
-                if (textLayoutResult.lineCount > 3){
+                if (textLayoutResult.lineCount > maxLines){
                     needsExpansion = true
                 }
             },
@@ -272,10 +321,10 @@ fun ReviewMenuText(
             color = Color.Black
         ),
         modifier = Modifier
-            .background(color = if (isSame) Orange_FF7800  else Gray_F6F6F8, shape = RoundedCornerShape(3.dp))
+            .background(
+                color = if (isSame) Orange_FF7800 else Gray_F6F6F8,
+                shape = RoundedCornerShape(3.dp)
+            )
             .padding(horizontal = 7.dp, vertical = 5.dp)
-
     )
 }
-
-
