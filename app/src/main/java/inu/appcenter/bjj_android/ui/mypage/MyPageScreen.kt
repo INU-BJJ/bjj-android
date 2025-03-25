@@ -109,52 +109,59 @@ fun MyPageScreen(
         bottomBar = { AppBottomBar(navController) },
         containerColor = Color.White,
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
-        ) {
-            Box(
+        ){
+            MyPageBackground(
                 modifier = Modifier
+                    .fillMaxSize(),
+                backgroundImageName = myPageUiState.wearingBackgroundImageName
+            )
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
                     .fillMaxSize()
             ) {
-                MyPageBackground(
+                Box(
                     modifier = Modifier
-                        .fillMaxSize(),
-                    backgroundImageName = myPageUiState.wearingBackgroundImageName
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .align(Alignment.TopCenter)
-                        .padding(horizontal = 30.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxSize()
                 ) {
-                    Column {
-                        UserInfoBar(
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .align(Alignment.TopCenter)
+                            .padding(horizontal = 30.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column {
+                            UserInfoBar(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                userName = myPageUiState.userName
+                            )
+                            ShopButton(
+                                modifier = Modifier,
+                                onClick = {
+                                    navigateToShop()
+                                }
+                            )
+                        }
+                        CharacterView(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            userName = myPageUiState.userName
-                        )
-                        ShopButton(
-                            modifier = Modifier,
-                            onClick = {
-                                navigateToShop()
-                            }
+                                .padding(bottom = 70.dp)
+                                .fillMaxWidth(0.33f),
+                            imageName = myPageUiState.wearingCharacterImageName
                         )
                     }
-                    CharacterView(
-                        modifier = Modifier
-                            .padding(bottom = 70.dp)
-                            .fillMaxWidth(0.33f),
-                        imageName = myPageUiState.wearingCharacterImageName
-                    )
                 }
+
+
             }
-
-
         }
+
     }
 }

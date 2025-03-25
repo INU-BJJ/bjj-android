@@ -111,6 +111,7 @@ object ImageLoader {
     }
 
     // 이미지 로딩 요청 빌더
+    // 이미지 로딩 요청 빌더
     private fun buildImageRequest(
         context: android.content.Context,
         imageName: String,
@@ -118,11 +119,14 @@ object ImageLoader {
         crossfade: Boolean = true,
         enableLogging: Boolean = true
     ): ImageRequest {
+        // URL 기반 캐시 키 생성 - 경로를 포함하여 중복 방지
+        val cacheKey = imageUrl.hashCode().toString() + "_" + imageName
+
         return ImageRequest.Builder(context)
             .data(imageUrl)
             .size(500) // 기본 크기 설정
-            .memoryCacheKey(imageName)
-            .diskCacheKey(imageName)
+            .memoryCacheKey(cacheKey) // URL+이미지명 조합의 고유 키 사용
+            .diskCacheKey(cacheKey) // 디스크 캐시도 동일한 고유 키 사용
             .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(CachePolicy.ENABLED)
             .crossfade(crossfade)
@@ -133,7 +137,7 @@ object ImageLoader {
                             Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
                         },
                         onSuccess = { _, _ ->
-                            Log.d("ImageLoading", "Successfully loaded image: $imageName")
+                            Log.d("ImageLoading", "Successfully loaded image: $cacheKey")
                         }
                     )
                 }
@@ -386,7 +390,7 @@ object ImageLoader {
         } else {
             val imageUrl = getBackgroundImageUrl(imageName)
             val imageRequest = buildImageRequest(context, imageName, imageUrl)
-
+            Log.d("imageUrl", imageUrl.toString())
             SubcomposeAsyncImage(
                 model = imageRequest,
                 contentDescription = "리뷰 이미지",
@@ -470,9 +474,11 @@ object ImageLoader {
         imageName: String,
         imageUrl: String
     ): ImageRequest {
+        val cacheKey = imageUrl.hashCode().toString() + "_" + imageName + "_" + System.currentTimeMillis()
+
         return ImageRequest.Builder(context)
             .data(imageUrl)
-            .memoryCacheKey(imageName + System.currentTimeMillis()) // 새로운 키를 생성하여 캐시 무시
+            .memoryCacheKey(cacheKey) // 고유 캐시 키 + 타임스탬프
             .diskCachePolicy(CachePolicy.DISABLED) // 디스크 캐시도 일시적으로 비활성화
             .build()
     }

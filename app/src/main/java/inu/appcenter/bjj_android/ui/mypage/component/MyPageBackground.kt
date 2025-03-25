@@ -29,7 +29,8 @@ fun MyPageBackground(
         ImageLoader.BackgroundItem(
             imageName = backgroundImageName,
             showLoading = false,
-            modifier = modifier
+            modifier = modifier,
+            contentScale = ContentScale.Crop
         )
     }
 }

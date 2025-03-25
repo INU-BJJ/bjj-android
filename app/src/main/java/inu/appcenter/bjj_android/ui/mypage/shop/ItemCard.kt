@@ -71,25 +71,45 @@ fun ItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
+                // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
                 if (item.imageName.isNotEmpty()) {
-                    ImageLoader.CharacterItem(
-                        imageName = item.imageName,
-                        showLoading = true,
-                        modifier = Modifier
-                            .width(cardWidth * 0.8f) // 이미지 크기는 카드 너비의 80%
-                            .height(cardWidth * 0.8f), // 정사각형 비율
-                        contentScale = ContentScale.Fit
-                    )
-                } else {
-                    // 기본 이미지 (아이템 타입에 따라 다른 기본 이미지 사용)
-                    val defaultImage = when (item.itemType.uppercase()) {
-                        "CHARACTER" -> R.drawable.placeholder
-                        "BACKGROUND" -> R.drawable.placeholder
-                        else -> R.drawable.placeholder
+                    // 아이템 타입에 따라 다른 ImageLoader 함수 호출
+                    when (item.itemType.uppercase()) {
+                        "CHARACTER" -> {
+                            ImageLoader.CharacterItem(
+                                imageName = item.imageName,
+                                showLoading = true,
+                                modifier = Modifier
+                                    .width(cardWidth * 0.8f) // 이미지 크기는 카드 너비의 80%
+                                    .height(cardWidth * 0.8f), // 정사각형 비율
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        "BACKGROUND" -> {
+                            ImageLoader.BackgroundItem(
+                                imageName = item.imageName,
+                                showLoading = true,
+                                modifier = Modifier
+                                    .width(cardWidth * 0.8f)
+                                    .height(cardWidth * 0.8f),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        else -> {
+                            // 알 수 없는 타입의 경우 기본 이미지 표시
+                            Image(
+                                painter = painterResource(id = R.drawable.placeholder),
+                                contentDescription = "아이템 이미지",
+                                modifier = Modifier
+                                    .width(cardWidth * 0.8f)
+                                    .height(cardWidth * 0.8f)
+                            )
+                        }
                     }
-
+                } else {
+                    // 이미지 이름이 없는 경우 기본 이미지 표시
                     Image(
-                        painter = painterResource(id = defaultImage),
+                        painter = painterResource(id = R.drawable.placeholder),
                         contentDescription = "아이템 이미지",
                         modifier = Modifier
                             .width(cardWidth * 0.8f)
