@@ -466,6 +466,75 @@ object ImageLoader {
     }
 
     /**
+     * Compose용 지도 이미지 로딩 컴포저블
+     */
+    @Composable
+    fun MapImage(
+        imageName: String?,
+        modifier: Modifier = Modifier,
+        contentScale: ContentScale = ContentScale.Crop,
+        shape: Shape? = null,
+        showLoading: Boolean = true,
+        clickable: Boolean = false,
+        onClick: (() -> Unit)? = null
+    ) {
+        val context = LocalContext.current
+
+        // 공통 modifier 생성
+        val finalModifier = if (shape != null) {
+            modifier.clip(shape)
+        } else {
+            modifier
+        }
+
+        // clickable 속성 추가 (필요한 경우)
+        val clickableModifier = if (clickable && onClick != null) {
+            finalModifier.clickable { onClick() }
+        } else {
+            finalModifier
+        }
+
+        // 서버 이미지 처리
+        if (imageName == null) {
+            // 이미지가 없는 경우 기본 지도 이미지 표시
+            Image(
+                painter = painterResource(R.drawable.big_placeholder), // 기본 지도 이미지 리소스 (추가 필요)
+                contentDescription = "기본 지도 이미지",
+                contentScale = contentScale,
+                modifier = clickableModifier.fillMaxSize()
+            )
+        } else {
+            val imageUrl = getReviewImageUrl(imageName)
+            val imageRequest = buildImageRequest(context, imageName, imageUrl)
+
+            SubcomposeAsyncImage(
+                model = imageRequest,
+                contentDescription = "지도 이미지",
+                contentScale = contentScale,
+                modifier = clickableModifier,
+                loading = {
+                    if (showLoading) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
+                },
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.big_placeholder), // 기본 지도 이미지 리소스 (추가 필요)
+                        contentDescription = "지도 이미지 로딩 실패",
+                        contentScale = contentScale,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            )
+        }
+    }
+
+    /**
      * 메모리 캐시 정책을 강제로 리프레시하는 함수
      * 프로필 이미지 업데이트 등의 경우에 사용
      */

@@ -71,7 +71,6 @@ fun ItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
-                // 아이템 이미지가 있으면 ImageLoader로 로드하고, 없으면 기본 이미지 사용
                 if (item.imageName.isNotEmpty()) {
                     // 아이템 타입에 따라 다른 ImageLoader 함수 호출
                     when (item.itemType.uppercase()) {

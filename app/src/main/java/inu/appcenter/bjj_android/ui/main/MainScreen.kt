@@ -52,6 +52,7 @@ import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
 import inu.appcenter.bjj_android.ui.main.common.MainRestaurantButton
+import inu.appcenter.bjj_android.ui.main.common.RestaurantInfo
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
@@ -70,8 +71,6 @@ fun MainScreen(
     menuDetailViewModel: MenuDetailViewModel,
     onTokenExpired : () -> Unit
 ) {
-
-
     val mainUiState by mainViewModel.uiState.collectAsState()
     val authUiState by authViewModel.uiState.collectAsState()
 
@@ -82,8 +81,6 @@ fun MainScreen(
             mainViewModel.getCafeterias()
         }
     }
-
-
 
     var restaurantInfo by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
@@ -111,7 +108,6 @@ fun MainScreen(
             }
         }
     }
-
 
     Surface(
         modifier = Modifier
@@ -262,6 +258,7 @@ fun MainScreen(
 
                                     if (restaurantInfo) {
                                         coroutineScope.launch {
+                                            delay(100)
                                             lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
                                         }
                                     }
@@ -271,12 +268,20 @@ fun MainScreen(
                 }
                 if (restaurantInfo) {
                     item {
-                        Spacer(modifier = Modifier.height(300.dp))
+                        // RestaurantInfoWithMap 컴포넌트 사용
+                        RestaurantInfo(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 25.dp, start = 20.dp, end = 20.dp),
+                            restaurantName = mainUiState.selectedCafeteria ?: "",
+                            location = "11호관 (복지회관) 1층",
+                            weekSchedule = listOf("11:00 ~ 13:30", "17:00 ~ 18:10"),
+                            weekendSchedule = listOf("11:00 ~ 13:30", "17:00 ~ 18:10"),
+                            mapImageName = ""
+                        )
                     }
                 }
             }
         }
     }
-
 }
-
