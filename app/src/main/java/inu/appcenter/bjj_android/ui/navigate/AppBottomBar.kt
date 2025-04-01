@@ -42,27 +42,38 @@ fun AppBottomBar(
 ) {
     val screens = listOf(AllDestination.Main, AllDestination.Ranking, AllDestination.Review, AllDestination.MyPage)
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val currentRoute = currentDestination?.route
+
+    // MyPage 화면인지 확인
+    val isMyPageScreen = currentRoute == AllDestination.MyPage.route
+
     NavigationBar(
         containerColor = Color.White,
         modifier = Modifier
             .fillMaxWidth()
             .height(71.dp)
-            .shadowCustom(
-                color = Color(0xff190000).copy(alpha = 0.1f),
-                offsetX = (-3).dp,
-                offsetY = 0.dp,
-                blurRadius = 10.dp,
+            .then(
+                // 조건부 그림자 적용 - MyPageScreen이 아닐 때만 그림자 적용
+                if (!isMyPageScreen) {
+                    Modifier.shadowCustom(
+                        color = Color(0xff190000).copy(alpha = 0.1f),
+                        offsetX = (-3).dp,
+                        offsetY = 0.dp,
+                        blurRadius = 10.dp,
+                    )
+                } else {
+                    Modifier // MyPageScreen일 때는 그림자 없음
+                }
             )
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-
         screens.forEach { screen ->
             NavigationBarItem(
                 icon = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp) // 여기서 간격을 조절합니다
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
                             painter = painterResource(screen.icon),
@@ -150,4 +161,3 @@ fun Modifier.shadowCustom(
 
 private fun Dp.px(density: Density): Float =
     with(density) { toPx() }
-

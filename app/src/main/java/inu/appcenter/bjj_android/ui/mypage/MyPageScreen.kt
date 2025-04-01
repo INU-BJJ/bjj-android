@@ -113,11 +113,14 @@ fun MyPageScreen(
             modifier = Modifier
                 .fillMaxSize()
         ){
+            // 단순화된 배경 적용: 내부 패딩만 적용
             MyPageBackground(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(top =  innerPadding.calculateTopPadding(), bottom = 45.dp),
                 backgroundImageName = myPageUiState.wearingBackgroundImageName
             )
+
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -127,7 +130,6 @@ fun MyPageScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -158,10 +160,7 @@ fun MyPageScreen(
                         )
                     }
                 }
-
-
             }
         }
-
     }
 }

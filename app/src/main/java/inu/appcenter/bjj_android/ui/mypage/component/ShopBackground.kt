@@ -16,6 +16,6 @@ fun ShopBackground(
         painter = painterResource(R.drawable.shop_background),
         contentDescription = stringResource(R.string.shop_background),
         modifier = modifier,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.FillWidth
     )
 }

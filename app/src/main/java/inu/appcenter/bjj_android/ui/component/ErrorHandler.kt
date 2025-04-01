@@ -9,12 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
-import inu.appcenter.bjj_android.utils.AppError
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.android.ext.android.inject
-import inu.appcenter.bjj_android.local.DataStoreManager
 import org.koin.compose.koinInject
 
 /**

@@ -6,9 +6,7 @@ import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.repository.item.ItemRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

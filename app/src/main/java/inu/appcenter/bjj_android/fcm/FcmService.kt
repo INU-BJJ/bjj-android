@@ -12,8 +12,8 @@ import com.google.firebase.messaging.RemoteMessage
 import inu.appcenter.bjj_android.MainActivity
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.local.DataStoreManager
-import inu.appcenter.bjj_android.notification.NotificationManager.Companion.CHANNEL_ID_LIKED_MENU
 import inu.appcenter.bjj_android.notification.NotificationManager.Companion.CHANNEL_ID_GENERAL
+import inu.appcenter.bjj_android.notification.NotificationManager.Companion.CHANNEL_ID_LIKED_MENU
 import inu.appcenter.bjj_android.utils.PermissionManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

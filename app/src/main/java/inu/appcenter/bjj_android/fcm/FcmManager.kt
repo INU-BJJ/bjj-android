@@ -2,7 +2,6 @@ package inu.appcenter.bjj_android.fcm
 
 import android.content.Context
 import android.util.Log
-import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.math.min
-import kotlin.math.pow
 
 /**
  * FCM 토큰을 관리하기 위한 전용 클래스

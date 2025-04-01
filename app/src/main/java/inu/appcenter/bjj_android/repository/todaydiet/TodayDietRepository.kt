@@ -4,7 +4,6 @@ import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.base.BaseRepository
 import inu.appcenter.bjj_android.utils.CustomResponse
 import kotlinx.coroutines.flow.Flow
-import retrofit2.Response
 
 interface TodayDietRepository : BaseRepository {
     suspend fun getTodayDiet(

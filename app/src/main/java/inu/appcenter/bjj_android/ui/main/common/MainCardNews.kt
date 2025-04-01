@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
 @Composable
 fun MainCardNews(

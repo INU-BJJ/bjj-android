@@ -5,7 +5,6 @@ import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
-import inu.appcenter.bjj_android.utils.AppError
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

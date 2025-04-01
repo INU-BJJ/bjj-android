@@ -33,15 +33,15 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.AppTypography
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
 import inu.appcenter.bjj_android.utils.ImageLoader
-import inu.appcenter.bjj_android.utils.PermissionManager
 import inu.appcenter.bjj_android.utils.NotificationPermissionHandler
+import inu.appcenter.bjj_android.utils.PermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 

@@ -38,7 +38,6 @@ import inu.appcenter.bjj_android.ui.menudetail.menuinfo.HeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.menuinfo.NavigationButtons
 import inu.appcenter.bjj_android.ui.menudetail.review.ReviewHeaderSection
 import inu.appcenter.bjj_android.ui.menudetail.review.ReviewItem
-import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F8F8
 import kotlinx.coroutines.flow.collectLatest
 
