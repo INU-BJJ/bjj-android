@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,7 +36,8 @@ fun ItemGrid(
         modifier = modifier
             .padding(horizontal = 17.dp, vertical = 0.dp)
     ) {
-        LazyColumn(
+        // LazyColumn을 일반 Column으로 변경
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Brown_F2D9AF, shape = RoundedCornerShape(10.dp))
@@ -45,32 +45,27 @@ fun ItemGrid(
                 .padding(vertical = 14.dp)
         ) {
             // 각 레벨별로 아이템 섹션 생성
-            item {
-                ItemSection(
-                    levelTitle = ItemLevel.COMMON.toKorean(),
-                    items = commonItems,
-                    onItemClick = onItemClick
-                )
-            }
+            ItemSection(
+                levelTitle = ItemLevel.COMMON.toKorean(),
+                items = commonItems,
+                onItemClick = onItemClick
+            )
 
-            item {
-                Spacer(modifier = Modifier.height(54.dp))
-                ItemSection(
-                    levelTitle = ItemLevel.NORMAL.toKorean(),
-                    items = normalItems,
-                    onItemClick = onItemClick
-                )
-            }
+            Spacer(modifier = Modifier.height(54.dp))
 
-            item {
-                Spacer(modifier = Modifier.height(30.dp))
-                ItemSection(
-                    levelTitle = ItemLevel.RARE.toKorean(),
-                    items = rareItems,
-                    onItemClick = onItemClick
-                )
-            }
+            ItemSection(
+                levelTitle = ItemLevel.NORMAL.toKorean(),
+                items = normalItems,
+                onItemClick = onItemClick
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            ItemSection(
+                levelTitle = ItemLevel.RARE.toKorean(),
+                items = rareItems,
+                onItemClick = onItemClick
+            )
         }
     }
 }
-

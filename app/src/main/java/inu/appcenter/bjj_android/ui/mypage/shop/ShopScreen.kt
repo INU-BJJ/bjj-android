@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,7 +25,7 @@ import inu.appcenter.bjj_android.ui.mypage.dialog.ItemDrawDialog
 fun ShopScreen(
     myPageViewModel: MyPageViewModel,
     popBackStack: () -> Unit,
-    navigateToDrawSuccess: () -> Unit // 뽑기 성공 화면으로 이동하는 함수 추가
+    navigateToDrawSuccess: () -> Unit
 ) {
     val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -50,41 +51,67 @@ fun ShopScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        // 배경 이미지
         ShopBackground(
             modifier = Modifier
                 .fillMaxSize()
         )
-        Column {
-            ShopTopContent(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 10.dp,
-                        start = 18.dp,
-                        end = 18.dp
-                    ),
-                point = myPageUiState.point,
-                popBackStack = {
-                    popBackStack()
-                }
-            )
-            Spacer(Modifier.height(30.dp))
-            DrawMachine(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    showDrawDialog = true
-                }
-            )
-            Spacer(Modifier.height(37.dp))
-            ItemFrame(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                selectedCategory = myPageUiState.selectedCategory,
-                itemList = myPageUiState.items,
-                selectCategory = { myPageViewModel.selectCategory(it) },
-                onItemClick = { myPageViewModel.wearItem(it) }
-            )
+
+        // 전체 화면을 LazyColumn으로 변경하여 스크롤 가능하게 함
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            item {
+                // 상단 컨텐츠
+                ShopTopContent(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = 10.dp,
+                            start = 18.dp,
+                            end = 18.dp
+                        ),
+                    point = myPageUiState.point,
+                    popBackStack = {
+                        popBackStack()
+                    }
+                )
+            }
+
+            item {
+                Spacer(Modifier.height(30.dp))
+            }
+
+            item {
+                // 뽑기 기계
+                DrawMachine(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onClick = {
+                        showDrawDialog = true
+                    }
+                )
+            }
+
+            item {
+                Spacer(Modifier.height(37.dp))
+            }
+
+            item {
+                ItemFrame(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    selectedCategory = myPageUiState.selectedCategory,
+                    itemList = myPageUiState.items,
+                    selectCategory = { myPageViewModel.selectCategory(it) },
+                    onItemClick = { myPageViewModel.wearItem(it) }
+                )
+            }
+
+            item {
+                Spacer(Modifier.height(18.dp))
+            }
         }
 
         // 뽑기 다이얼로그
