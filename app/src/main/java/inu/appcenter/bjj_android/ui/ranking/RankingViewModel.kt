@@ -107,4 +107,8 @@ class RankingViewModel(
             )
         }
     }
+
+    fun resetState() {
+        _uiState.update { RankingUiState() }
+    }
 }

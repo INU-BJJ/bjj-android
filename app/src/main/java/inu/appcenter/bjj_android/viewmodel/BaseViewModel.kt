@@ -56,8 +56,10 @@ abstract class BaseViewModel : ViewModel() {
         _errorEvent.emit(error)
 
         // 인증 오류인 경우 별도 이벤트 발생
-        if (error is AppError.AuthError && error.isExpired) {
-            _authExpiredEvent.emit(Unit)
+        if (error is AppError.AuthError) {
+            if (error.isExpired || error.statusCode == 401) {  // 만료 또는 인증 오류
+                _authExpiredEvent.emit(Unit)
+            }
         }
 
         // 토스트 메시지 표시 설정이 켜진 경우

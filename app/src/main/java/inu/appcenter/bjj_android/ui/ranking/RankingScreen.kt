@@ -44,6 +44,7 @@ import coil.request.ImageRequest
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.menu.MenuRankingDetail
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.review.component.formatter
@@ -59,6 +60,7 @@ fun RankingScreen(
 ) {
     val rankingUiState by rankingViewModel.uiState.collectAsStateWithLifecycle()
 
+    ErrorHandler(viewModel = rankingViewModel, navController = navController)
 
     LaunchedEffect(key1 = true) {
         rankingViewModel.getMenuRankingList()

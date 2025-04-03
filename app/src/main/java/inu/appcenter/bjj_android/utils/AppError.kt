@@ -16,7 +16,8 @@ sealed class AppError : Exception() {
     // 인증 오류
     data class AuthError(
         override val message: String = "로그인이 필요합니다.",
-        val isExpired: Boolean = false
+        val isExpired: Boolean = false,
+        val statusCode: Int = 401
     ) : AppError()
 
     // 유효성 검증 오류

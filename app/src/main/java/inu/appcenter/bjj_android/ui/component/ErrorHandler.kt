@@ -58,7 +58,7 @@ fun ErrorHandler(viewModel: BaseViewModel, navController: NavHostController? = n
 
             // 로그인 화면으로 이동
             navController?.navigate(AllDestination.Login.route) {
-                popUpTo(0) { inclusive = true }
+                popUpTo(0) { inclusive = true }  // 백스택 완전히 비우기
             }
 
             // 사용자에게 알림

@@ -179,6 +179,12 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
         }
         getAllItemsInfo()
     }
+
+    fun resetState() {
+        _uiState.update {
+            MyPageUiState()
+        }
+    }
 }
 
 fun String.toItemType(): ItemType {

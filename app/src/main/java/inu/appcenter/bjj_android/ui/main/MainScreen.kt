@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
 import inu.appcenter.bjj_android.ui.main.common.MainMenuItem
@@ -73,6 +74,8 @@ fun MainScreen(
 ) {
     val mainUiState by mainViewModel.uiState.collectAsState()
     val authUiState by authViewModel.uiState.collectAsState()
+
+    ErrorHandler(viewModel = mainViewModel, navController = navController)
 
     // hasToken 상태를 관찰하여 API 호출
     LaunchedEffect(authUiState.hasToken) {

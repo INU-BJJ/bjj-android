@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
@@ -48,6 +49,9 @@ fun MyPageScreen(
 ) {
     val authUiState by authViewModel.uiState.collectAsStateWithLifecycle()
     val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
+
+    ErrorHandler(viewModel = myPageViewModel, navController = navController)
+
 
     // 로그아웃 상태 관찰
     LaunchedEffect(authUiState.logoutState) {

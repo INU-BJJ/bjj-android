@@ -53,7 +53,7 @@ fun MenuDetailScreen(
     menuDetailViewModel: MenuDetailViewModel,
 ) {
 
-    ErrorHandler(menuDetailViewModel)
+    ErrorHandler(menuDetailViewModel, navController = navController)
     LoadingIndicator(menuDetailViewModel)
 
     val context = LocalContext.current

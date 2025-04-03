@@ -292,4 +292,8 @@ class ReviewViewModel(
             )
         }
     }
+
+    fun resetState(){
+        _uiState.update { ReviewUiState() }
+    }
 }

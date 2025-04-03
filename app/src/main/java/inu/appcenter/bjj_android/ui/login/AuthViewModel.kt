@@ -8,10 +8,16 @@ import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
+import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
+import inu.appcenter.bjj_android.ui.ranking.RankingViewModel
+import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.utils.AppError
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -220,6 +226,68 @@ class AuthViewModel(
             )
         }
     }
+
+    // AuthViewModel.kt에 토큰 검증 함수 추가
+    fun validateToken() {
+        viewModelScope.launch {
+            val hasToken = dataStoreManager.token.first() != null
+            if (hasToken) {
+                memberRepository.getMyInfo().handleResponse(
+                    showErrorToast = false,  // 사용자에게 토스트 메시지 표시하지 않음
+                    onSuccess = { _ ->
+                        // 토큰이 유효함, 필요한 경우 추가 작업 수행
+                        _uiState.update { it.copy(hasToken = true) }
+                    },
+                    onError = { error ->
+                        // 오류가 발생했다면 토큰이 유효하지 않은 것으로 간주
+                        if (error is AppError.AuthError) {
+                            // 토큰 관련 오류
+                            clearTokenAndState()
+                        } else {
+                            // 네트워크 등 다른 오류 - 토큰은 유지하고 오류만 기록
+                            Log.e("AuthViewModel", "토큰 검증 중 오류: ${error.message}")
+                        }
+                    }
+                )
+            } else {
+                _uiState.update { it.copy(hasToken = false) }
+            }
+        }
+    }
+
+    // 토큰 삭제 및 상태 초기화 함수
+    private fun clearTokenAndState() {
+        viewModelScope.launch {
+            dataStoreManager.clearToken()
+
+            // 다른 ViewModel 상태 초기화
+            getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
+                when (it) {
+                    is MainViewModel -> it.resetState()
+                    is MenuDetailViewModel -> it.resetState()
+                    is ReviewViewModel -> it.resetState()
+                    is RankingViewModel -> it.resetState()
+                    is LikedMenuViewModel -> it.resetState()
+                    is NicknameChangeViewModel -> it.resetState()
+                    is MyPageViewModel -> it.resetState()
+                    // 다른 ViewModel들도 필요에 따라 추가
+                }
+            }
+
+            _uiState.update {
+                it.copy(
+                    hasToken = false,
+                    signupState = AuthState.Idle,
+                    checkNicknameState = AuthState.Idle,
+                    logoutState = AuthState.Idle,
+                    deleteAccountState = AuthState.Idle,
+                    saveTokenState = null
+                )
+            }
+        }
+    }
+
+
 
     fun resetNicknameCheckState() {
         _uiState.update {
