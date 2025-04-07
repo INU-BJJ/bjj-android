@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.ui.component.dialog
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import inu.appcenter.bjj_android.R
@@ -86,7 +85,8 @@ fun SuspensionReasonDialog(
         iconTint = Orange_FF7800,
         autoDismissTime = null,
         isError = true,
-        textColor = Red_FF3916
+        textColor = Red_FF3916,
+        dialogStyle = DialogStyle.Compact  // 작은 간격 적용
     )
 }
 

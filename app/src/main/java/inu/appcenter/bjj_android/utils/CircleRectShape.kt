@@ -1,4 +1,4 @@
-package inu.appcenter.bjj_android.ui.component.dialog
+package inu.appcenter.bjj_android.utils
 
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
