@@ -216,7 +216,12 @@ class ReviewViewModel(
     }
 
     // 리뷰 작성하기
-    fun reviewComplete(reviewPost: ReviewPost, images: List<String?>, onSuccess: () -> Unit) {
+    fun reviewComplete(
+        reviewPost: ReviewPost,
+        images: List<String?>,
+        onSuccess: () -> Unit,
+        onError: (Throwable) -> Unit = {}
+    ) {
         viewModelScope.launch {
             try {
                 setLoading(true)
@@ -251,14 +256,21 @@ class ReviewViewModel(
                         setImageNames(images.filterNotNull())
                         getMyReviews()
                         onSuccess()
+                        setLoading(false)
                     },
                     onError = { error ->
+                        // 오류 발생 시 emitError 호출하여 BaseViewModel 오류 처리 시스템 활용
+                        // 이렇게 하면 ErrorHandler가 자동으로 적절한 다이얼로그 표시
                         emitError(error)
+                        onError(error) // 추가 콜백 호출
+                        setLoading(false)
                     }
                 )
             } catch (e: Exception) {
                 setLoading(false)
-                emitError(AppError.NotFoundError(e.message ?: "리뷰 작성 중 오류가 발생했습니다."))
+                val error = AppError.NotFoundError(e.message ?: "리뷰 작성 중 오류가 발생했습니다.")
+                emitError(error) // 오류 이벤트 발생
+                onError(error) // 콜백 호출
             }
         }
     }

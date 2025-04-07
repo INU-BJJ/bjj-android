@@ -45,8 +45,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.component.dialog.ReviewCompletedDialog
+import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.noRippleClickable
 import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.review.component.DashedBorderBox
@@ -65,7 +68,8 @@ import inu.appcenter.bjj_android.ui.theme.paddings
 @Composable
 fun ReviewWriteScreen(
     onNavigateBack: () -> Unit,
-    reviewViewModel: ReviewViewModel
+    reviewViewModel: ReviewViewModel,
+    navController: NavHostController? = null //
 ) {
     var cautionExpanded by remember { mutableStateOf(false) }
     var reviewComment by remember { mutableStateOf("") }
@@ -115,6 +119,13 @@ fun ReviewWriteScreen(
             Log.d("Disposable", "now")
         }
     }
+
+    // 새로운 ErrorHandler 컴포넌트 사용
+    // NavController를 전달하거나, null을 전달하여 인증 만료 처리를 유연하게 대응
+    ErrorHandler(
+        viewModel = reviewViewModel,
+        navController = navController // navController가 null이어도 작동
+    )
 
     Scaffold(
         topBar = {
@@ -170,8 +181,8 @@ fun ReviewWriteScreen(
             Spacer(modifier = Modifier.height(13.8.dp))
 
             HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),       // 선의 길이를 화면 가득 채우기
-                thickness = 0.5.dp,             // 선의 두께
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 0.5.dp,
                 color = Gray_B9B9B9
             )
             Spacer(modifier = Modifier.height(13.8.dp))
@@ -193,7 +204,6 @@ fun ReviewWriteScreen(
                     initialRating = 5f,
                     onRatingChanged = { newRating ->
                         currentRating = newRating
-                        //reviewViewModel.setRating(newRating)
                     })
             }
             Spacer(modifier = Modifier.height(25.dp))
@@ -286,8 +296,8 @@ fun ReviewWriteScreen(
             if (cautionExpanded) {
                 AnimatedVisibility(
                     visible = cautionExpanded,
-                    enter = fadeIn(), // 텍스트가 나타날 때 페이드 인 애니메이션
-                    exit = fadeOut() // 텍스트가 사라질 때 페이드 아웃 애니메이션
+                    enter = fadeIn(),
+                    exit = fadeOut()
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
@@ -302,8 +312,8 @@ fun ReviewWriteScreen(
             } else {
                 AnimatedVisibility(
                     visible = cautionExpanded,
-                    enter = fadeIn(), // 텍스트가 나타날 때 페이드 인 애니메이션
-                    exit = fadeOut() // 텍스트가 사라질 때 페이드 아웃 애니메이션
+                    enter = fadeIn(),
+                    exit = fadeOut()
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
@@ -327,17 +337,17 @@ fun ReviewWriteScreen(
                     // 리뷰 작성 성공 시 다이얼로그 상태 true로 변경
                     showCompletedDialog = true
                 }
+                // 에러 콜백은 생략 가능 - BaseViewModel과 ErrorHandler가 자동으로 처리
             )
         }
-        // 작성 완료 다이얼로그: showCompletedDialog가 true일 때 보여짐
-        if (showCompletedDialog) {
-            ReviewCompletedDialog(
-                show = showCompletedDialog,
-                onDismiss = {
-                    showCompletedDialog = false
-                    onNavigateBack()
-                }
-            )
-        }
+
+        // 작성 완료 다이얼로그
+        ReviewCompletedDialog(
+            show = showCompletedDialog,
+            onDismiss = {
+                showCompletedDialog = false
+                onNavigateBack()
+            }
+        )
     }
 }

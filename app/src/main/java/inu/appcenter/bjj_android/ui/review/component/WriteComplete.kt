@@ -23,13 +23,24 @@ import inu.appcenter.bjj_android.ui.review.ReviewViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 
+/**
+ * 리뷰 작성 완료 버튼 컴포넌트
+ *
+ * @param reviewComment 작성된 리뷰 내용
+ * @param currentRating 현재 선택된 별점
+ * @param reviewViewModel 리뷰 ViewModel
+ * @param selectedImages 선택된 이미지 경로 목록
+ * @param onSuccess 성공 시 호출될 콜백
+ * @param onError 에러 발생 시 호출될 콜백 (선택적)
+ */
 @Composable
 fun WriteComplete(
     reviewComment: String,
     currentRating: Int,
     reviewViewModel: ReviewViewModel,
-    selectedImages: List<String?>, // 추가된 파라미터
-    onSuccess: () -> Unit
+    selectedImages: List<String?>,
+    onSuccess: () -> Unit,
+    onError: (Throwable) -> Unit = {}
 ) {
     val reviewUiState by reviewViewModel.uiState.collectAsState()
 
@@ -56,7 +67,8 @@ fun WriteComplete(
                                 menuPairId = reviewUiState.selectedMenu?.menuPairId ?: -1
                             ),
                             images = selectedImages,
-                            onSuccess = onSuccess
+                            onSuccess = onSuccess,
+                            onError = onError
                         )
                     }
                 }
@@ -75,4 +87,3 @@ fun WriteComplete(
         )
     }
 }
-
