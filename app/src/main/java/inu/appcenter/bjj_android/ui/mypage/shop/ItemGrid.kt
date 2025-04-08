@@ -59,7 +59,7 @@ fun ItemGrid(
                 onItemClick = onItemClick
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(54.dp))
 
             ItemSection(
                 levelTitle = ItemLevel.RARE.toKorean(),

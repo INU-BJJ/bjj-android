@@ -38,6 +38,8 @@ object ImageLoader {
     private const val PROFILE_IMAGE_PATH = "profile/"
     private const val CHARACTER_IMAGE_PATH = "item/character/"
     private const val BACKGROUND_IMAGE_PATH = "item/background/"
+    private const val CAFETERIA_IMAGE_PATH = "cafeteria/"
+
 
     // 인증 토큰을 저장할 변수 추가
     private var authToken: String? = null
@@ -107,6 +109,10 @@ object ImageLoader {
 
     private fun getBackgroundImageUrl(imageName: String): String {
         return BASE_URL + BACKGROUND_IMAGE_PATH + imageName
+    }
+
+    private fun getCafeteriaImageUrl(imageName: String): String {
+        return BASE_URL + CAFETERIA_IMAGE_PATH + imageName
     }
 
     // 이미지 로딩 요청 빌더
@@ -503,7 +509,7 @@ object ImageLoader {
                 modifier = clickableModifier.fillMaxSize()
             )
         } else {
-            val imageUrl = getReviewImageUrl(imageName)
+            val imageUrl = getCafeteriaImageUrl(imageName)
             val imageRequest = buildImageRequest(context, imageName, imageUrl)
 
             SubcomposeAsyncImage(

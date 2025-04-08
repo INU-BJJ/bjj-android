@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.main
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.model.cafeteria.CafeteriaInfoResponse
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.menu.MenuRepository
@@ -23,7 +24,8 @@ private const val MAX_RETRIES = 3
 data class MainUiState(
     val cafeterias: List<String> = emptyList(),
     val selectedCafeteria: String? = null,
-    val menus: List<TodayDietRes> = emptyList()
+    val menus: List<TodayDietRes> = emptyList(),
+    val selectedCafeteriaInfo: CafeteriaInfoResponse? = null
 )
 
 class MainViewModel(
@@ -59,6 +61,7 @@ class MainViewModel(
                 selectedCafeteria = cafeteria
             )
         }
+        getCafeteriaInfo()
         getMenusByCafeteria(cafeteria)
     }
 
@@ -80,6 +83,7 @@ class MainViewModel(
                         getMenusByCafeteria(firstCafeteria)
                     }
                 }
+                getCafeteriaInfo()
             },
             onError = { error ->
                 if (error.message?.contains("BEGIN_ARRAY") == true && retryCount < MAX_RETRIES) {
@@ -90,6 +94,23 @@ class MainViewModel(
                 }
             }
         )
+    }
+
+    fun getCafeteriaInfo(
+    ) {
+        viewModelScope.launch {
+            if (uiState.value.selectedCafeteria == null) return@launch
+
+            cafeteriasRepository.getCafeteriaInfo(name = uiState.value.selectedCafeteria!!).handleResponse(
+                onSuccess = { cafeteriaInfo ->
+                    _uiState.update {
+                        it.copy(
+                            selectedCafeteriaInfo = cafeteriaInfo
+                        )
+                    }
+                }
+            )
+        }
     }
 
     fun getCafeterias() {

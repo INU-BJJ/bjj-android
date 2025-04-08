@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.main.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -25,6 +27,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -35,6 +38,7 @@ fun RestaurantInfo(
     modifier : Modifier = Modifier,
     restaurantName: String,
     location: String,
+    operation: String,
     weekSchedule: List<String>,
     weekendSchedule: List<String>,
     mapImageName: String,
@@ -71,7 +75,7 @@ fun RestaurantInfo(
         }
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "운영시간 (학기 중)",
+            text = operation,
             style = LocalTypography.current.bold15.copy(
                 letterSpacing = 0.13.sp,
                 color = Gray_999999
@@ -110,14 +114,15 @@ fun RestaurantInfo(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(min = 50.dp)
                             .padding(vertical = 5.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         weekSchedule.forEachIndexed { index, schedule ->
                             val mealText = when (index) {
-                                0 -> "중식 "
-                                1 -> "석식 "
+                                0 -> ""
+                                1 -> ""
                                 else -> ""
                             }
                             val displayText = if (schedule.isBlank()) "휴점" else "$mealText$schedule"
@@ -135,7 +140,9 @@ fun RestaurantInfo(
                 VerticalDivider(modifier = Modifier.fillMaxHeight(), color = Gray_999999, thickness = 1.dp)
                 Column (
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "주말",
@@ -152,14 +159,15 @@ fun RestaurantInfo(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(min = 50.dp)
                             .padding(vertical = 5.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         weekendSchedule.forEachIndexed { index, schedule ->
                             val mealText = when (index) {
-                                0 -> "중식 "
-                                1 -> "석식 "
+                                0 -> ""
+                                1 -> ""
                                 else -> ""
                             }
                             val displayText = if (schedule.isBlank()) "휴점" else "$mealText$schedule"

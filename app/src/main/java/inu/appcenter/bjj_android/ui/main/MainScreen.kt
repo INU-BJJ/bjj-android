@@ -269,7 +269,7 @@ fun MainScreen(
                         )
                     }
                 }
-                if (restaurantInfo) {
+                if (restaurantInfo && mainUiState.selectedCafeteriaInfo != null) {
                     item {
                         // RestaurantInfoWithMap 컴포넌트 사용
                         RestaurantInfo(
@@ -277,10 +277,11 @@ fun MainScreen(
                                 .fillMaxWidth()
                                 .padding(bottom = 25.dp, start = 20.dp, end = 20.dp),
                             restaurantName = mainUiState.selectedCafeteria ?: "",
-                            location = "11호관 (복지회관) 1층",
-                            weekSchedule = listOf("11:00 ~ 13:30", "17:00 ~ 18:10"),
-                            weekendSchedule = listOf("11:00 ~ 13:30", "17:00 ~ 18:10"),
-                            mapImageName = ""
+                            location = mainUiState.selectedCafeteriaInfo!!.location,
+                            operation = mainUiState.selectedCafeteriaInfo!!.operationTime.operation,
+                            weekSchedule = mainUiState.selectedCafeteriaInfo!!.operationTime.weekdays,
+                            weekendSchedule = mainUiState.selectedCafeteriaInfo!!.operationTime.weekends,
+                            mapImageName = mainUiState.selectedCafeteriaInfo!!.imageName
                         )
                     }
                 }

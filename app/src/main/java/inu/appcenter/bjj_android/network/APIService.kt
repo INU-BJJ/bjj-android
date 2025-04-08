@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.network
 
+import inu.appcenter.bjj_android.model.cafeteria.CafeteriaInfoResponse
 import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
 import inu.appcenter.bjj_android.model.item.ItemResponse
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
@@ -102,6 +103,11 @@ interface APIService {
     //Cafeteria API
     @GET("/api/cafeterias")
     suspend fun getCafeterias() : Response<List<String>>
+
+    @GET("/api/cafeterias/{name}")
+    suspend fun getCafeteriaInfo(
+        @Path("name") name: String
+    ) : Response<CafeteriaInfoResponse>
 
     //Member API
     @GET("/api/members")
