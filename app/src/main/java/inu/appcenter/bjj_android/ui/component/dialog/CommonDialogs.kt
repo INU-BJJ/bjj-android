@@ -40,6 +40,7 @@ fun ReviewCompletedDialog(
         iconResId = R.drawable.checkcircle,
         autoDismissTime = 1000L,
         contentSize = DialogContentSize.Fixed
+        // dialogWidth 파라미터는 생략 - 기본값 사용
     )
 }
 
@@ -65,6 +66,7 @@ fun SuccessDialog(
         iconResId = R.drawable.checkcircle,
         autoDismissTime = 1000L,
         contentSize = DialogContentSize.Fixed
+        // dialogWidth 파라미터는 생략 - 기본값 사용
     )
 }
 
@@ -91,12 +93,14 @@ fun FailureDialog(
         iconTint = Orange_FF7800,
         autoDismissTime = 1000L,
         contentSize = DialogContentSize.Fixed
+        // dialogWidth 파라미터는 생략 - 기본값 사용
     )
 }
 
 /**
  * 정지 사유 다이얼로그
  * 정지 기간과 사유를 표시, 피그마 스펙에 맞게 스타일링
+ * 세로 크기는 컨텐츠에 따라 동적으로 조절됨
  */
 @Composable
 fun SuspensionReasonDialog(
@@ -147,13 +151,13 @@ fun SuspensionReasonDialog(
         iconResId = R.drawable.xmark_circle,
         iconTint = Orange_FF7800,
         autoDismissTime = null,
-        contentSize = DialogContentSize.Dynamic,  // 동적 크기 사용
-        isSuspensionDialog = true  // SuspensionReasonDialog임을 표시
+        contentSize = DialogContentSize.Dynamic,
+        isSuspensionDialog = true
+        // dialogWidth 파라미터는 생략 - 기본값 사용
     )
 }
 
 // 프리뷰 섹션
-
 @Preview(showBackground = true)
 @Composable
 fun ReviewCompletedDialogPreview() {

@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -45,15 +45,39 @@ enum class DialogContentSize {
     Dynamic   // 컨텐츠에 따라 동적으로 조절되는 크기
 }
 
-// 아이콘 관련 상수
+// 다이얼로그 관련 상수 및 기본값
 object DialogDefaults {
+    // 아이콘 관련 상수
     val IconSize = 48.dp
     val IconTopPadding = 11.dp
+
+    // 다이얼로그 너비 상수
+    val DialogWidth = 247.dp
+
+    // CircleRectShape 관련 상수
+    val CircleDiameter = 79.dp
+    val VisibleCircleHeight = 46.dp
+    val CornerRadius = 14.dp
+
+    // 스타일 값들을 기본값으로 제공하는 함수
+    fun getStyleValues(contentSize: DialogContentSize, hasTitle: Boolean): DialogStyleValues {
+        return when (contentSize) {
+            DialogContentSize.Fixed -> DialogStyleValues(
+                contentTopPadding = if (hasTitle) 14.dp else 16.dp,
+                additionalHeightPadding = if (hasTitle) 35.dp else 30.dp,
+                bottomContentPadding = 24.dp
+            )
+            DialogContentSize.Dynamic -> DialogStyleValues(
+                contentTopPadding = if (hasTitle) 8.dp else 10.dp,
+                additionalHeightPadding = if (hasTitle) 18.dp else 14.dp,
+                bottomContentPadding = 20.dp
+            )
+        }
+    }
 }
 
-// 스타일별 수치 값
+// 스타일별 수치 값 - 너비 제거
 data class DialogStyleValues(
-    val minWidth: Dp,
     val contentTopPadding: Dp,
     val additionalHeightPadding: Dp,
     val bottomContentPadding: Dp
@@ -61,7 +85,7 @@ data class DialogStyleValues(
 
 /**
  * 커스터마이징 가능한 알림 다이얼로그
- * 텍스트 내용에 따라 크기가 자동 조절되며 여러 유형의 메시지를 표시할 수 있음
+ * 가로 크기는 고정되며, 텍스트 내용에 따라 세로 크기가 자동 조절됨
  */
 @Composable
 fun CustomAlertDialog(
@@ -78,8 +102,9 @@ fun CustomAlertDialog(
     iconTint: Color? = null,
     autoDismissTime: Long? = 1000L,
     contentSize: DialogContentSize = DialogContentSize.Fixed,
-    // SuspensionReasonDialog 여부를 나타내는 파라미터 추가
-    isSuspensionDialog: Boolean = false
+    isSuspensionDialog: Boolean = false,
+    // 가로 크기는 기본값으로 DialogDefaults.DialogWidth 사용
+    dialogWidth: Dp = DialogDefaults.DialogWidth
 ) {
     if (show) {
         // 자동 닫기 설정
@@ -91,28 +116,13 @@ fun CustomAlertDialog(
         }
 
         val localDensity = LocalDensity.current
-        var contentWidth by remember { mutableStateOf(0.dp) }
         var contentHeight by remember { mutableStateOf(0.dp) }
 
-        // 유형별 스타일 정의 적용
-        val style = when (contentSize) {
-            DialogContentSize.Fixed -> DialogStyleValues(
-                minWidth = 240.dp,
-                contentTopPadding = if (title != null) 14.dp else 16.dp,
-                additionalHeightPadding = if (title != null) 35.dp else 30.dp,
-                bottomContentPadding = 24.dp
-            )
-            DialogContentSize.Dynamic -> DialogStyleValues(
-                minWidth = 220.dp,
-                contentTopPadding = if (title != null) 8.dp else 10.dp,
-                additionalHeightPadding = if (title != null) 18.dp else 14.dp,
-                bottomContentPadding = 20.dp
-            )
-        }
+        // 타이틀 유무에 따른 스타일 값 가져오기
+        val style = DialogDefaults.getStyleValues(contentSize, title != null)
 
-        // CircleRectShape 파라미터 - 고정 값 유지
-        val circleDiameter = 79.dp
-        val visibleCircleHeight = 46.dp
+        // SuspensionReasonDialog용 특별 오프셋 조정
+        val contentOverlap = if (isSuspensionDialog) 12.dp else 0.dp
 
         Dialog(
             onDismissRequest = onDismiss,
@@ -126,9 +136,6 @@ fun CustomAlertDialog(
                     .background(Color.Transparent)
                     .wrapContentSize()
             ) {
-                // 컨텐츠 크기에 맞게 다이얼로그 크기 계산
-                val dialogWidth = maxOf(style.minWidth, contentWidth + 40.dp)
-
                 // 컨텐츠 길이에 따른 동적 계산
                 val contentScale = (contentHeight / 18.dp).coerceIn(1f, 2.5f)
                 val contentAreaHeight = if (title != null) {
@@ -137,21 +144,22 @@ fun CustomAlertDialog(
                     contentHeight + style.bottomContentPadding
                 }
 
-                // SuspensionReasonDialog용 특별 오프셋 조정
-                val contentOverlap = if (isSuspensionDialog) 12.dp else 0.dp
-
                 // 원과 콘텐츠 영역이 겹치는 부분을 고려하여 전체 높이 계산
-                val dialogHeight = visibleCircleHeight + contentAreaHeight + style.additionalHeightPadding - contentOverlap
+                val dialogHeight = DialogDefaults.VisibleCircleHeight +
+                        contentAreaHeight +
+                        style.additionalHeightPadding -
+                        contentOverlap
 
                 Box(
                     modifier = Modifier
-                        .widthIn(min = dialogWidth)
+                        .width(dialogWidth)  // 고정된 너비 사용
                         .height(dialogHeight)
                         .background(
                             color = Color.White,
                             shape = CircleRectShape(
-                                circleDiameter = circleDiameter,
-                                visibleCircleHeight = visibleCircleHeight
+                                circleDiameter = DialogDefaults.CircleDiameter,
+                                visibleCircleHeight = DialogDefaults.VisibleCircleHeight,
+                                cornerRadius = DialogDefaults.CornerRadius
                             )
                         )
                 ) {
@@ -163,10 +171,12 @@ fun CustomAlertDialog(
                             .size(DialogDefaults.IconSize)
                             .align(Alignment.TopCenter)
                             .offset(y = DialogDefaults.IconTopPadding),
-                        colorFilter = iconTint?.let { androidx.compose.ui.graphics.ColorFilter.tint(it) }
+                        colorFilter = iconTint?.let {
+                            androidx.compose.ui.graphics.ColorFilter.tint(it)
+                        }
                     )
 
-                    // 컨텐츠 컨테이너 - SuspensionReasonDialog인 경우만 위로 올림
+                    // 컨텐츠 컨테이너
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -178,8 +188,10 @@ fun CustomAlertDialog(
                                 top = style.contentTopPadding
                             )
                             .onGloballyPositioned { coordinates ->
-                                contentWidth = with(localDensity) { coordinates.size.width.toDp() }
-                                contentHeight = with(localDensity) { coordinates.size.height.toDp() }
+                                // 높이만 측정
+                                contentHeight = with(localDensity) {
+                                    coordinates.size.height.toDp()
+                                }
                             },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -227,7 +239,8 @@ fun CustomAlertDialog(
     iconTint: Color? = null,
     autoDismissTime: Long? = 1000L,
     contentSize: DialogContentSize = DialogContentSize.Fixed,
-    isSuspensionDialog: Boolean = false
+    isSuspensionDialog: Boolean = false,
+    dialogWidth: Dp = DialogDefaults.DialogWidth
 ) {
     CustomAlertDialog(
         show = show,
@@ -250,7 +263,8 @@ fun CustomAlertDialog(
         iconTint = iconTint,
         autoDismissTime = autoDismissTime,
         contentSize = contentSize,
-        isSuspensionDialog = isSuspensionDialog
+        isSuspensionDialog = isSuspensionDialog,
+        dialogWidth = dialogWidth
     )
 }
 
@@ -277,7 +291,8 @@ fun CustomAlertDialog(
     iconTint: Color? = null,
     autoDismissTime: Long? = 1000L,
     contentSize: DialogContentSize = DialogContentSize.Fixed,
-    isSuspensionDialog: Boolean = false
+    isSuspensionDialog: Boolean = false,
+    dialogWidth: Dp = DialogDefaults.DialogWidth
 ) {
     CustomAlertDialog(
         show = show,
@@ -299,6 +314,7 @@ fun CustomAlertDialog(
         iconTint = iconTint,
         autoDismissTime = autoDismissTime,
         contentSize = contentSize,
-        isSuspensionDialog = isSuspensionDialog
+        isSuspensionDialog = isSuspensionDialog,
+        dialogWidth = dialogWidth
     )
 }
