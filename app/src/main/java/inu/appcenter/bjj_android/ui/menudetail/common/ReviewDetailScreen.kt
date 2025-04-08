@@ -41,7 +41,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-import inu.appcenter.bjj_android.ui.component.ErrorHandler
+import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator

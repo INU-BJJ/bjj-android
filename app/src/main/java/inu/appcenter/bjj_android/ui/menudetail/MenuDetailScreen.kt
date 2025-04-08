@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-import inu.appcenter.bjj_android.ui.component.ErrorHandler
+import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.LoadingIndicator
 import inu.appcenter.bjj_android.ui.menudetail.common.GrayHorizontalDivider
 import inu.appcenter.bjj_android.ui.menudetail.menuinfo.HeaderSection
