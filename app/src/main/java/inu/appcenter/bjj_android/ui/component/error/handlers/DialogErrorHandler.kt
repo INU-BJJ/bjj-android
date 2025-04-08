@@ -8,8 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.component.dialog.CustomAlertDialog
+import inu.appcenter.bjj_android.ui.component.dialog.DialogContentSize
 import inu.appcenter.bjj_android.ui.component.dialog.FailureDialog
 import inu.appcenter.bjj_android.ui.component.dialog.SuspensionReasonDialog
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.utils.AppError
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -73,8 +75,9 @@ private fun DisplayErrorDialog(
                     title = "정지 사유",
                     message = error.message,
                     iconResId = R.drawable.xmark_circle,
+                    iconTint = Orange_FF7800,  // isError 대신 명시적으로 오렌지 색상 지정
                     autoDismissTime = null,
-                    isError = true
+                    contentSize = DialogContentSize.Dynamic  // 동적 컨텐츠 크기 사용
                 )
             } else {
                 // 일반 API 에러
@@ -93,8 +96,9 @@ private fun DisplayErrorDialog(
                 onDismiss = onDismiss,
                 message = error.message,
                 iconResId = R.drawable.xmark_circle,
+                iconTint = Orange_FF7800,  // isError 대신 명시적으로 오렌지 색상 지정
                 autoDismissTime = 2000L,
-                isError = true
+                contentSize = DialogContentSize.Fixed  // 고정 크기 사용
             )
         }
 
@@ -106,8 +110,9 @@ private fun DisplayErrorDialog(
                     onDismiss = onDismiss,
                     message = "로그인이 만료되었습니다. 다시 로그인해주세요.",
                     iconResId = R.drawable.xmark_circle,
+                    iconTint = Orange_FF7800,  // isError 대신 명시적으로 오렌지 색상 지정
                     autoDismissTime = 2000L,
-                    isError = true
+                    contentSize = DialogContentSize.Fixed  // 고정 크기 사용
                 )
             } else {
                 CustomAlertDialog(
@@ -115,8 +120,9 @@ private fun DisplayErrorDialog(
                     onDismiss = onDismiss,
                     message = error.message,
                     iconResId = R.drawable.xmark_circle,
+                    iconTint = Orange_FF7800,  // isError 대신 명시적으로 오렌지 색상 지정
                     autoDismissTime = 2000L,
-                    isError = true
+                    contentSize = DialogContentSize.Fixed  // 고정 크기 사용
                 )
             }
         }

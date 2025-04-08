@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,32 +39,47 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.utils.CircleRectShape
 import kotlinx.coroutines.delay
 
+// 다이얼로그 컨텐츠 크기 정의
+enum class DialogContentSize {
+    Fixed,    // 고정된 기본 크기 (모든 다이얼로그에서 일관되게 사용)
+    Dynamic   // 컨텐츠에 따라 동적으로 조절되는 크기
+}
+
+// 아이콘 관련 상수
+object DialogDefaults {
+    val IconSize = 48.dp
+    val IconTopPadding = 11.dp
+}
+
+// 스타일별 수치 값
+data class DialogStyleValues(
+    val minWidth: Dp,
+    val contentTopPadding: Dp,
+    val additionalHeightPadding: Dp,
+    val bottomContentPadding: Dp
+)
+
 /**
  * 커스터마이징 가능한 알림 다이얼로그
  * 텍스트 내용에 따라 크기가 자동 조절되며 여러 유형의 메시지를 표시할 수 있음
- *
- * @param show 다이얼로그 표시 여부
- * @param onDismiss 다이얼로그 닫기 콜백
- * @param title 다이얼로그 제목 (옵션)
- * @param message 다이얼로그 메시지
- * @param iconResId 아이콘 리소스 ID (기본값: 체크 아이콘)
- * @param iconTint 아이콘 색상 (기본값: 지정 안함 - 원본 색상 사용)
- * @param autoDismissTime 자동 닫기 시간(ms) (기본값: 1000ms, null이면 자동 닫기 비활성화)
- * @param textColor 텍스트 색상 (기본값: 검정)
- * @param isError 에러 메시지 여부 (기본값: false)
  */
 @Composable
 fun CustomAlertDialog(
     show: Boolean,
     onDismiss: () -> Unit,
     title: String? = null,
-    message: String,
+    titleColor: Color = Color.Black,
+    titleStyle: TextStyle = LocalTypography.current.semibold15.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 18.sp
+    ),
+    content: @Composable () -> Unit,
     iconResId: Int,
     iconTint: Color? = null,
     autoDismissTime: Long? = 1000L,
-    textColor: Color = Color.Black,
-    isError: Boolean = false,
-    dialogStyle: DialogStyle = DialogStyle.Standard
+    contentSize: DialogContentSize = DialogContentSize.Fixed,
+    // SuspensionReasonDialog 여부를 나타내는 파라미터 추가
+    isSuspensionDialog: Boolean = false
 ) {
     if (show) {
         // 자동 닫기 설정
@@ -74,38 +91,28 @@ fun CustomAlertDialog(
         }
 
         val localDensity = LocalDensity.current
-        var textWidth by remember { mutableStateOf(0.dp) }
-        var textHeight by remember { mutableStateOf(0.dp) }
+        var contentWidth by remember { mutableStateOf(0.dp) }
+        var contentHeight by remember { mutableStateOf(0.dp) }
 
         // 유형별 스타일 정의 적용
-        val style = when (dialogStyle) {
-            DialogStyle.Standard -> DialogStyleValues(
+        val style = when (contentSize) {
+            DialogContentSize.Fixed -> DialogStyleValues(
                 minWidth = 240.dp,
-                iconSize = 48.dp,
-                iconTopPadding = 11.dp,
-                textTopPadding = if (title != null) 14.dp else 16.dp,
-                additionalHeightPadding = if (title != null) 35.dp else 30.dp
+                contentTopPadding = if (title != null) 14.dp else 16.dp,
+                additionalHeightPadding = if (title != null) 35.dp else 30.dp,
+                bottomContentPadding = 24.dp
             )
-            DialogStyle.Compact -> DialogStyleValues(
+            DialogContentSize.Dynamic -> DialogStyleValues(
                 minWidth = 220.dp,
-                iconSize = 44.dp,
-                iconTopPadding = 9.dp,
-                textTopPadding = if (title != null) 12.dp else 14.dp,
-                additionalHeightPadding = if (title != null) 25.dp else 20.dp
-            )
-            DialogStyle.Expanded -> DialogStyleValues(
-                minWidth = 260.dp,
-                iconSize = 52.dp,
-                iconTopPadding = 13.dp,
-                textTopPadding = if (title != null) 18.dp else 20.dp,
-                additionalHeightPadding = if (title != null) 45.dp else 40.dp
+                contentTopPadding = if (title != null) 8.dp else 10.dp,
+                additionalHeightPadding = if (title != null) 18.dp else 14.dp,
+                bottomContentPadding = 20.dp
             )
         }
 
-        // CircleRectShape 파라미터
+        // CircleRectShape 파라미터 - 고정 값 유지
         val circleDiameter = 79.dp
         val visibleCircleHeight = 46.dp
-        val bottomTextPadding = 24.dp
 
         Dialog(
             onDismissRequest = onDismiss,
@@ -119,18 +126,22 @@ fun CustomAlertDialog(
                     .background(Color.Transparent)
                     .wrapContentSize()
             ) {
-                // 텍스트 크기에 맞게 다이얼로그 크기 계산
-                val dialogWidth = maxOf(style.minWidth, textWidth + 40.dp)
+                // 컨텐츠 크기에 맞게 다이얼로그 크기 계산
+                val dialogWidth = maxOf(style.minWidth, contentWidth + 40.dp)
 
-                // 텍스트 길이에 따른 동적 계산
-                val contentScale = (textHeight / 18.dp).coerceIn(1f, 2.5f) // 텍스트 높이 비율 계산
-                val textAreaHeight = if (title != null) {
-                    textHeight + (40.dp * contentScale).coerceAtMost(60.dp)
+                // 컨텐츠 길이에 따른 동적 계산
+                val contentScale = (contentHeight / 18.dp).coerceIn(1f, 2.5f)
+                val contentAreaHeight = if (title != null) {
+                    contentHeight + (40.dp * contentScale).coerceAtMost(60.dp)
                 } else {
-                    textHeight + bottomTextPadding
+                    contentHeight + style.bottomContentPadding
                 }
 
-                val dialogHeight = visibleCircleHeight + textAreaHeight + style.additionalHeightPadding
+                // SuspensionReasonDialog용 특별 오프셋 조정
+                val contentOverlap = if (isSuspensionDialog) 12.dp else 0.dp
+
+                // 원과 콘텐츠 영역이 겹치는 부분을 고려하여 전체 높이 계산
+                val dialogHeight = visibleCircleHeight + contentAreaHeight + style.additionalHeightPadding - contentOverlap
 
                 Box(
                     modifier = Modifier
@@ -144,60 +155,47 @@ fun CustomAlertDialog(
                             )
                         )
                 ) {
-                    // 아이콘 - 동적으로 위치 조정
+                    // 아이콘 - 크기 고정
                     Image(
                         painter = painterResource(id = iconResId),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(style.iconSize)
+                            .size(DialogDefaults.IconSize)
                             .align(Alignment.TopCenter)
-                            .offset(y = style.iconTopPadding),
+                            .offset(y = DialogDefaults.IconTopPadding),
                         colorFilter = iconTint?.let { androidx.compose.ui.graphics.ColorFilter.tint(it) }
                     )
 
-                    // 텍스트 컨테이너 - 동적으로 간격 조정
+                    // 컨텐츠 컨테이너 - SuspensionReasonDialog인 경우만 위로 올림
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
+                            .offset(y = if (isSuspensionDialog) -contentOverlap else 0.dp)
                             .padding(
                                 start = 16.dp,
                                 end = 16.dp,
-                                bottom = 24.dp,
-                                top = style.textTopPadding
-                            ),
+                                bottom = style.bottomContentPadding,
+                                top = style.contentTopPadding
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                contentWidth = with(localDensity) { coordinates.size.width.toDp() }
+                                contentHeight = with(localDensity) { coordinates.size.height.toDp() }
+                            },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         title?.let {
                             Text(
                                 text = it,
-                                style = LocalTypography.current.semibold15.copy(
-                                    letterSpacing = 0.13.sp,
-                                    lineHeight = 18.sp
-                                ),
-                                color = if (isError) textColor else textColor,
+                                style = titleStyle,
+                                color = titleColor,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            // 제목과 메시지 사이 간격 - 메시지 길이에 따라 동적 조정
+                            // 제목과 컨텐츠 사이 간격 - 컨텐츠 길이에 따라 동적 조정
                             Spacer(modifier = Modifier.height((4 + contentScale * 2).dp))
                         }
 
-                        Text(
-                            text = message,
-                            style = LocalTypography.current.medium15.copy(
-                                letterSpacing = 0.13.sp,
-                                lineHeight = 18.sp
-                            ),
-                            color = textColor,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .wrapContentHeight()
-                                .onGloballyPositioned { coordinates ->
-                                    textWidth = with(localDensity) { coordinates.size.width.toDp() }
-                                    textHeight = with(localDensity) { coordinates.size.height.toDp() }
-                                }
-                        )
+                        content()
                     }
                 }
             }
@@ -205,18 +203,102 @@ fun CustomAlertDialog(
     }
 }
 
-// 다이얼로그 스타일 정의
-enum class DialogStyle {
-    Standard,  // 기본 스타일
-    Compact,   // 간결한 스타일 (간격 축소)
-    Expanded   // 확장 스타일 (간격 확대)
+/**
+ * 단순 문자열 메시지를 표시하는 다이얼로그 간편 버전
+ */
+@Composable
+fun CustomAlertDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    title: String? = null,
+    titleColor: Color = Color.Black,
+    titleStyle: TextStyle = LocalTypography.current.semibold15.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 18.sp
+    ),
+    message: String,
+    messageColor: Color = Color.Black,
+    messageStyle: TextStyle = LocalTypography.current.semibold15.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 18.sp,
+        textAlign = TextAlign.Center
+    ),
+    iconResId: Int,
+    iconTint: Color? = null,
+    autoDismissTime: Long? = 1000L,
+    contentSize: DialogContentSize = DialogContentSize.Fixed,
+    isSuspensionDialog: Boolean = false
+) {
+    CustomAlertDialog(
+        show = show,
+        onDismiss = onDismiss,
+        title = title,
+        titleColor = titleColor,
+        titleStyle = titleStyle,
+        content = {
+            Text(
+                text = message,
+                style = messageStyle,
+                color = messageColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+            )
+        },
+        iconResId = iconResId,
+        iconTint = iconTint,
+        autoDismissTime = autoDismissTime,
+        contentSize = contentSize,
+        isSuspensionDialog = isSuspensionDialog
+    )
 }
 
-// 스타일별 수치 값
-data class DialogStyleValues(
-    val minWidth: Dp,
-    val iconSize: Dp,
-    val iconTopPadding: Dp,
-    val textTopPadding: Dp,
-    val additionalHeightPadding: Dp
-)
+/**
+ * 스타일이 적용된 메시지를 표시하는 다이얼로그 (AnnotatedString 지원)
+ */
+@Composable
+fun CustomAlertDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    title: String? = null,
+    titleColor: Color = Color.Black,
+    titleStyle: TextStyle = LocalTypography.current.semibold15.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 18.sp
+    ),
+    message: AnnotatedString,
+    messageStyle: TextStyle = LocalTypography.current.semibold15.copy(
+        letterSpacing = 0.13.sp,
+        lineHeight = 18.sp,
+        textAlign = TextAlign.Center
+    ),
+    iconResId: Int,
+    iconTint: Color? = null,
+    autoDismissTime: Long? = 1000L,
+    contentSize: DialogContentSize = DialogContentSize.Fixed,
+    isSuspensionDialog: Boolean = false
+) {
+    CustomAlertDialog(
+        show = show,
+        onDismiss = onDismiss,
+        title = title,
+        titleColor = titleColor,
+        titleStyle = titleStyle,
+        content = {
+            Text(
+                text = message,
+                style = messageStyle,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+            )
+        },
+        iconResId = iconResId,
+        iconTint = iconTint,
+        autoDismissTime = autoDismissTime,
+        contentSize = contentSize,
+        isSuspensionDialog = isSuspensionDialog
+    )
+}

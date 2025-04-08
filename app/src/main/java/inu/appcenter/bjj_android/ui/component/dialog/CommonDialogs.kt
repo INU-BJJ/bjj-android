@@ -1,8 +1,19 @@
 package inu.appcenter.bjj_android.ui.component.dialog
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.theme.Bjj_androidTheme
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
@@ -21,8 +32,14 @@ fun ReviewCompletedDialog(
         show = show,
         onDismiss = onDismiss,
         message = stringResource(R.string.review_write_complete),
+        messageStyle = LocalTypography.current.semibold15.copy(
+            letterSpacing = 0.13.sp,
+            lineHeight = 18.sp,
+            textAlign = TextAlign.Center
+        ),
         iconResId = R.drawable.checkcircle,
-        autoDismissTime = 1000L
+        autoDismissTime = 1000L,
+        contentSize = DialogContentSize.Fixed
     )
 }
 
@@ -40,8 +57,14 @@ fun SuccessDialog(
         show = show,
         onDismiss = onDismiss,
         message = message,
+        messageStyle = LocalTypography.current.semibold15.copy(
+            letterSpacing = 0.13.sp,
+            lineHeight = 18.sp,
+            textAlign = TextAlign.Center
+        ),
         iconResId = R.drawable.checkcircle,
-        autoDismissTime = 1000L
+        autoDismissTime = 1000L,
+        contentSize = DialogContentSize.Fixed
     )
 }
 
@@ -59,15 +82,21 @@ fun FailureDialog(
         show = show,
         onDismiss = onDismiss,
         message = message,
+        messageStyle = LocalTypography.current.semibold15.copy(
+            letterSpacing = 0.13.sp,
+            lineHeight = 18.sp,
+            textAlign = TextAlign.Center
+        ),
         iconResId = R.drawable.xmark_circle,
         iconTint = Orange_FF7800,
-        autoDismissTime = 1000L
+        autoDismissTime = 1000L,
+        contentSize = DialogContentSize.Fixed
     )
 }
 
 /**
  * 정지 사유 다이얼로그
- * 정지 기간과 사유를 표시
+ * 정지 기간과 사유를 표시, 피그마 스펙에 맞게 스타일링
  */
 @Composable
 fun SuspensionReasonDialog(
@@ -80,13 +109,46 @@ fun SuspensionReasonDialog(
         show = show,
         onDismiss = onDismiss,
         title = "정지 사유",
-        message = "누적 5회 신고로 인해 리뷰 작성 제재\n$startDate ~ $endDate",
+        titleColor = Red_FF3916,
+        titleStyle = LocalTypography.current.bold18.copy(
+            letterSpacing = 0.13.sp,
+            lineHeight = 15.sp,
+            textAlign = TextAlign.Center
+        ),
+        content = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 사유 메시지 - 검은색, 15pt 미디엄
+                Text(
+                    text = "누적 5회 신고로 인해 리뷰 작성 제재",
+                    style = LocalTypography.current.medium15.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 15.sp
+                    ),
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 기간 - 빨간색, 13pt 미디엄
+                Text(
+                    text = "$startDate ~ $endDate",
+                    style = LocalTypography.current.medium13.copy(
+                        letterSpacing = 0.13.sp,
+                        lineHeight = 17.sp
+                    ),
+                    color = Red_FF3916,
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
         iconResId = R.drawable.xmark_circle,
         iconTint = Orange_FF7800,
         autoDismissTime = null,
-        isError = true,
-        textColor = Red_FF3916,
-        dialogStyle = DialogStyle.Compact  // 작은 간격 적용
+        contentSize = DialogContentSize.Dynamic,  // 동적 크기 사용
+        isSuspensionDialog = true  // SuspensionReasonDialog임을 표시
     )
 }
 
