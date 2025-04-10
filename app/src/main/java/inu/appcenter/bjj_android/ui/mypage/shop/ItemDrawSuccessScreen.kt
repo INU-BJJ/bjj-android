@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.component.ShopBackground
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
@@ -122,11 +123,30 @@ fun ItemDrawSuccessScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        // 수정: 이미지 이름 가져오기 수정
-                        ImageLoader.CharacterItem(
-                            imageName = uiState.drawnItem?.imageName ?: "",
-                            modifier = Modifier
-                        )
+                        uiState.drawnItem?.let { item ->
+                            // 타입에 따라 적절한 ImageLoader 사용
+                            when(item.itemType.uppercase()) {
+                                ItemType.CHARACTER.name -> {
+                                    ImageLoader.CharacterItem(
+                                        imageName = item.imageName,
+                                        modifier = Modifier
+                                    )
+                                }
+                                ItemType.BACKGROUND.name -> {
+                                    ImageLoader.BackgroundItem(
+                                        imageName = item.imageName,
+                                        modifier = Modifier
+                                    )
+                                }
+                                else -> {
+                                    // 알 수 없는 타입일 경우 기본 이미지 표시
+                                    ImageLoader.CharacterItem(
+                                        imageName = null,
+                                        modifier = Modifier
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     Card(

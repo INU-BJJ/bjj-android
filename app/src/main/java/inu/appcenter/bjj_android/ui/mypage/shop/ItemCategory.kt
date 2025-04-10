@@ -51,7 +51,7 @@ fun ItemCategory(
         Card(
             shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (selectedCategory == ItemType.CHARACTER) Orange_FF7800 else Color.White
+                containerColor = if (selectedCategory == ItemType.CHARACTER) Color.White else Orange_FF7800
             ),
             modifier = Modifier
                 .onGloballyPositioned { coordinates ->
@@ -62,13 +62,13 @@ fun ItemCategory(
                 .clickable { selectCategory(ItemType.CHARACTER) }
         ) {
             Box(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = ItemType.CHARACTER.toKorean(),
                     style = LocalTypography.current.semibold15,
-                    color = if (selectedCategory == ItemType.CHARACTER) Color.White else Orange_FF7800,
+                    color = if (selectedCategory == ItemType.CHARACTER) Orange_FF7800 else Color.White,
                     modifier = Modifier
                         .align(Alignment.Center)
                 )
@@ -81,7 +81,7 @@ fun ItemCategory(
         Card(
             shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (selectedCategory == ItemType.BACKGROUND) Orange_FF7800 else Color.White
+                containerColor = if (selectedCategory == ItemType.BACKGROUND) Color.White else Orange_FF7800
             ),
             modifier = Modifier
                 .width(characterWidth) // 캐릭터 카드의 너비 적용
@@ -89,7 +89,7 @@ fun ItemCategory(
                 .clickable { selectCategory(ItemType.BACKGROUND) }
         ) {
             Box(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -100,7 +100,7 @@ fun ItemCategory(
                     Text(
                         text = ItemType.BACKGROUND.toKorean(),
                         style = LocalTypography.current.semibold15,
-                        color = if (selectedCategory == ItemType.BACKGROUND) Color.White else Orange_FF7800,
+                        color = if (selectedCategory == ItemType.BACKGROUND) Orange_FF7800 else Color.White,
                         modifier = Modifier
                     )
                 }

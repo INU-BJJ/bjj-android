@@ -1,5 +1,7 @@
 package inu.appcenter.bjj_android.ui.mypage.shop
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,10 +29,15 @@ fun ItemFrame(
             selectedCategory = selectedCategory,
             selectCategory = selectCategory
         )
-        ItemGrid(
-            onItemClick = onItemClick,
-            selectedCategory = selectedCategory,
-            itemList = itemList
-        )
+        Crossfade(
+            targetState = selectedCategory,
+            animationSpec = tween(durationMillis = 1000)
+        ) { category ->
+            ItemGrid(
+                onItemClick = onItemClick,
+                selectedCategory = category,
+                itemList = itemList
+            )
+        }
     }
 }

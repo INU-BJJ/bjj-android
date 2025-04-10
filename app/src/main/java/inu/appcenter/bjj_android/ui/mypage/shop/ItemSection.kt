@@ -1,11 +1,13 @@
 package inu.appcenter.bjj_android.ui.mypage.shop
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import inu.appcenter.bjj_android.LocalTypography
+import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.item.ItemLevel
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
-import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.utils.isValidItem
 
 @Composable
@@ -98,7 +102,10 @@ fun ItemSection(
                                 )
                             } else {
                                 // 소유했지만 유효기간이 없거나 만료된 아이템은 EmptyCard로
-                                EmptyCard(cardWidth = cardWidth)
+                                EmptyCard(
+                                    level = ItemLevel.valueOf(item.itemLevel),
+                                    cardWidth = cardWidth
+                                )
                             }
                         } else {
                             // 아이템 개수보다 많아진 공간은 그냥 Spacer로 비워둔다
@@ -113,15 +120,23 @@ fun ItemSection(
 
 @Composable
 fun EmptyCard(
+    level: ItemLevel,
     cardWidth: androidx.compose.ui.unit.Dp
 ) {
     Box(
         modifier = Modifier
             .width(cardWidth)
             .height((cardWidth.value * 92 / 71).dp)
-            .background(
-                color = Orange_FF7800.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(10.dp)
-            )
-    )
+    ){
+        Image(
+            painter = when(level){
+                ItemLevel.COMMON -> painterResource(R.drawable.common_card)
+                ItemLevel.NORMAL -> painterResource(R.drawable.normal_card)
+                ItemLevel.RARE -> painterResource(R.drawable.rare_card)
+            },
+            contentDescription = "카드 뒷면",
+            modifier = Modifier
+                .fillMaxSize()
+        )
+    }
 }
