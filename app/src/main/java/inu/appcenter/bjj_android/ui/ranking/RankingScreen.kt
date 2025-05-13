@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -48,6 +50,7 @@ import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.navigate.shadowCustom
 import inu.appcenter.bjj_android.ui.review.component.formatter
+import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
@@ -245,34 +248,33 @@ fun NormalRankingItem(
             )
             Column(
                 modifier = Modifier
-                    .padding(top = 6.dp, bottom = 7.dp),
+                    .padding(top = 11.dp, bottom = 7.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
                 Row(
-                    modifier = Modifier
-                        .width(53.dp)
-                        .height(21.dp)
-                        .background(color = Orange_FFF4DF, shape = RoundedCornerShape(32.dp)),
+                    modifier = Modifier,
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star),
-                        contentDescription = "별점",
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = menu.menuRating.toString(),
-                        style = LocalTypography.current.regular13.copy(
+                        style = LocalTypography.current.medium13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
                         ),
                         color = Color.Black
                     )
+                    Text(
+                        text = " / 10",
+                        style = LocalTypography.current.medium13.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 17.sp
+                        ),
+                        color = Gray_999999
+                    )
                 }
-                Spacer(Modifier.height(5.dp))
+                Spacer(Modifier.height(6.dp))
                 Text(
                     text = "${menu.cafeteriaName} ${menu.cafeteriaCorner}",
                     style = LocalTypography.current.regular11.copy(
@@ -379,14 +381,13 @@ fun TopThreeRankingItem(
         }
         Column(
             modifier = Modifier
-                .padding(top = 13.dp, bottom = 8.dp)
+                .padding(top = 13.dp, bottom = 8.dp, start = 12.dp)
                 .fillMaxHeight()
                 .weight(1f),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 12.dp)
             ) {
                 Text(
                     text = menu.menuName,
@@ -397,35 +398,33 @@ fun TopThreeRankingItem(
                     color = Color.Black
                 )
             }
-            Spacer(Modifier.height(12.dp))
-            Row(
+            Spacer(Modifier.height(5.dp))
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 9.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .heightIn(min = 30.dp)
             ) {
                 Row(
                     modifier = Modifier
-                        .width(53.dp)
-                        .height(21.dp)
-                        .background(color = Orange_FFF4DF, shape = RoundedCornerShape(32.dp)),
+                        .align(Alignment.TopStart),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star),
-                        contentDescription = "별점",
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = menu.menuRating.toString(),
-                        style = LocalTypography.current.regular13.copy(
+                        style = LocalTypography.current.semibold15.copy(
+                            letterSpacing = 0.13.sp,
+                            lineHeight = 18.sp
+                        ),
+                        color = Orange_FF7800
+                    )
+                    Text(
+                        text = " / 10",
+                        style = LocalTypography.current.medium13.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 17.sp
                         ),
-                        color = Color.Black
+                        color = Gray_999999
                     )
                 }
                 Text(
@@ -434,7 +433,9 @@ fun TopThreeRankingItem(
                         letterSpacing = 0.13.sp,
                         lineHeight = 15.sp
                     ),
-                    color = Color.Black.copy(alpha = 0.5f)
+                    color = Color.Black.copy(alpha = 0.5f),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd),
                 )
             }
         }
