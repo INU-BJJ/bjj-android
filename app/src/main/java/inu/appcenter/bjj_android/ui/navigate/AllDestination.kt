@@ -40,5 +40,7 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
     data object Shop : AllDestination("shop", R.drawable.mypage, "상점")
     data object ItemDrawSuccess : AllDestination("itemDrawSuccess", R.drawable.mypage, "아이템 뽑기 성공")
 
-
+    data object ReportReview : AllDestination("reportReview/{reviewId}", R.drawable.mypage, "리뷰 신고하기") {
+        fun createRoute(reviewId: Long): String = "reportReview/$reviewId"
+    }
 }

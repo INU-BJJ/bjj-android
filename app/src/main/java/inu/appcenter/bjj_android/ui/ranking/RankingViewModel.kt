@@ -5,6 +5,7 @@ import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.repository.review.ReviewRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -84,6 +85,12 @@ class RankingViewModel(
             onError = { error ->
                 emitError(error)
                 viewModelScope.launch {
+                    _uiState.update { currentState->
+                        currentState.copy(
+                            bestReview = null
+                        )
+                    }
+                    delay(300)
                     _eventFlow.emit(RankingUiEvent.ShowToast(
                         error.message ?: "리뷰 상세 정보를 불러오는 중 오류가 발생했습니다."
                     ))

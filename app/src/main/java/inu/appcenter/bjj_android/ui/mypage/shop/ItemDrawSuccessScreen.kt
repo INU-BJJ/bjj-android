@@ -74,10 +74,10 @@ fun ItemDrawSuccessScreen(
             .fillMaxSize()
             .background(Color.White) // 혹시 모를 빈 곳 대비
     ) {
-        // ✅ 배경 최하단
+        //배경 최하단
         ShopBackground(modifier = Modifier.fillMaxSize())
 
-        // ✅ Scaffold에 insets 무시 추가
+        //Scaffold에 insets 무시 추가
         Scaffold(
             topBar = {
                 TopAppBar(

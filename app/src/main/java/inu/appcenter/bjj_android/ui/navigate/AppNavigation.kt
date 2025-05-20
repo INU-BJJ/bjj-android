@@ -19,6 +19,7 @@ import inu.appcenter.bjj_android.ui.main.MainViewModel
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
+import inu.appcenter.bjj_android.ui.menudetail.report.ReportScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageScreen
 import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.SettingScreen
@@ -331,6 +332,19 @@ fun AppNavigation(
                             // Shop 화면으로 돌아가서 그 이후 백스택 제거 (뽑기 성공 화면 포함)
                             popUpTo(AllDestination.Shop.route) { inclusive = true }
                         }
+                    }
+                )
+            }
+            composable(
+                route = AllDestination.ReportReview.route,
+                arguments = listOf(navArgument("reviewId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getLong("reviewId") ?: 0
+                ReportScreen(
+                    navController = navController,
+                    reviewId = reviewId,
+                    onReportComplete = {
+                        navController.popBackStack()
                     }
                 )
             }

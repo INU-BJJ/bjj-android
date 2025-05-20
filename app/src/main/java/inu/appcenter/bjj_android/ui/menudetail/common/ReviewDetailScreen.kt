@@ -128,7 +128,10 @@ fun ReviewDetailScreen(
                         text = "신고하기",
                         color = Color.Black,
                         modifier = Modifier
-                            .clickable { showBottomSheet = false }
+                            .clickable {
+                                showBottomSheet = false
+                                navController.navigate(AllDestination.ReportReview.createRoute(reviewId))
+                            }
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp)
                     )
