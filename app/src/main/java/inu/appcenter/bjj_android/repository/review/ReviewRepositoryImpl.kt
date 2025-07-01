@@ -3,6 +3,7 @@ package inu.appcenter.bjj_android.repository.review
 
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReportRequest
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
@@ -71,5 +72,9 @@ class ReviewRepositoryImpl(private val apiService: APIService) : ReviewRepositor
 
     override suspend fun getReviewDetail(reviewId: Long): Flow<CustomResponse<ReviewDetailRes>> = safeApiCall {
         apiService.getReviewDetail(reviewId)
+    }
+
+    override suspend fun postReport(reviewId: Long, reportRequest: ReportRequest): Flow<CustomResponse<Unit>> = safeApiCall {
+        apiService.postReport(reviewId = reviewId, reportRequest = reportRequest)
     }
 }

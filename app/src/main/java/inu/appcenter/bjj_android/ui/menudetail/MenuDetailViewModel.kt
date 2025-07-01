@@ -2,6 +2,7 @@ package inu.appcenter.bjj_android.ui.menudetail
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.model.review.ReportRequest
 import inu.appcenter.bjj_android.model.review.ReviewImageDetail
 import inu.appcenter.bjj_android.model.review.ReviewRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
@@ -32,6 +33,7 @@ data class MenuDetailUiState(
     val reviewImages: List<ReviewImageDetail>? = null,
     val moreReviewImages: List<ReviewImageDetail>? = null,
     val isLoadingMoreReviews: Boolean = false // 추가된 부분
+
 )
 
 enum class SortingRules {
@@ -259,6 +261,7 @@ class MenuDetailViewModel(
 
     fun toggleMenuLiked(mainMenuId: Long) {
         viewModelScope.launch {
+            setLoading(true)
             menuRepository.toggleMenuLiked(mainMenuId = mainMenuId).handleResponse(
                 onSuccess = { isLiked ->
                     _uiState.update { currentState ->
@@ -269,6 +272,7 @@ class MenuDetailViewModel(
                             selectedMenu = selectedMenu
                         )
                     }
+                    setLoading(false)
                 },
                 onError = { error ->
                     emitError(error)
@@ -277,11 +281,34 @@ class MenuDetailViewModel(
                             error.message ?: "메뉴 좋아요 처리 중 오류가 발생했습니다."
                         ))
                     }
+                    setLoading(false)
                 }
             )
         }
     }
 
+    fun postReport(reviewId: Long, reportRequest: ReportRequest) {
+        viewModelScope.launch {
+            reviewRepository.postReport(reviewId, reportRequest).handleResponse(
+                onSuccess = {
+                    // 성공 시 - 다이얼로그가 자동으로 표시됨
+                    _eventFlow.emit(MenuDetailUiEvent.ShowToast("신고가 성공적으로 처리되었습니다"))
+                },
+                onError = { error ->
+                    // 실패 시 - 구체적인 에러 메시지와 함께 실패 다이얼로그 표시
+                    val errorMessage = when {
+                        error.message?.contains("이미") == true -> "이미 신고한 리뷰입니다"
+                        error.message?.contains("권한") == true -> "신고 권한이 없습니다"
+                        error.message?.contains("네트워크") == true -> "네트워크 연결을 확인해주세요"
+                        error.message?.contains("서버") == true -> "서버 오류가 발생했습니다"
+                        else -> "신고 처리 중 오류가 발생했습니다"
+                    }
+
+                    _eventFlow.emit(MenuDetailUiEvent.ShowToast(errorMessage))
+                }
+            )
+        }
+    }
     fun resetState() {
         _uiState.update { MenuDetailUiState() }
     }

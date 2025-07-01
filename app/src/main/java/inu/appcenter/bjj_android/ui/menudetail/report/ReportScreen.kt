@@ -49,15 +49,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.review.ReportRequest
+import inu.appcenter.bjj_android.ui.component.dialog.FailureDialog
+import inu.appcenter.bjj_android.ui.component.dialog.SuccessDialog
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailUiEvent
+import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_B9B9B9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
     navController: NavHostController,
     reviewId: Long,
+    viewmodel: MenuDetailViewModel,
     onReportComplete: () -> Unit
 ) {
     val reasonOptions = listOf(
@@ -74,6 +81,10 @@ fun ReportScreen(
     var selectedReasons by remember { mutableStateOf(List(reasonOptions.size) { false }) }
     var reportText by remember { mutableStateOf("") }
     var textCount by remember { mutableStateOf(0) }
+    var isReporting by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var showFailureDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     // 텍스트 필드 포커스 관리를 위한 FocusRequester
     val focusRequester = remember { FocusRequester() }
@@ -94,9 +105,34 @@ fun ReportScreen(
     }
 
     // 버튼 활성화 여부 결정
-    val isButtonEnabled by remember(selectedReasons, reportText) {
+    val isButtonEnabled by remember(selectedReasons, reportText, isReporting) {
         derivedStateOf {
-            isAnyOtherReasonSelected || (isOtherReasonSelected && reportText.isNotEmpty())
+            !isReporting && (isAnyOtherReasonSelected || (isOtherReasonSelected && reportText.isNotEmpty()))
+        }
+    }
+
+    // 신고 이벤트 수신 - ShowToast 이벤트만으로 모든 상황 처리
+    LaunchedEffect(Unit) {
+        viewmodel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MenuDetailUiEvent.ShowToast -> {
+                    if (event.message.contains("신고가 성공적으로 처리되었습니다") ||
+                        event.message.contains("성공") ||
+                        event.message.contains("완료")) {
+                        showSuccessDialog = true
+                    } else if (event.message.contains("오류") ||
+                        event.message.contains("실패") ||
+                        event.message.contains("에러") ||
+                        event.message.contains("권한") ||
+                        event.message.contains("이미") ||
+                        event.message.contains("네트워크")) {
+                        errorMessage = event.message
+                        showFailureDialog = true
+                        isReporting = false // 실패 시 로딩 상태 해제
+                    }
+                }
+                else -> { /* 기타 이벤트 무시 */ }
+            }
         }
     }
 
@@ -154,7 +190,7 @@ fun ReportScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "타당한 근거 없이 신고된 내용은 관리자 확인 후 반영되지 않을 수 있습니다.",
+                    text = "타당한 근거 없이 신고된 내용은 관리자 확인 후 반영되지\n않을 수 있습니다.",
                     style = LocalTypography.current.medium13,
                     color = Gray_999999
                 )
@@ -268,12 +304,37 @@ fun ReportScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
+
             // 신고하기 버튼 - 활성화 조건에 따라 색상 및 클릭 가능 여부 설정
             Button(
                 onClick = {
+                    if (isReporting) return@Button
+
                     keyboardController?.hide()
+                    isReporting = true // 로딩 상태 시작
+
+                    // 선택된 신고 이유들을 문자열 리스트로 변환
+                    val selectedReportReasons = mutableListOf<String>()
+
+                    selectedReasons.forEachIndexed { index, isSelected ->
+                        if (isSelected) {
+                            if (index == reasonOptions.size - 1 && reportText.isNotEmpty()) {
+                                // 기타 옵션이 선택되고 텍스트가 입력된 경우
+                                selectedReportReasons.add("기타: $reportText")
+                            } else if (index != reasonOptions.size - 1) {
+                                // 기타가 아닌 다른 옵션들
+                                selectedReportReasons.add(reasonOptions[index])
+                            }
+                        }
+                    }
+
                     // 신고 처리 로직
-                    onReportComplete()
+                    viewmodel.postReport(
+                        reviewId = reviewId,
+                        reportRequest = ReportRequest(
+                            content = selectedReportReasons
+                        )
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -286,7 +347,7 @@ fun ReportScreen(
                 enabled = isButtonEnabled
             ) {
                 Text(
-                    text = "신고하기",
+                    text = if (isReporting) "신고 중..." else "신고하기",
                     style = LocalTypography.current.medium15,
                     textAlign = TextAlign.Center,
                     color = Color.White
@@ -295,5 +356,27 @@ fun ReportScreen(
 
             Spacer(modifier = Modifier.height(24.dp)) // 키보드가 올라올 때 여분의 공간
         }
+
+        // 신고 완료 다이얼로그
+        SuccessDialog(
+            show = showSuccessDialog,
+            onDismiss = {
+                showSuccessDialog = false
+                isReporting = false // 로딩 상태 해제
+                onReportComplete()
+            },
+            message = "신고가 완료되었습니다"
+        )
+
+        // 신고 실패 다이얼로그 - 구체적인 에러 메시지 표시
+        FailureDialog(
+            show = showFailureDialog,
+            onDismiss = {
+                showFailureDialog = false
+                isReporting = false // 로딩 상태 해제
+                // 실패 시에는 화면을 종료하지 않고 사용자가 다시 시도할 수 있도록 함
+            },
+            message = errorMessage.ifEmpty { "신고 중 오류가 발생했습니다" }
+        )
     }
 }

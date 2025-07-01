@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
@@ -97,7 +98,8 @@ fun RankingScreen(
                 .padding(horizontal = 20.dp, vertical = 23.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
             ) {
                 Text(
                     text = "Menu Ranking",
@@ -116,10 +118,10 @@ fun RankingScreen(
                     contentDescription = "tier",
                     tint = Orange_FF7800,
                     modifier = Modifier
-                        .size(23.dp)
+                        .width(23.dp)
                 )
             }
-            Spacer(Modifier.height(25.dp))
+            Spacer(Modifier.height(12.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -222,16 +224,16 @@ fun NormalRankingItem(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(Modifier.width(12.dp))
         Text(
             text = ranking.toString(),
             style = LocalTypography.current.bold18.copy(
                 lineHeight = 15.sp,
                 color = Color(0xFF000000),
                 letterSpacing = 0.13.sp,
-            )
+                textAlign = TextAlign.Center
+            ),
+            modifier = Modifier.width(50.dp)
         )
-        Spacer(Modifier.width(17.dp))
         Row(
             modifier = Modifier
                 .weight(1f),
@@ -314,7 +316,7 @@ fun TopThreeRankingItem(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(10.dp))
         Box(
             contentAlignment = Alignment.Center
         ) {
@@ -336,7 +338,7 @@ fun TopThreeRankingItem(
                 tint = Color.Unspecified
             )
         }
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(12.dp))
         if (menu.reviewImageName != null) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
