@@ -30,6 +30,7 @@ fun ShopScreen(
 
     // 뽑기 다이얼로그 상태
     var showDrawDialog by remember { mutableStateOf(false) }
+    var showShopInfoDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(
         key1 = true
@@ -74,6 +75,9 @@ fun ShopScreen(
                     point = myPageUiState.point,
                     popBackStack = {
                         popBackStack()
+                    },
+                    shopInfoDialog = {
+                        showShopInfoDialog = true
                     }
                 )
             }
@@ -127,6 +131,12 @@ fun ShopScreen(
                     // 다이얼로그 닫기
                     showDrawDialog = false
                 }
+            )
+        }
+
+        if (showShopInfoDialog) {
+            ShopInfoDialog(
+                onDismiss = {showShopInfoDialog = false}
             )
         }
     }

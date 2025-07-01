@@ -27,6 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +68,8 @@ fun RankingScreen(
 ) {
     val rankingUiState by rankingViewModel.uiState.collectAsStateWithLifecycle()
 
+    var rankingInfoDialog by rememberSaveable { mutableStateOf(false) }
+
     ErrorHandler(viewModel = rankingViewModel, navController = navController)
 
     LaunchedEffect(key1 = true) {
@@ -84,6 +90,12 @@ fun RankingScreen(
             onDismiss = {
                 rankingViewModel.resetSelectedBestReviewId()
             }
+        )
+    }
+
+    if (rankingInfoDialog){
+        RankingInfoDialog(
+            onDismiss = {rankingInfoDialog = false}
         )
     }
 
@@ -127,31 +139,38 @@ fun RankingScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                Text(
-                    text = rankingUiState.lastUpdatedAt?.formatter() ?: "",
-                    style = LocalTypography.current.medium11.copy(
-                        lineHeight = 15.sp,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF999999),
-                        letterSpacing = 0.13.sp,
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            rankingInfoDialog = true
+                        }
+                ) {
+                    Text(
+                        text = rankingUiState.lastUpdatedAt?.formatter() ?: "",
+                        style = LocalTypography.current.medium11.copy(
+                            lineHeight = 15.sp,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF999999),
+                            letterSpacing = 0.13.sp,
+                        )
                     )
-                )
-                Spacer(Modifier.width(5.dp))
-                Text(
-                    text = "업데이트",
-                    style = LocalTypography.current.medium11.copy(
-                        lineHeight = 15.sp,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF999999),
-                        letterSpacing = 0.13.sp,
+                    Spacer(Modifier.width(5.dp))
+                    Text(
+                        text = "업데이트",
+                        style = LocalTypography.current.medium11.copy(
+                            lineHeight = 15.sp,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF999999),
+                            letterSpacing = 0.13.sp,
+                        )
                     )
-                )
-                Spacer(Modifier.width(7.dp))
-                Icon(
-                    painter = painterResource(R.drawable.info),
-                    contentDescription = "Info",
-                    tint = Color.Unspecified,
-                )
+                    Spacer(Modifier.width(7.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.info),
+                        contentDescription = "Info",
+                        tint = Color.Unspecified,
+                    )
+                }
             }
             Spacer(Modifier.height(7.dp))
             LazyColumn {
