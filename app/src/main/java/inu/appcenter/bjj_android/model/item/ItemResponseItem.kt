@@ -4,7 +4,7 @@ data class ItemResponseItem(
     val imageName: String,
     val isOwned: Boolean,
     val isWearing: Boolean,
-    val itemId: Long,
+    val itemIdx: Long,
     val itemLevel: String,
     val itemName: String,
     val itemType: String,

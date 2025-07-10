@@ -54,9 +54,9 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
                         it.copy(
                             userName = myPageInfo.nickname,
                             point = myPageInfo.point,
-                            wearingCharacterId = myPageInfo.characterId,
+                            wearingCharacterId = myPageInfo.characterIdx,
                             wearingCharacterImageName = myPageInfo.characterImageName,
-                            wearingBackgroundId = myPageInfo.backgroundId,
+                            wearingBackgroundId = myPageInfo.backgroundIdx,
                             wearingBackgroundImageName = myPageInfo.backgroundImageName
                         )
                     }
@@ -81,12 +81,12 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
     }
 
     fun wearItem(item: ItemResponseItem) {
-        val itemToWear = _uiState.value.items.find { it.itemId == item.itemId } ?: return
+        val itemToWear = _uiState.value.items.find { it.itemIdx == item.itemIdx } ?: return
 
         viewModelScope.launch {
             updateWearingItemLocally(itemToWear)
 
-            itemRepository.wearItem(itemType = item.itemType.toItemType(), itemId = item.itemId).handleResponse(
+            itemRepository.wearItem(itemType = item.itemType.toItemType(), itemId = item.itemIdx).handleResponse(
                 onSuccess = {
                     Log.d("WearItemSuccess", "아이템 장착 성공")
                     showToast("아이템이 장착되었습니다.")
@@ -108,13 +108,13 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
             "CHARACTER" -> _uiState.update {
                 it.copy(
                     wearingCharacterImageName = item.imageName,
-                    wearingCharacterId = item.itemId
+                    wearingCharacterId = item.itemIdx
                 )
             }
             "BACKGROUND" -> _uiState.update {
                 it.copy(
                     wearingBackgroundImageName = item.imageName,
-                    wearingBackgroundId = item.itemId
+                    wearingBackgroundId = item.itemIdx
                 )
             }
         }

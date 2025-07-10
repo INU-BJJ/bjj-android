@@ -18,7 +18,7 @@ class ItemRepositoryImpl(private val apiService: APIService): ItemRepository  {
     }
 
     override suspend fun getItemInfo(itemType: ItemType, itemId: Long): Flow<CustomResponse<ItemResponseItem>> = safeApiCall {
-        apiService.getItemInfo(itemType = itemType, itemId = itemId)
+        apiService.getItemInfo(itemType = itemType, itemIdx = itemId)
     }
 
     override suspend fun getMyPageInfo(): Flow<CustomResponse<MyPageResponse>> = safeApiCall {
@@ -26,7 +26,7 @@ class ItemRepositoryImpl(private val apiService: APIService): ItemRepository  {
     }
 
     override suspend fun wearItem(itemType: ItemType, itemId: Long): Flow<CustomResponse<Unit>> = safeApiCall {
-        apiService.wearItem(itemType = itemType, itemId = itemId)
+        apiService.wearItem(itemType = itemType, itemIdx = itemId)
     }
 
 }

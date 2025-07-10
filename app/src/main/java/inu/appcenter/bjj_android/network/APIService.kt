@@ -174,15 +174,15 @@ interface APIService {
         @Query("itemType") itemType: ItemType
     ): Response<ItemResponseItem>
 
-    @GET("/api/items/{itemId}")
+    @GET("/api/items/{itemIdx}")
     suspend fun getItemInfo(
-        @Path("itemId") itemId: Long,
+        @Path("itemIdx") itemIdx: Long,
         @Query("itemType") itemType: ItemType,
     ): Response<ItemResponseItem>
 
-    @PATCH("/api/items/{itemId}")
+    @PATCH("/api/items/{itemIdx}")
     suspend fun wearItem(
-        @Path("itemId") itemId: Long,
+        @Path("itemIdx") itemIdx: Long,
         @Query("itemType") itemType: ItemType
     ): Response<Unit>
 
