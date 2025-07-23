@@ -53,7 +53,6 @@
     <string name="setting_title">설정</string>
     <string name="change_nickname">닉네임 변경하기</string>
     <string name="liked_menu">좋아요한 메뉴</string>
-    <string name="blocked_users">차단한 유저 보기</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">탈퇴하기</string>
     <string name="withdraw_confirmation_title">회원 탈퇴</string>
