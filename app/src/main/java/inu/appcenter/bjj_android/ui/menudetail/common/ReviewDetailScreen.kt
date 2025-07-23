@@ -41,8 +41,8 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
-import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.component.LoadingIndicator
+import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.menudetail.review.DynamicReviewImages
 import inu.appcenter.bjj_android.ui.menudetail.review.StarRatingCalculator
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
@@ -132,15 +132,6 @@ fun ReviewDetailScreen(
                                 showBottomSheet = false
                                 navController.navigate(AllDestination.ReportReview.createRoute(reviewId))
                             }
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp)
-                    )
-                    Spacer(modifier = Modifier.height(18.dp))
-                    Text(
-                        text = "차단하기",
-                        color = Color.Black,
-                        modifier = Modifier
-                            .clickable { showBottomSheet = false }
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp)
                     )
