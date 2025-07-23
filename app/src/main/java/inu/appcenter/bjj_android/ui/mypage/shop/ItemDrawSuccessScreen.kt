@@ -41,6 +41,7 @@ import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.ui.mypage.MyPageViewModel
 import inu.appcenter.bjj_android.ui.mypage.component.ShopBackground
 import inu.appcenter.bjj_android.ui.theme.Gray_999999
+import inu.appcenter.bjj_android.utils.CharacterImageType
 import inu.appcenter.bjj_android.utils.ImageLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,6 +130,7 @@ fun ItemDrawSuccessScreen(
                                 ItemType.CHARACTER.name -> {
                                     ImageLoader.CharacterItem(
                                         imageName = item.imageName,
+                                        type = CharacterImageType.GACHA,
                                         modifier = Modifier
                                     )
                                 }

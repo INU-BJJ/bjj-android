@@ -93,7 +93,7 @@ fun ItemSection(
                         val itemIndex = rowIndex * 4 + colIndex
                         if (itemIndex < items.size) {
                             val item = items[itemIndex]
-                            if (item.isOwned && item.validPeriod != null && item.validPeriod.isValidItem()) {
+                            if (item.isOwned && item.expiresAt != null && item.expiresAt.isValidItem()) {
                                 // 유효한 아이템이면 정상 렌더링
                                 ItemCard(
                                     item = item,
@@ -130,6 +130,7 @@ fun EmptyCard(
     ){
         Image(
             painter = when(level){
+                ItemLevel.DEFAULT -> painterResource(R.drawable.common_card)
                 ItemLevel.COMMON -> painterResource(R.drawable.common_card)
                 ItemLevel.NORMAL -> painterResource(R.drawable.normal_card)
                 ItemLevel.RARE -> painterResource(R.drawable.rare_card)

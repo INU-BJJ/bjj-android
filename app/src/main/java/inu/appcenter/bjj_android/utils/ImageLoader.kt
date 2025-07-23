@@ -28,6 +28,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 
 /**
+ * 캐릭터 이미지 타입 정의
+ */
+enum class CharacterImageType {
+    MAIN,    // 마이페이지에서 사용 (main_ prefix)
+    SHOP,    // 상점(사전)에서 사용 (dic_ prefix)
+    GACHA    // 뽑기 결과에서 사용 (gacha_ prefix)
+}
+
+/**
  * 이미지 로딩 관련 유틸리티 클래스
  * 앱 전체에서 일관된 이미지 로딩 설정과 에러 처리를 제공합니다.
  */
@@ -39,7 +48,6 @@ object ImageLoader {
     private const val CHARACTER_IMAGE_PATH = "item/character/"
     private const val BACKGROUND_IMAGE_PATH = "item/background/"
     private const val CAFETERIA_IMAGE_PATH = "cafeteria/"
-
 
     // 인증 토큰을 저장할 변수 추가
     private var authToken: String? = null
@@ -103,34 +111,47 @@ object ImageLoader {
         return BASE_URL + PROFILE_IMAGE_PATH + imageName
     }
 
-    private fun getCharacterImageUrl(imageName: String): String {
-        return BASE_URL + CHARACTER_IMAGE_PATH + imageName
+    /**
+     * 캐릭터 이미지 URL 생성 - 타입에 따라 prefix 추가
+     */
+    private fun getCharacterImageUrl(imageName: String, type: CharacterImageType): String {
+        val prefix = when (type) {
+            CharacterImageType.MAIN -> "main_"
+            CharacterImageType.SHOP -> "dic_"
+            CharacterImageType.GACHA -> "gacha_"
+        }
+        return BASE_URL + CHARACTER_IMAGE_PATH + prefix + imageName + ".svg"
     }
 
+    /**
+     * 배경 이미지 URL 생성 - .svg 확장자 추가
+     */
     private fun getBackgroundImageUrl(imageName: String): String {
-        return BASE_URL + BACKGROUND_IMAGE_PATH + imageName
+        return BASE_URL + BACKGROUND_IMAGE_PATH + imageName + ".svg"
     }
 
     private fun getCafeteriaImageUrl(imageName: String): String {
         return BASE_URL + CAFETERIA_IMAGE_PATH + imageName
     }
 
-    // 이미지 로딩 요청 빌더
-    // 이미지 로딩 요청 빌더
+    /**
+     * 이미지 로딩 요청 빌더 - 캐시 키에 타입 정보 포함
+     */
     private fun buildImageRequest(
         context: android.content.Context,
         imageName: String,
         imageUrl: String,
+        cacheKeySuffix: String = "", // 타입 정보를 위한 접미사
         crossfade: Boolean = true,
         enableLogging: Boolean = true
     ): ImageRequest {
-        // URL 기반 캐시 키 생성 - 경로를 포함하여 중복 방지
-        val cacheKey = imageUrl.hashCode().toString() + "_" + imageName
+        // URL 기반 캐시 키 생성 - 경로와 타입을 포함하여 중복 방지
+        val cacheKey = imageUrl.hashCode().toString() + "_" + imageName + cacheKeySuffix
 
         return ImageRequest.Builder(context)
             .data(imageUrl)
             .size(500) // 기본 크기 설정
-            .memoryCacheKey(cacheKey) // URL+이미지명 조합의 고유 키 사용
+            .memoryCacheKey(cacheKey) // URL+이미지명+타입 조합의 고유 키 사용
             .diskCacheKey(cacheKey) // 디스크 캐시도 동일한 고유 키 사용
             .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(CachePolicy.ENABLED)
@@ -150,8 +171,6 @@ object ImageLoader {
             .build()
     }
 
-    // 기존 이미지 로딩 함수들은 그대로 유지
-
     /**
      * Compose용 리뷰 이미지 로딩 컴포저블
      */
@@ -168,7 +187,6 @@ object ImageLoader {
         isLocalImage: Boolean = false,
         localUri: Uri? = null
     ) {
-        // 기존 코드 유지
         val context = LocalContext.current
 
         // 공통 modifier 생성
@@ -200,19 +218,18 @@ object ImageLoader {
                 contentScale = contentScale,
                 modifier = clickableModifier
             )
-
             return
         }
 
-        // 서버 이미지 처리 (기존 코드)
+        // 서버 이미지 처리
         if (imageName == null) {
-            // 이미지가 없는 경우 기본 이미지 표시 (동일한 modifier 사용)
+            // 이미지가 없는 경우 기본 이미지 표시
             Image(
                 painter = painterResource(
                     if (isHeaderImage) R.drawable.big_placeholder else R.drawable.placeholder),
                 contentDescription = "기본 이미지",
                 contentScale = contentScale,
-                modifier = clickableModifier.fillMaxSize() // fillMaxSize 추가하여 공간을 채우도록 함
+                modifier = clickableModifier.fillMaxSize()
             )
         } else {
             val imageUrl = getReviewImageUrl(imageName)
@@ -238,22 +255,25 @@ object ImageLoader {
                         painter = painterResource(R.drawable.placeholder),
                         contentDescription = "이미지 로딩 실패",
                         contentScale = contentScale,
-                        modifier = Modifier.fillMaxSize() // fillMaxSize 추가
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             )
         }
     }
 
+    /**
+     * Compose용 캐릭터 이미지 로딩 컴포저블 - 타입 지정 가능
+     */
     @Composable
     fun CharacterItem(
         imageName: String?,
+        type: CharacterImageType = CharacterImageType.MAIN,
         modifier: Modifier = Modifier,
         contentScale: ContentScale = ContentScale.Crop,
         shape: Shape? = null,
         showLoading: Boolean = true,
         clickable: Boolean = false,
-        isHeaderImage: Boolean = false,
         onClick: (() -> Unit)? = null,
         isLocalImage: Boolean = false,
         localUri: Uri? = null
@@ -289,27 +309,26 @@ object ImageLoader {
                 contentScale = contentScale,
                 modifier = clickableModifier
             )
-
             return
         }
 
-        // 서버 이미지 처리 (기존 코드)
+        // 서버 이미지 처리
         if (imageName == null) {
-            // 이미지가 없는 경우 기본 이미지 표시 (동일한 modifier 사용)
+            // 이미지가 없는 경우 기본 이미지 표시
             Image(
-                painter = painterResource(
-                    if (isHeaderImage) R.drawable.big_placeholder else R.drawable.placeholder),
+                painter = painterResource(R.drawable.placeholder),
                 contentDescription = "기본 이미지",
                 contentScale = contentScale,
-                modifier = clickableModifier.fillMaxSize() // fillMaxSize 추가하여 공간을 채우도록 함
+                modifier = clickableModifier.fillMaxSize()
             )
         } else {
-            val imageUrl = getCharacterImageUrl(imageName)
-            val imageRequest = buildImageRequest(context, imageName, imageUrl)
+            val imageUrl = getCharacterImageUrl(imageName, type)
+            val cacheKeySuffix = "_${type.name.lowercase()}"
+            val imageRequest = buildImageRequest(context, imageName, imageUrl, cacheKeySuffix)
 
             SubcomposeAsyncImage(
                 model = imageRequest,
-                contentDescription = "리뷰 이미지",
+                contentDescription = "캐릭터 이미지",
                 contentScale = contentScale,
                 modifier = clickableModifier,
                 loading = {
@@ -327,13 +346,16 @@ object ImageLoader {
                         painter = painterResource(R.drawable.placeholder),
                         contentDescription = "이미지 로딩 실패",
                         contentScale = contentScale,
-                        modifier = Modifier.fillMaxSize() // fillMaxSize 추가
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             )
         }
     }
 
+    /**
+     * Compose용 배경 이미지 로딩 컴포저블 - .svg 확장자 자동 추가
+     */
     @Composable
     fun BackgroundItem(
         imageName: String?,
@@ -342,7 +364,6 @@ object ImageLoader {
         shape: Shape? = null,
         showLoading: Boolean = true,
         clickable: Boolean = false,
-        isHeaderImage: Boolean = false,
         onClick: (() -> Unit)? = null,
         isLocalImage: Boolean = false,
         localUri: Uri? = null
@@ -378,27 +399,28 @@ object ImageLoader {
                 contentScale = contentScale,
                 modifier = clickableModifier
             )
-
             return
         }
 
-        // 서버 이미지 처리 (기존 코드)
+        // 서버 이미지 처리
         if (imageName == null) {
-            // 이미지가 없는 경우 기본 이미지 표시 (동일한 modifier 사용)
+            // 이미지가 없는 경우 기본 이미지 표시
             Image(
-                painter = painterResource(
-                    if (isHeaderImage) R.drawable.big_placeholder else R.drawable.placeholder),
-                contentDescription = "기본 이미지",
+                painter = painterResource(R.drawable.default_background),
+                contentDescription = "기본 배경 이미지",
                 contentScale = contentScale,
-                modifier = clickableModifier.fillMaxSize() // fillMaxSize 추가하여 공간을 채우도록 함
+                modifier = clickableModifier.fillMaxSize()
             )
         } else {
             val imageUrl = getBackgroundImageUrl(imageName)
-            val imageRequest = buildImageRequest(context, imageName, imageUrl)
-            Log.d("imageUrl", imageUrl.toString())
+            val cacheKeySuffix = "_background"
+            val imageRequest = buildImageRequest(context, imageName, imageUrl, cacheKeySuffix)
+
+            Log.d("BackgroundImageURL", imageUrl)
+
             SubcomposeAsyncImage(
                 model = imageRequest,
-                contentDescription = "리뷰 이미지",
+                contentDescription = "배경 이미지",
                 contentScale = contentScale,
                 modifier = clickableModifier,
                 loading = {
@@ -413,10 +435,10 @@ object ImageLoader {
                 },
                 error = {
                     Image(
-                        painter = painterResource(R.drawable.placeholder),
-                        contentDescription = "이미지 로딩 실패",
+                        painter = painterResource(R.drawable.default_background),
+                        contentDescription = "배경 이미지 로딩 실패",
                         contentScale = contentScale,
-                        modifier = Modifier.fillMaxSize() // fillMaxSize 추가
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             )

@@ -8,5 +8,5 @@ data class ItemResponseItem(
     val itemLevel: String,
     val itemName: String,
     val itemType: String,
-    val validPeriod: String?
+    val expiresAt: String?
 )

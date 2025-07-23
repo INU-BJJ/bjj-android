@@ -27,6 +27,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.utils.CharacterImageType
 import inu.appcenter.bjj_android.utils.ImageLoader
 import inu.appcenter.bjj_android.utils.formatRemainingTime
 import inu.appcenter.bjj_android.utils.isValidItem
@@ -77,6 +78,7 @@ fun ItemCard(
                         "CHARACTER" -> {
                             ImageLoader.CharacterItem(
                                 imageName = item.imageName,
+                                type = CharacterImageType.SHOP,
                                 showLoading = true,
                                 modifier = Modifier
                                     .width(cardWidth * 0.8f) // 이미지 크기는 카드 너비의 80%
@@ -152,9 +154,9 @@ fun ItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 // 유효 기간 표시
-                if (item.validPeriod != null && item.validPeriod.isValidItem()) {
+                if (item.expiresAt != null && item.expiresAt.isValidItem()) {
                     Text(
-                        text = item.validPeriod.formatRemainingTime(),
+                        text = item.expiresAt.formatRemainingTime(),
                         style = LocalTypography.current.regular11,
                         color = Color.White,
                         textAlign = TextAlign.Center

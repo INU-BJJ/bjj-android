@@ -28,7 +28,7 @@ fun ItemGrid(
     val categorizedItems = itemList.filter { it.itemType == selectedCategory.name }
 
     // 아이템 레벨별로 분류
-    val commonItems = categorizedItems.filter { it.itemLevel.uppercase() == "COMMON" }
+    val commonItems = categorizedItems.filter { it.itemLevel.uppercase() == "COMMON" || it.itemLevel.uppercase() == "DEFAULT" }
     val normalItems = categorizedItems.filter { it.itemLevel.uppercase() == "NORMAL" }
     val rareItems = categorizedItems.filter { it.itemLevel.uppercase() == "RARE" }
 
