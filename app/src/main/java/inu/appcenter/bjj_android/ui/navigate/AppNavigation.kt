@@ -1,14 +1,17 @@
 package inu.appcenter.bjj_android.ui.navigate
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import inu.appcenter.bjj_android.ui.component.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
@@ -52,6 +55,7 @@ fun AppNavigation(
 
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     // 회원 탈퇴 상태 관찰
     LaunchedEffect(uiState.deleteAccountState) {
@@ -200,6 +204,10 @@ fun AppNavigation(
                     },
                     onNavigateToLikedMenu = {
                         navController.navigate(AllDestination.LikedMenu.route)
+                    },
+                    onNavigateToOpenSourceLicense = {
+                        val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                        context.startActivity(intent)
                     },
                     onNavigateToLogin = {
                         //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
