@@ -50,6 +50,7 @@ fun SettingScreen(
     onNavigateBack: () -> Unit,
     onNavigeteToNickname: () -> Unit = {},
     onNavigateToLikedMenu: () -> Unit,
+    onNavigateToOpenSourceLicense: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onWithdrawalAccount: () -> Unit = {}
 ) {
@@ -133,6 +134,10 @@ fun SettingScreen(
                 MainText(
                     text = stringResource(R.string.liked_menu),
                     onClick = { onNavigateToLikedMenu() }
+                )
+                MainText(
+                    text = stringResource(R.string.open_source_license),
+                    onClick = { onNavigateToOpenSourceLicense() }
                 )
             }
             Spacer(Modifier.height(BIGHEIGHT - (2 * MaterialTheme.paddings.xlarge)))

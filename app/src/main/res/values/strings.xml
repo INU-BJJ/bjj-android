@@ -83,4 +83,7 @@
     <string name="draw_machine">뽑기 기계</string>
     <string name="draw">뽑기하기 !</string>
     <string name="draw_text">뽑기 글자</string>
+
+    <!-- opensource license 관련 문자열 -->
+    <string name="open_source_license">오픈소스 라이선스</string>
 </resources>
