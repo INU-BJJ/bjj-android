@@ -201,9 +201,6 @@ fun AppNavigation(
                     onNavigateToLikedMenu = {
                         navController.navigate(AllDestination.LikedMenu.route)
                     },
-                    onNavigateToBlockedUser = {
-                        navController.navigate(AllDestination.BlockedUser.route)
-                    },
                     onNavigateToLogin = {
                         //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
                         authViewModel.logout()
