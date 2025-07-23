@@ -2,6 +2,7 @@ package inu.appcenter.bjj_android.repository.review
 
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReportRequest
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
@@ -10,6 +11,8 @@ import inu.appcenter.bjj_android.utils.CustomResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
+import retrofit2.http.Path
 
 interface ReviewRepository : BaseRepository {
 
@@ -51,4 +54,9 @@ interface ReviewRepository : BaseRepository {
     suspend fun getReviewDetail(
         reviewId: Long
     ): Flow<CustomResponse<ReviewDetailRes>>
+
+    suspend fun postReport(
+        reviewId: Long,
+        reportRequest: ReportRequest
+    ) : Flow<CustomResponse<Unit>>
 }

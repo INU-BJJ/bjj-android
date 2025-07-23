@@ -343,6 +343,7 @@ fun AppNavigation(
                 ReportScreen(
                     navController = navController,
                     reviewId = reviewId,
+                    viewmodel = menuDetailViewModel,
                     onReportComplete = {
                         navController.popBackStack()
                     }

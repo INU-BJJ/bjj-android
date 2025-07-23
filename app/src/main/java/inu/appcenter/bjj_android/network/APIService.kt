@@ -13,6 +13,7 @@ import inu.appcenter.bjj_android.model.menu.LikedMenu
 import inu.appcenter.bjj_android.model.menu.MenuRanking
 import inu.appcenter.bjj_android.model.review.MyReviewsGroupedRes
 import inu.appcenter.bjj_android.model.review.MyReviewsPagedRes
+import inu.appcenter.bjj_android.model.review.ReportRequest
 import inu.appcenter.bjj_android.model.review.ReviewDetailRes
 import inu.appcenter.bjj_android.model.review.ReviewImageDetailList
 import inu.appcenter.bjj_android.model.review.ReviewRes
@@ -82,6 +83,12 @@ interface APIService {
     suspend fun getReviewDetail(
         @Path("reviewId") reviewId: Long
     ) : Response<ReviewDetailRes>  // Response<ReviewDetailRes>로 변경
+
+    @POST("/api/reviews/{reviewId}/report")
+    suspend fun postReport(
+        @Path("reviewId") reviewId: Long,
+        @Body reportRequest: ReportRequest
+    ) : Response<Unit>
 
     // Image API
     @GET("/api/images")
@@ -167,15 +174,15 @@ interface APIService {
         @Query("itemType") itemType: ItemType
     ): Response<ItemResponseItem>
 
-    @GET("/api/items/{itemId}")
+    @GET("/api/items/{itemIdx}")
     suspend fun getItemInfo(
-        @Path("itemId") itemId: Long,
+        @Path("itemIdx") itemIdx: Long,
         @Query("itemType") itemType: ItemType,
     ): Response<ItemResponseItem>
 
-    @PATCH("/api/items/{itemId}")
+    @PATCH("/api/items/{itemIdx}")
     suspend fun wearItem(
-        @Path("itemId") itemId: Long,
+        @Path("itemIdx") itemIdx: Long,
         @Query("itemType") itemType: ItemType
     ): Response<Unit>
 

@@ -78,7 +78,16 @@ fun ReviewItem(
 
     Column(
         modifier = modifier
-            .padding(horizontal = 29.5.dp),
+            .padding(horizontal = 29.5.dp)
+            .clickable {
+                // 리뷰 전체 클릭 시 리뷰 상세 화면으로 이동
+                navController.navigate(
+                    AllDestination.MenuDetailReviewDetail.createRoute(
+                        reviewId = review.reviewId,
+                        menuId = menu.menuPairId
+                    )
+                )
+            },
     ) {
         // 프로필 및 유저 정보 섹션
         UserInfoSection(
@@ -108,12 +117,13 @@ fun ReviewItem(
 
         Spacer(Modifier.height(12.dp))
 
-        // 리뷰 이미지
+        // 리뷰 이미지 (이미지가 있는 경우에만 표시, 별도 클릭 처리)
         if (!review.imageNames.isNullOrEmpty()) {
             // 이미지 미리 로드하기 위한 지연 렌더링
             OptimizedReviewImages(
                 reviewImages = review.imageNames,
                 onClick = { imageList, index ->
+                    // 이미지 클릭 시에는 이미지 상세 화면으로 이동 (기존 동작 유지)
                     navController.navigate(
                         AllDestination.MenuDetailReviewDetailPush.createRoute(
                             imageList = review.imageNames,
