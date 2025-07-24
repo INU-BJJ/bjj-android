@@ -42,7 +42,7 @@ import inu.appcenter.bjj_android.ui.mypage.component.MainText
 import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 import inu.appcenter.bjj_android.ui.theme.paddings
 
-private val BIGHEIGHT = 415.dp
+private val BIGHEIGHT = 331.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +50,8 @@ fun SettingScreen(
     onNavigateBack: () -> Unit,
     onNavigeteToNickname: () -> Unit = {},
     onNavigateToLikedMenu: () -> Unit,
+    onNavigateToService: () -> Unit = {},
+    onNavigateToPrivacy: () -> Unit = {},
     onNavigateToOpenSourceLicense: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onWithdrawalAccount: () -> Unit = {}
@@ -134,6 +136,14 @@ fun SettingScreen(
                 MainText(
                     text = stringResource(R.string.liked_menu),
                     onClick = { onNavigateToLikedMenu() }
+                )
+                MainText(
+                    text = stringResource(R.string.term_of_service),
+                    onClick = { onNavigateToService() }
+                )
+                MainText(
+                    text = stringResource(R.string.privacy_policy),
+                    onClick = { onNavigateToPrivacy() }
                 )
                 MainText(
                     text = stringResource(R.string.open_source_license),
