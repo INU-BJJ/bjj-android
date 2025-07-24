@@ -30,6 +30,8 @@ import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.privacy.PrivacyScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.service.ServiceScreen
 import inu.appcenter.bjj_android.ui.mypage.shop.ItemDrawSuccessScreen
 import inu.appcenter.bjj_android.ui.mypage.shop.ShopScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
@@ -222,6 +224,20 @@ fun AppNavigation(
                     onWithdrawalAccount = {
                         // 회원 탈퇴 기능 호출, 네비게이션은 LaunchedEffect에서 처리
                         authViewModel.deleteAccount()
+                    }
+                )
+            }
+            composable(AllDestination.PrivacyPolicy.route) {
+                PrivacyScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(AllDestination.ServiceTerms.route) {
+                ServiceScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
                     }
                 )
             }
