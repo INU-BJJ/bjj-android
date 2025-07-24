@@ -1,14 +1,17 @@
 package inu.appcenter.bjj_android.ui.navigate
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import inu.appcenter.bjj_android.ui.component.ReviewImageDetailScreen
 import inu.appcenter.bjj_android.ui.login.AuthState
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
@@ -27,6 +30,8 @@ import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.likedmenu.LikedMenuViewModel
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeScreen
 import inu.appcenter.bjj_android.ui.mypage.setting.nickname.NicknameChangeViewModel
+import inu.appcenter.bjj_android.ui.mypage.setting.privacy.PrivacyScreen
+import inu.appcenter.bjj_android.ui.mypage.setting.service.ServiceScreen
 import inu.appcenter.bjj_android.ui.mypage.shop.ItemDrawSuccessScreen
 import inu.appcenter.bjj_android.ui.mypage.shop.ShopScreen
 import inu.appcenter.bjj_android.ui.ranking.RankingScreen
@@ -52,6 +57,7 @@ fun AppNavigation(
 
     val navController = rememberNavController()
     val uiState by authViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     // 회원 탈퇴 상태 관찰
     LaunchedEffect(uiState.deleteAccountState) {
@@ -201,8 +207,15 @@ fun AppNavigation(
                     onNavigateToLikedMenu = {
                         navController.navigate(AllDestination.LikedMenu.route)
                     },
-                    onNavigateToBlockedUser = {
-                        navController.navigate(AllDestination.BlockedUser.route)
+                    onNavigateToService = {
+                        navController.navigate(AllDestination.ServiceTerms.route)
+                    },
+                    onNavigateToPrivacy = {
+                        navController.navigate(AllDestination.PrivacyPolicy.route)
+                    },
+                    onNavigateToOpenSourceLicense = {
+                        val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                        context.startActivity(intent)
                     },
                     onNavigateToLogin = {
                         //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
@@ -211,6 +224,20 @@ fun AppNavigation(
                     onWithdrawalAccount = {
                         // 회원 탈퇴 기능 호출, 네비게이션은 LaunchedEffect에서 처리
                         authViewModel.deleteAccount()
+                    }
+                )
+            }
+            composable(AllDestination.PrivacyPolicy.route) {
+                PrivacyScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(AllDestination.ServiceTerms.route) {
+                ServiceScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
                     }
                 )
             }

@@ -108,4 +108,8 @@ dependencies {
     // System UI
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
+    // opensource license
+    implementation("com.google.android.gms:play-services-oss-licenses:17.2.1")
 }
+
+apply(plugin = "com.google.android.gms.oss-licenses-plugin")

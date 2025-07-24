@@ -2,8 +2,13 @@
 <resources>
 
     <style name="Theme.Bjj_android" parent="android:Theme.Material.Light.NoActionBar" >
-<!--        <item name="android:windowLightStatusBar">true</item>-->
-<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:windowLightStatusBar">true</item>-->
+        <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
+
+    <!-- OSS Licenses용 기본 테마 -->
+    <style name="Theme.OssLicenses" parent="Theme.AppCompat.Light">
+    </style>
+
 </resources>
