@@ -216,6 +216,9 @@ fun AppNavigation(
                     onNavigateToOpenSourceLicense = {
                         val intent = Intent(context, OssLicensesMenuActivity::class.java)
                         context.startActivity(intent)
+                    onNavigateToOpenSourceLicense = {
+                        val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                        context.startActivity(intent)
                     },
                     onNavigateToLogin = {
                         //logout만 호출하고 네비게이션은 LaunchedEffect에서 처리
