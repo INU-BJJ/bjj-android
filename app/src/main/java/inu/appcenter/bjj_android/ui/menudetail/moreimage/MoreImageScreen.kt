@@ -74,7 +74,7 @@ fun MoreImageScreen(
                 title = {
                     Text(
                         text = "리뷰 사진 모아보기",
-                        style = LocalTypography.current.semibold18.copy(
+                        style = LocalTypography.current.bold18.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
                         ),

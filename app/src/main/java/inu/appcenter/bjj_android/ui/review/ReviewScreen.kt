@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -35,6 +36,7 @@ import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
 import inu.appcenter.bjj_android.ui.review.reviewPagePart.ReviewFrameScreen
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
+import inu.appcenter.bjj_android.ui.theme.paddings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +54,7 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                 title = {
                     Text(
                         text = stringResource(R.string.review_page_title),
-                        style = LocalTypography.current.semibold18.copy(
+                        style = LocalTypography.current.bold18.copy(
                             letterSpacing = 0.13.sp,
                             lineHeight = 15.sp
                         )
@@ -81,10 +83,9 @@ fun ReviewScreen(navController: NavHostController, reviewViewModel: ReviewViewMo
                 .fillMaxSize()
                 .background(color = Color.White)
                 .padding(innerPadding)
+                .padding(vertical = MaterialTheme.paddings.large)
                 .verticalScroll(scrollState)
         ) {
-            Spacer(Modifier.height(20.dp))
-
             if (reviewUiState.reviews?.myReviewDetailList.isNullOrEmpty()) {
                 Spacer(Modifier.height(196.dp))
                 Column(

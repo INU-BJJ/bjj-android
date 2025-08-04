@@ -44,7 +44,7 @@ fun ServiceScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.term_of_service),
-                        style = LocalTypography.current.semibold18.copy(
+                        style = LocalTypography.current.bold18.copy(
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp
                         )
