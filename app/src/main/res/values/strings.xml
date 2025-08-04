@@ -55,7 +55,7 @@
     <string name="liked_menu">좋아요한 메뉴</string>
     <string name="term_of_service">서비스 이용 약관</string>
     <string name="privacy_policy">개인정보 처리방침</string>
-    <string name="open_source_license">오픈소스 라이선스</string>
+    <string name="oss_license_title">오픈소스 라이선스</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">탈퇴하기</string>
     <string name="withdraw_confirmation_title">회원 탈퇴</string>

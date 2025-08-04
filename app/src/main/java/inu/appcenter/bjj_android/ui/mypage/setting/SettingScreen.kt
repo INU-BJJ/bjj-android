@@ -146,7 +146,7 @@ fun SettingScreen(
                     onClick = { onNavigateToPrivacy() }
                 )
                 MainText(
-                    text = stringResource(R.string.open_source_license),
+                    text = stringResource(R.string.oss_license_title),
                     onClick = { onNavigateToOpenSourceLicense() }
                 )
             }
