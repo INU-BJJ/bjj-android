@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +34,7 @@ fun SocialLoginButton(
     icon: Painter,
     isBorderStroke: Boolean = false
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
@@ -43,27 +44,27 @@ fun SocialLoginButton(
                 color = if (isBorderStroke) Color(0xFFB9B9B9) else Color.Transparent,
                 shape = RoundedCornerShape(10.dp)
             )
-            .padding(start = 29.dp)
             .clickable {
                 onClick(socialLogin)
             },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
+    ){
         Icon(
             painter = icon,
             contentDescription = "kakao login",
             tint = Color.Unspecified,
             modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(start = 24.dp)
                 .width(27.dp)
         )
-        Spacer(Modifier.width(32.dp))
         Text(
             text = text,
             style = LocalTypography.current.medium15.copy(
                 letterSpacing = 0.13.sp,
                 color = textColor
-            )
+            ),
+            modifier = Modifier
+                .align(Alignment.Center)
         )
     }
 }
