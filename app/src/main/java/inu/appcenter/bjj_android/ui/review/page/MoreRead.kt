@@ -64,7 +64,7 @@ fun MoreReadScreen(
                 title = {
                     Text(
                         text = reviewUiState.selectedRestaurant ?: "",
-                        style = LocalTypography.current.semibold18.copy(
+                        style = LocalTypography.current.bold18.copy(
                             lineHeight = 15.sp,
                             letterSpacing = 0.13.sp,
                         )
