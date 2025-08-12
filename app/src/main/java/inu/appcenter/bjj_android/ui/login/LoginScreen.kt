@@ -101,7 +101,22 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(200.dp))
+            Spacer(Modifier.height(98.dp))
+            // 앱 설명
+            Text(
+                text = "오늘의 학식, 어떠셨나요?\n " +
+                        "지금 바로 평점을 남겨보세요!",
+                style = LocalTypography.current.semibold18.copy(
+                    fontSize = 18.sp,
+                    lineHeight = 30.sp,
+                    letterSpacing = 0.13.sp,
+                    fontWeight = FontWeight(800),
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center
+                )
+            )
+
+            Spacer(Modifier.height(83.dp))
             Image(
                 painter = painterResource(R.drawable.unfilled_bjj_logo),
                 contentDescription = "앱 로고",
@@ -109,32 +124,21 @@ fun LoginScreen(
                     .width(94.dp)
                     .height(103.dp),
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            // 앱 이름
-            Text(
-                text = "밥점줘",
-                style = LocalTypography.current.bold18.copy(
-                    fontSize = 25.sp,
-                    lineHeight = 30.sp,
-                    fontWeight = FontWeight(700),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Center,
-                    letterSpacing = 0.13.sp,
-                )
-            )
+            Spacer(modifier = Modifier.height(13.dp))
+//            // 앱 이름
+//            Text(
+//                text = "밥점줘",
+//                style = LocalTypography.current.bold18.copy(
+//                    fontSize = 25.sp,
+//                    lineHeight = 30.sp,
+//                    fontWeight = FontWeight(700),
+//                    color = Color(0xFFFFFFFF),
+//                    textAlign = TextAlign.Center,
+//                    letterSpacing = 0.13.sp,
+//                )
+//            )
 
-            Spacer(modifier = Modifier.height(6.dp))
 
-            // 앱 설명
-            Text(
-                text = "인천대학교 학식 평점 커뮤니티",
-                style = LocalTypography.current.semibold18.copy(
-                    fontSize = 17.sp,
-                    lineHeight = 22.sp,
-                    letterSpacing = 0.13.sp,
-                    color = Color(0xFFFFFFFF)
-                )
-            )
 
         }
         Column(
@@ -143,6 +147,21 @@ fun LoginScreen(
                 .padding(horizontal = 20.dp),
         ) {
             // 소셜 로그인 버튼들
+
+            SocialLoginButton(
+                onClick = {
+                    authViewModel.setSocialName(it)
+                    showLoginDialog = true
+                },
+                socialLogin = "google",
+                background = White_FFFFFF,
+                icon = painterResource(R.drawable.google),
+                text = "구글로 시작하기",
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+
             SocialLoginButton(
                 onClick = {
                     authViewModel.setSocialName(it)
@@ -151,8 +170,9 @@ fun LoginScreen(
                 socialLogin = "kakao",
                 background = Yellow_FFEB02,
                 icon = painterResource(R.drawable.kakao),
-                text = "카카오로 시작하기"
+                text = "카카오로 시작하기",
             )
+
             Spacer(modifier = Modifier.height(12.dp))
 
             SocialLoginButton(
@@ -164,21 +184,9 @@ fun LoginScreen(
                 textColor = White_FFFFFF,
                 background = Green_27D34A,
                 icon = painterResource(R.drawable.naver),
-                text = "네이버로 시작하기"
+                text = "네이버로 시작하기",
             )
-            Spacer(modifier = Modifier.height(12.dp))
 
-            SocialLoginButton(
-                onClick = {
-                    authViewModel.setSocialName(it)
-                    showLoginDialog = true
-                },
-                socialLogin = "google",
-                background = White_FFFFFF,
-                icon = painterResource(R.drawable.google),
-                text = "구글로 시작하기",
-                isBorderStroke = true
-            )
             Spacer(modifier = Modifier.height(54.dp))
         }
     }
