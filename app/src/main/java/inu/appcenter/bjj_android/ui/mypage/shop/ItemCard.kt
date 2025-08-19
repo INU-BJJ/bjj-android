@@ -155,8 +155,11 @@ fun ItemCard(
             ) {
                 // 유효 기간 표시
                 if (item.expiresAt != null && item.expiresAt.isValidItem()) {
+                    // 9999년인지 확인하여 기본캐릭터 표시
+                    val isDefaultCharacter = item.expiresAt.startsWith("9999")
+
                     Text(
-                        text = item.expiresAt.formatRemainingTime(),
+                        text = if (isDefaultCharacter) "기본" else item.expiresAt.formatRemainingTime(),
                         style = LocalTypography.current.regular11,
                         color = Color.White,
                         textAlign = TextAlign.Center
