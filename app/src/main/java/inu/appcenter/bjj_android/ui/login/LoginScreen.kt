@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +36,7 @@ import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.ui.login.common.SocialLoginButton
 import inu.appcenter.bjj_android.ui.theme.Green_27D34A
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
 import inu.appcenter.bjj_android.ui.theme.Yellow_FFEB02
 
@@ -86,60 +90,90 @@ fun LoginScreen(
     Box(
         modifier = Modifier.fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        0.38f to Color(0xFFFF8D21), // 5% 위치에 오렌지
-                        0.95f to Color(0xFFFFFFFF)  // 95% 위치에 흰색
-                    )
-                )
+                White_FFFFFF
             )
     ) {
         Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 17.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(98.dp))
-            // 앱 설명
-            Text(
-                text = "오늘의 학식, 어떠셨나요?\n " +
-                        "지금 바로 평점을 남겨보세요!",
-                style = LocalTypography.current.semibold18.copy(
-                    fontSize = 18.sp,
-                    lineHeight = 30.sp,
-                    letterSpacing = 0.13.sp,
-                    fontWeight = FontWeight(800),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Center
-                )
-            )
-
-            Spacer(Modifier.height(83.dp))
-            Image(
+            Spacer(Modifier.height(141.dp))
+            Icon(
                 painter = painterResource(R.drawable.unfilled_bjj_logo),
                 contentDescription = "앱 로고",
                 modifier = Modifier
                     .width(94.dp)
                     .height(103.dp),
+                tint = Orange_FF7800
             )
             Spacer(modifier = Modifier.height(13.dp))
-//            // 앱 이름
-//            Text(
-//                text = "밥점줘",
-//                style = LocalTypography.current.bold18.copy(
-//                    fontSize = 25.sp,
-//                    lineHeight = 30.sp,
-//                    fontWeight = FontWeight(700),
-//                    color = Color(0xFFFFFFFF),
-//                    textAlign = TextAlign.Center,
-//                    letterSpacing = 0.13.sp,
-//                )
-//            )
-
-
-
+            // 앱 이름
+            Text(
+                text = "밥점줘",
+                style = LocalTypography.current.bold18.copy(
+                    fontSize = 23.sp,
+                    lineHeight = 30.sp,
+                    fontWeight = FontWeight(700),
+                    color = Orange_FF7800,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 0.13.sp,
+                )
+            )
+            Spacer(modifier = Modifier.height(77.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "학식 뭐가 제일 맛있지?",
+                    style = LocalTypography.current.bold18.copy(
+                        fontSize = 15.sp,
+                        lineHeight = 20.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFFFF7800),
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.13.sp,
+                    ),
+                    modifier = Modifier
+                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .padding(vertical = 4.dp, horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                Text(
+                    text = "지금 바로 평점을 남겨봐~",
+                    style = LocalTypography.current.bold18.copy(
+                        fontSize = 15.sp,
+                        lineHeight = 20.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFFFF7800),
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.13.sp,
+                    ),
+                    modifier = Modifier
+                        .padding(start = 139.dp)
+                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .padding(vertical = 4.dp, horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                Text(
+                    text = "식당 정보랑 메뉴도 바로 알 수 있어!",
+                    style = LocalTypography.current.bold18.copy(
+                        fontSize = 15.sp,
+                        lineHeight = 20.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFFFF7800),
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.13.sp,
+                    ),
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .padding(vertical = 4.dp, horizontal = 16.dp)
+                )
+            }
         }
         Column(
             modifier = Modifier
@@ -157,6 +191,7 @@ fun LoginScreen(
                 background = White_FFFFFF,
                 icon = painterResource(R.drawable.google),
                 text = "구글로 시작하기",
+                isBorderStroke = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
