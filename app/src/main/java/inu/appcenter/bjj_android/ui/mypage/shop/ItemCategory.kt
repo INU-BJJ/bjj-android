@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.model.item.toKorean
@@ -67,7 +68,11 @@ fun ItemCategory(
             ) {
                 Text(
                     text = ItemType.CHARACTER.toKorean(),
-                    style = LocalTypography.current.semibold15,
+                    style = LocalTypography.current.bold15.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.13.sp,
+                    ),
                     color = if (selectedCategory == ItemType.CHARACTER) Orange_FF7800 else Color.White,
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -99,7 +104,11 @@ fun ItemCategory(
                 ) {
                     Text(
                         text = ItemType.BACKGROUND.toKorean(),
-                        style = LocalTypography.current.semibold15,
+                        style = LocalTypography.current.bold15.copy(
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            letterSpacing = 0.13.sp,
+                        ),
                         color = if (selectedCategory == ItemType.BACKGROUND) Orange_FF7800 else Color.White,
                         modifier = Modifier
                     )

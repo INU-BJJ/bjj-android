@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,7 +27,12 @@ import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
+import inu.appcenter.bjj_android.ui.theme.Brown_523023
+import inu.appcenter.bjj_android.ui.theme.Brown_5E3023
+import inu.appcenter.bjj_android.ui.theme.Orange_F7941D
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.ui.theme.Orange_FFD2A1
+import inu.appcenter.bjj_android.ui.theme.Orange_FFF4DF
 import inu.appcenter.bjj_android.utils.CharacterImageType
 import inu.appcenter.bjj_android.utils.ImageLoader
 import inu.appcenter.bjj_android.utils.formatRemainingTime
@@ -42,14 +48,17 @@ fun ItemCard(
     // 아이템 카드의 높이 계산 (너비:높이 비율 = 71:92)
     val cardHeight = (cardWidth.value * 92 / 71).dp
 
+    val itemLevel = item.itemLevel
+
+
     Box(
         modifier = modifier
             .width(cardWidth)
             .height(cardHeight)
             .border(
-                width = 1.dp,
-                color = Orange_FF7800,
-                shape = RoundedCornerShape(10.dp)
+                width = 2.dp,
+                color = Color(0xFFFF9333),
+                shape = RoundedCornerShape(5.dp)
             )
             .clickable {
                 onItemClick(item)
@@ -81,8 +90,8 @@ fun ItemCard(
                                 type = CharacterImageType.SHOP,
                                 showLoading = true,
                                 modifier = Modifier
-                                    .width(cardWidth * 0.8f) // 이미지 크기는 카드 너비의 80%
-                                    .height(cardWidth * 0.8f), // 정사각형 비율
+                                    .fillMaxWidth() // 이미지 크기는 카드 너비의 80%
+                                    .fillMaxHeight(), // 정사각형 비율
                                 contentScale = ContentScale.Fit
                             )
                         }
@@ -125,7 +134,7 @@ fun ItemCard(
                             .fillMaxWidth()
                             .background(
                                 color = Color.Black.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                                shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)
                             )
                             .padding(4.dp)
                             .align(Alignment.TopCenter),
@@ -148,8 +157,8 @@ fun ItemCard(
                     .fillMaxWidth()
                     .height(20.dp)
                     .background(
-                        color = Orange_FF7800,
-                        shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
+                        color = if (itemLevel == "COMMON" || itemLevel == "DEFAULT") {Orange_F7941D} else if (itemLevel == "NORMAL"){Orange_FFD2A1} else{Orange_FFF4DF},
+                        shape = RoundedCornerShape(bottomStart = 5.dp, bottomEnd = 5.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -160,9 +169,13 @@ fun ItemCard(
 
                     Text(
                         text = if (isDefaultCharacter) "기본" else item.expiresAt.formatRemainingTime(),
-                        style = LocalTypography.current.regular11,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
+                        style = LocalTypography.current.bold15.copy(
+                            fontSize = 8.sp,
+                            lineHeight = 16.sp,
+                            color = Brown_5E3023,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 0.13.sp,
+                        ),
                     )
                 }
             }

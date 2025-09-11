@@ -21,10 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.model.item.ItemLevel
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
+import inu.appcenter.bjj_android.ui.theme.Brown_523023
+import inu.appcenter.bjj_android.ui.theme.Brown_C49A6C
+import inu.appcenter.bjj_android.ui.theme.White_FFF8F0
+import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
 import inu.appcenter.bjj_android.utils.isValidItem
 
 @Composable
@@ -59,20 +64,23 @@ fun ItemSection(
         Box(
             modifier = Modifier
                 .background(
-                    color = Color.White,
+                    color = White_FFF8F0,
                     shape = RoundedCornerShape(5.dp)
                 )
-                .padding(horizontal = 20.dp, vertical = 5.dp),
+                .padding(horizontal = 22.dp, vertical = 3.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = levelTitle,
-                style = LocalTypography.current.medium15,
-                color = Color.Black
+                style = LocalTypography.current.semibold15.copy(
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = Brown_523023
+                ),
             )
         }
 
-        Spacer(modifier = Modifier.height(11.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         // 아이템이 없는 경우 메시지 표시
 

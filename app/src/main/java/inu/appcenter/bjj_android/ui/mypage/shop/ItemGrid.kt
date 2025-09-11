@@ -17,6 +17,7 @@ import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.model.item.toKorean
 import inu.appcenter.bjj_android.ui.theme.Brown_C49A6C
 import inu.appcenter.bjj_android.ui.theme.Brown_F2D9AF
+import inu.appcenter.bjj_android.ui.theme.Yellow_FFD36A
 
 @Composable
 fun ItemGrid(
@@ -34,15 +35,15 @@ fun ItemGrid(
 
     Column(
         modifier = modifier
-            .padding(horizontal = 17.dp, vertical = 0.dp)
+            .padding(horizontal = 16.dp, vertical = 0.dp)
     ) {
         // LazyColumn을 일반 Column으로 변경
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Brown_F2D9AF, shape = RoundedCornerShape(10.dp))
-                .border(width = 1.dp, color = Brown_C49A6C, shape = RoundedCornerShape(10.dp))
-                .padding(vertical = 14.dp)
+                .background(color = Yellow_FFD36A, shape = RoundedCornerShape(16.dp))
+                .border(width = 1.dp, color = Brown_C49A6C, shape = RoundedCornerShape(16.dp))
+                .padding(vertical = 24.dp)
         ) {
             // 각 레벨별로 아이템 섹션 생성
             ItemSection(
@@ -51,7 +52,7 @@ fun ItemGrid(
                 onItemClick = onItemClick
             )
 
-            Spacer(modifier = Modifier.height(54.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             ItemSection(
                 levelTitle = ItemLevel.NORMAL.toKorean(),
@@ -59,7 +60,7 @@ fun ItemGrid(
                 onItemClick = onItemClick
             )
 
-            Spacer(modifier = Modifier.height(54.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             ItemSection(
                 levelTitle = ItemLevel.RARE.toKorean(),
