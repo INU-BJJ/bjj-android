@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.network
 
+import inu.appcenter.bjj_android.model.banner.Banner
 import inu.appcenter.bjj_android.model.cafeteria.CafeteriaInfoResponse
 import inu.appcenter.bjj_android.model.fcm.FcmTokenRequest
 import inu.appcenter.bjj_android.model.item.ItemResponse
@@ -157,9 +158,9 @@ interface APIService {
 
 
     //임시로 fcm 테스트
-    @POST("/api/members/fcm-token")
+    @POST("/api/device-tokens")
     suspend fun registerFcmToken(
-        @Body fcmTokenRequest: FcmTokenRequest
+        @Query("token") fcmTokenRequest: String
     ): Response<Unit>
 
 
@@ -188,4 +189,7 @@ interface APIService {
 
     @GET("/api/items/my")
     suspend fun getMyPageInfo(): Response<MyPageResponse>
+
+    @GET("/api/admin/banners")
+    suspend fun getBanners(): Response<Banner>
 }

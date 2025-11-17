@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.ui.navigate
 
+import android.net.Uri
 import inu.appcenter.bjj_android.R
 
 sealed class AllDestination(val route: String, val icon: Int, val label: String) {
@@ -43,5 +44,12 @@ sealed class AllDestination(val route: String, val icon: Int, val label: String)
 
     data object ReportReview : AllDestination("reportReview/{reviewId}", R.drawable.mypage, "리뷰 신고하기") {
         fun createRoute(reviewId: Long): String = "reportReview/$reviewId"
+    }
+
+    data object WebView : AllDestination("webview/{url}", R.drawable.mypage, "베너 클릭") {
+        fun createRoute(url: String): String {
+            val encodedUrl = Uri.encode(url)
+            return "webview/$encodedUrl"
+        }
     }
 }

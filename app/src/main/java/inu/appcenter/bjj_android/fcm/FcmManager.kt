@@ -93,7 +93,7 @@ class FcmManager(
                 }
 
                 Log.d(TAG, "서버에 FCM 토큰 등록 시도: $fcmToken")
-                apiService.registerFcmToken(FcmTokenRequest(fcmToken))
+                apiService.registerFcmToken(fcmToken)
                 Log.d(TAG, "서버에 FCM 토큰 등록 성공")
             } else {
                 Log.d(TAG, "FCM 토큰 또는 사용자 토큰이 null입니다. 등록을 건너뜁니다.")

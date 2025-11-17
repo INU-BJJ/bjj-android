@@ -3,15 +3,25 @@ package inu.appcenter.bjj_android.utils
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +34,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
@@ -48,6 +59,7 @@ object ImageLoader {
     private const val CHARACTER_IMAGE_PATH = "item/character/"
     private const val BACKGROUND_IMAGE_PATH = "item/background/"
     private const val CAFETERIA_IMAGE_PATH = "cafeteria/"
+    private const val BANNER_IMAGE_PATH = "banner/"
 
     // 인증 토큰을 저장할 변수 추가
     private var authToken: String? = null
@@ -556,6 +568,112 @@ object ImageLoader {
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize()
                     )
+                }
+            )
+        }
+    }
+    private fun getBannerImageUrl(imageName: String): String {
+        return BASE_URL + BANNER_IMAGE_PATH + imageName
+    }
+
+    /**
+     * Compose용 배너 이미지 로딩 컴포저블 - 개선된 로딩 UI
+     */
+    @Composable
+    fun BannerImage(
+        imageName: String?,
+        modifier: Modifier = Modifier,
+        contentScale: ContentScale = ContentScale.Crop,
+        shape: Shape? = null,
+        showLoading: Boolean = true,
+        clickable: Boolean = false,
+        onClick: (() -> Unit)? = null
+    ) {
+        val context = LocalContext.current
+
+        // 공통 modifier 생성
+        val finalModifier = if (shape != null) {
+            modifier.clip(shape)
+        } else {
+            modifier
+        }
+
+        // clickable 속성 추가 (필요한 경우)
+        val clickableModifier = if (clickable && onClick != null) {
+            finalModifier.clickable { onClick() }
+        } else {
+            finalModifier
+        }
+
+        // 서버 이미지 처리
+        if (imageName == null) {
+            // 이미지가 없는 경우 기본 배너 이미지 표시
+            Box(
+                modifier = clickableModifier
+                    .background(Color(0xFFF5F5F5), shape ?: RectangleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.big_placeholder),
+                    contentDescription = "기본 배너 이미지",
+                    contentScale = contentScale,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        } else {
+            val imageUrl = getBannerImageUrl(imageName)
+            val cacheKeySuffix = "_banner"
+            val imageRequest = buildImageRequest(context, imageName, imageUrl, cacheKeySuffix)
+
+            SubcomposeAsyncImage(
+                model = imageRequest,
+                contentDescription = "배너 이미지",
+                contentScale = contentScale,
+                modifier = clickableModifier,
+                loading = {
+                    if (showLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = Color(0xFFF8F8F8),
+                                    shape = shape ?: RectangleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp),
+                                strokeWidth = 3.dp,
+                                color = Orange_FF7800 // 앱의 메인 컬러 사용
+                            )
+                        }
+                    }
+                },
+                error = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFFF5F5F5), shape ?: RectangleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.big_placeholder),
+                                contentDescription = "배너 이미지 로딩 실패",
+                                tint = Color.Gray,
+                                modifier = Modifier.size(48.dp)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "이미지를 불러올 수 없습니다",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
+                    }
                 }
             )
         }

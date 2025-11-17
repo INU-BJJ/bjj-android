@@ -19,6 +19,7 @@ import inu.appcenter.bjj_android.ui.login.LoginScreen
 import inu.appcenter.bjj_android.ui.login.SignupScreen
 import inu.appcenter.bjj_android.ui.main.MainScreen
 import inu.appcenter.bjj_android.ui.main.MainViewModel
+import inu.appcenter.bjj_android.ui.main.common.WebViewScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailScreen
 import inu.appcenter.bjj_android.ui.menudetail.MenuDetailViewModel
 import inu.appcenter.bjj_android.ui.menudetail.moreimage.MoreImageScreen
@@ -226,6 +227,13 @@ fun AppNavigation(
                         authViewModel.deleteAccount()
                     }
                 )
+            }
+            composable(
+                route = AllDestination.WebView.route,
+                arguments = listOf(navArgument("url") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val url = backStackEntry.arguments?.getString("url") ?: ""
+                WebViewScreen(url = url, navController = navController)
             }
             composable(AllDestination.PrivacyPolicy.route) {
                 PrivacyScreen(

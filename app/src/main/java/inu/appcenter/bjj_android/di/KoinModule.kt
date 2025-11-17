@@ -4,6 +4,8 @@ import inu.appcenter.bjj_android.fcm.FcmManager
 import inu.appcenter.bjj_android.local.DataStoreManager
 import inu.appcenter.bjj_android.network.RetrofitAPI
 import inu.appcenter.bjj_android.notification.NotificationManager
+import inu.appcenter.bjj_android.repository.banner.BannerRepository
+import inu.appcenter.bjj_android.repository.banner.BannerRepositoryImpl
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepositoryImpl
 import inu.appcenter.bjj_android.repository.item.ItemRepository
@@ -47,12 +49,13 @@ val repositoryModule = module {
     single<ReviewRepository> { ReviewRepositoryImpl(get()) }
     single<MenuRepository> { MenuRepositoryImpl(get()) }
     single<ItemRepository> { ItemRepositoryImpl(get()) }
+    single<BannerRepository> { BannerRepositoryImpl(get()) }
 
 }
 
 val viewModelModule = module {
     viewModel { AuthViewModel(get(), get(), get()) } // FcmManager 추가
-    viewModel { MainViewModel(get(), get(), get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), get(), get()) }
     viewModel { MenuDetailViewModel(get(), get(), get()) }
     viewModel { ReviewViewModel(get(), get(), get()) }
     viewModel { RankingViewModel(get(), get()) }

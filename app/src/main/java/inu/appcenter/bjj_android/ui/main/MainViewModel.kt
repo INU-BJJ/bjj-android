@@ -1,7 +1,10 @@
 package inu.appcenter.bjj_android.ui.main
 import androidx.lifecycle.viewModelScope
+import inu.appcenter.bjj_android.model.banner.Banner
+import inu.appcenter.bjj_android.model.banner.BannerItem
 import inu.appcenter.bjj_android.model.cafeteria.CafeteriaInfoResponse
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
+import inu.appcenter.bjj_android.repository.banner.BannerRepository
 import inu.appcenter.bjj_android.repository.cafeterias.CafeteriasRepository
 import inu.appcenter.bjj_android.repository.menu.MenuRepository
 import inu.appcenter.bjj_android.repository.todaydiet.TodayDietRepository
@@ -25,10 +28,12 @@ data class MainUiState(
     val cafeterias: List<String> = emptyList(),
     val selectedCafeteria: String? = null,
     val menus: List<TodayDietRes> = emptyList(),
+    val banners: List<BannerItem> = emptyList(),
     val selectedCafeteriaInfo: CafeteriaInfoResponse? = null
 )
 
 class MainViewModel(
+    private val bannerRepository: BannerRepository,
     private val cafeteriasRepository: CafeteriasRepository,
     private val todayDietRepository: TodayDietRepository,
     private val authViewModel: AuthViewModel,
@@ -49,7 +54,25 @@ class MainViewModel(
                 .filterNotNull()
                 .filter { it }
                 .onEach { delay(TOKEN_DELAY) }
-                .collect { getCafeterias() }
+                .collect {
+                    getBanners()
+                    getCafeterias()
+                }
+        }
+    }
+
+    fun getBanners() {
+        viewModelScope.launch {
+            bannerRepository.getBanners().handleResponse(
+                onSuccess = { banners ->
+                    _uiState.update {
+                        it.copy(banners = banners.sortedBy { banner -> banner.sortOrder })
+                    }
+                },
+                onError = { error ->
+                    emitError(error)
+                }
+            )
         }
     }
 

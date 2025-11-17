@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
+import inu.appcenter.bjj_android.model.banner.BannerItem
 import inu.appcenter.bjj_android.ui.component.error.ErrorHandler
 import inu.appcenter.bjj_android.ui.login.AuthViewModel
 import inu.appcenter.bjj_android.ui.main.common.MainCardNews
@@ -70,7 +71,7 @@ fun MainScreen(
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     menuDetailViewModel: MenuDetailViewModel,
-    onTokenExpired : () -> Unit
+    onTokenExpired: () -> Unit
 ) {
     val mainUiState by mainViewModel.uiState.collectAsState()
     val authUiState by authViewModel.uiState.collectAsState()
@@ -81,6 +82,7 @@ fun MainScreen(
     LaunchedEffect(authUiState.hasToken) {
         if (authUiState.hasToken == true) {
             delay(300) // 토큰 저장이 완전히 완료될 때까지 잠시 대기
+            mainViewModel.getBanners() // 배너 로드 추가
             mainViewModel.getCafeterias()
         }
     }
@@ -89,32 +91,39 @@ fun MainScreen(
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val dummyCardNews = listOf(Color.Red, Color.Blue, Color.Yellow, Color.White)
-    //카드뉴스 페이저
-    var isAutoScrolling by remember {
-        mutableStateOf(false)
-    }
+    // 배너 페이저 설정
+    var isAutoScrolling by remember { mutableStateOf(false) }
+    val banners = mainUiState.banners
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = { dummyCardNews.size }
+        pageCount = { if (banners.isNotEmpty()) banners.size else 1 } // 배너가 없으면 1개 페이지
     )
     val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
-    LaunchedEffect(key1 = pagerState.currentPage) {
-        if (isDragged) {
-            isAutoScrolling = false
-        } else {
-            isAutoScrolling = true
-            delay(5000)
-            with(pagerState) {
-                val target = if (currentPage < dummyCardNews.size - 1) currentPage + 1 else 0
-                scrollToPage(target)
+
+    // 자동 스크롤 로직 (배너가 2개 이상일 때만)
+    LaunchedEffect(key1 = pagerState.currentPage, key2 = banners.size) {
+        if (banners.size > 1) {
+            if (isDragged) {
+                isAutoScrolling = false
+            } else {
+                isAutoScrolling = true
+                delay(5000)
+                with(pagerState) {
+                    val target = if (currentPage < banners.size - 1) currentPage + 1 else 0
+                    scrollToPage(target)
+                }
             }
         }
     }
 
+    // 배너 클릭 핸들러
+    val handleBannerClick: (BannerItem) -> Unit = { banner ->
+        val fullUrl = "https://bjj.inuappcenter.kr${banner.pageUri}"
+        navController.navigate(AllDestination.WebView.createRoute(fullUrl))
+    }
+
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
             bottomBar = { AppBottomBar(navController) },
@@ -126,68 +135,60 @@ fun MainScreen(
                     .background(color = Background)
                     .padding(bottom = innerPadding.calculateBottomPadding()),
             ) {
+
                 item {
-                    HorizontalPager(
-                        state = pagerState,
-                        pageSize = PageSize.Fill,
-                    ) { page ->
-                        if (isAutoScrolling) {
+                    if (banners.isNotEmpty()) {
+                        // 실제 배너 데이터가 있는 경우
+                        HorizontalPager(
+                            state = pagerState,
+                            pageSize = PageSize.Fill,
+                        ) { page ->
                             AnimatedContent(
                                 targetState = page,
                                 label = ""
                             ) { index ->
-                                MainCardNews(
-                                    backgroundColor = dummyCardNews[index],
-                                    innerPadding = innerPadding
-                                ) {
-                                    Text(
-                                        text = "오늘의 인기 메뉴를 \n알아볼까요? ${index+1}",
-                                        style = LocalTypography.current.semibold24,
-                                        color = Color.Black,
-                                        lineHeight = 35.sp
-                                    )
-                                }
-                            }
-                        } else {
-                            AnimatedContent(
-                                targetState = page,
-                                label = ""
-                            ) { index ->
-                                MainCardNews(
-                                    backgroundColor = Orange_FF7800,
-                                    innerPadding = innerPadding
-                                ) {
-                                    Text(
-                                        text = "오늘의 인기 메뉴를 \n알아볼까요? ${index}",
-                                        style = LocalTypography.current.semibold24,
-                                        color = Color.Black,
-                                        lineHeight = 35.sp
+                                if (index < banners.size) {
+                                    MainCardNews(
+                                        banner = banners[index],
+                                        innerPadding = innerPadding,
+                                        onBannerClick = handleBannerClick
                                     )
                                 }
                             }
                         }
+                    } else {
+                        // 배너 데이터가 없는 경우 기본 카드 표시
+                        MainCardNews(
+                            backgroundColor = Orange_FF7800,
+                            innerPadding = innerPadding
+                        ) {
+                            Text(
+                                text = "오늘의 인기 메뉴를 \n알아볼까요?",
+                                style = LocalTypography.current.semibold24,
+                                color = Color.Black,
+                                lineHeight = 35.sp
+                            )
+                        }
                     }
                 }
 
+                // 나머지 기존 코드는 동일하게 유지
                 item {
                     LazyRow(
-                        modifier = Modifier
-                            .padding(top = 18.dp, bottom = 10.dp)
+                        modifier = Modifier.padding(top = 18.dp, bottom = 10.dp)
                     ) {
                         items(mainUiState.cafeterias) { restaurant ->
                             MainRestaurantButton(
                                 restaurant = restaurant,
                                 restaurants = mainUiState.cafeterias,
                                 selectedButton = mainUiState.selectedCafeteria ?: "",
-                                onClick = {
-                                    mainViewModel.selectCafeteria(it)
-                                }
+                                onClick = { mainViewModel.selectCafeteria(it) }
                             )
                         }
                     }
                 }
 
-                if (mainUiState.menus.isEmpty()){
+                if (mainUiState.menus.isEmpty()) {
                     item {
                         Column(
                             modifier = Modifier
@@ -225,11 +226,11 @@ fun MainScreen(
                     }
                 }
 
+                // 식당 정보 섹션은 기존과 동일
                 item {
                     Spacer(modifier = Modifier.height(57.dp))
                     HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         thickness = 7.dp,
                         color = Color.White
                     )
@@ -255,23 +256,21 @@ fun MainScreen(
                             imageVector = if (restaurantInfo) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "식당정보 더보기",
                             tint = Color.Unspecified,
-                            modifier = Modifier
-                                .clickable {
-                                    restaurantInfo = !restaurantInfo
-
-                                    if (restaurantInfo) {
-                                        coroutineScope.launch {
-                                            delay(100)
-                                            lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
-                                        }
+                            modifier = Modifier.clickable {
+                                restaurantInfo = !restaurantInfo
+                                if (restaurantInfo) {
+                                    coroutineScope.launch {
+                                        delay(100)
+                                        lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
                                     }
                                 }
+                            }
                         )
                     }
                 }
+
                 if (restaurantInfo && mainUiState.selectedCafeteriaInfo != null) {
                     item {
-                        // RestaurantInfoWithMap 컴포넌트 사용
                         RestaurantInfo(
                             modifier = Modifier
                                 .fillMaxWidth()
