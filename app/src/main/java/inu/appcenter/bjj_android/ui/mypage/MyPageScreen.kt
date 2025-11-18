@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.mypage
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +38,6 @@ import inu.appcenter.bjj_android.ui.mypage.component.ShopButton
 import inu.appcenter.bjj_android.ui.mypage.component.UserInfoBar
 import inu.appcenter.bjj_android.ui.navigate.AllDestination
 import inu.appcenter.bjj_android.ui.navigate.AppBottomBar
-import inu.appcenter.bjj_android.ui.theme.Red_FF0000
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,8 +121,7 @@ fun MyPageScreen(
             MyPageBackground(
                 modifier = Modifier
                     .padding(top =  45.dp, bottom = 45.dp)
-                    .fillMaxSize()
-                    .background(Red_FF0000),
+                    .fillMaxSize(),
                 backgroundImageName = myPageUiState.wearingBackgroundImageName
             )
 
