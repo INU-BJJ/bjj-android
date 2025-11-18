@@ -5,9 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.view.ViewGroup
-import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -137,69 +135,73 @@ fun WebViewScreen(
             AndroidView(
                 factory = { context ->
                     WebView(context).apply {
+                        //지워야함
+                        webViewClient = WebViewClient()
+
                         // JavaScript Interface 추가
-                        addJavascriptInterface(WebAppInterface(context), "Android")
+//                        addJavascriptInterface(WebAppInterface(context), "Android")
 
-                        webViewClient = object : WebViewClient() {
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                super.onPageFinished(view, url)
-                                // 페이지 로드 후 토큰 주입 및 버튼 클릭 이벤트 가로채기
-                                if (!token.isNullOrEmpty()) {
-                                    val script = """
-                                        (function() {
-                                            // 토큰 주입
-                                            window.accessToken = 'Bearer $token';
-                                            console.log('Token injected');
-
-                                            // 버튼 클릭 이벤트 가로채기
-                                            const claimButton = document.getElementById('claimButton');
-                                            if (claimButton) {
-                                                console.log('Claim button found, adding listener');
-                                                claimButton.addEventListener('click', function(e) {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    console.log('Button clicked, calling API');
-
-                                                    const token = window.accessToken || '';
-                                                    fetch('/api/events/welcome-point', {
-                                                        method: 'POST',
-                                                        headers: {
-                                                            'Authorization': token,
-                                                            'Content-Type': 'application/json'
-                                                        }
-                                                    })
-                                                    .then(res => {
-                                                        console.log('Response status:', res.status);
-                                                        if (!res.ok) throw new Error('Server error');
-                                                        return res.json();
-                                                    })
-                                                    .then(data => {
-                                                        console.log('Response data:', JSON.stringify(data));
-                                                        // 안드로이드 네이티브 다이얼로그 호출
-                                                        Android.showWelcomePointResult(data.participationCompleted);
-                                                    })
-                                                    .catch(err => {
-                                                        console.error('Error:', err);
-                                                        Android.showWelcomePointResult(false);
-                                                    });
-                                                }, true);
-                                            } else {
-                                                console.log('Claim button NOT found');
-                                            }
-                                        })();
-                                    """.trimIndent()
-                                    view?.evaluateJavascript(script, null)
-                                }
-                            }
-                        }
+//                        webViewClient = object : WebViewClient()
+//                        {
+//                            override fun onPageFinished(view: WebView?, url: String?) {
+//                                super.onPageFinished(view, url)
+//                                // 페이지 로드 후 토큰 주입 및 버튼 클릭 이벤트 가로채기
+//                                if (!token.isNullOrEmpty()) {
+//                                    val script = """
+//                                        (function() {
+//                                            // 토큰 주입
+//                                            window.accessToken = 'Bearer $token';
+//                                            console.log('Token injected');
+//
+//                                            // 버튼 클릭 이벤트 가로채기
+//                                            const claimButton = document.getElementById('claimButton');
+//                                            if (claimButton) {
+//                                                console.log('Claim button found, adding listener');
+//                                                claimButton.addEventListener('click', function(e) {
+//                                                    e.preventDefault();
+//                                                    e.stopPropagation();
+//                                                    console.log('Button clicked, calling API');
+//
+//                                                    const token = window.accessToken || '';
+//                                                    fetch('/api/events/welcome-point', {
+//                                                        method: 'POST',
+//                                                        headers: {
+//                                                            'Authorization': token,
+//                                                            'Content-Type': 'application/json'
+//                                                        }
+//                                                    })
+//                                                    .then(res => {
+//                                                        console.log('Response status:', res.status);
+//                                                        if (!res.ok) throw new Error('Server error');
+//                                                        return res.json();
+//                                                    })
+//                                                    .then(data => {
+//                                                        console.log('Response data:', JSON.stringify(data));
+//                                                        // 안드로이드 네이티브 다이얼로그 호출
+//                                                        Android.showWelcomePointResult(data.participationCompleted);
+//                                                    })
+//                                                    .catch(err => {
+//                                                        console.error('Error:', err);
+//                                                        Android.showWelcomePointResult(false);
+//                                                    });
+//                                                }, true);
+//                                            } else {
+//                                                console.log('Claim button NOT found');
+//                                            }
+//                                        })();
+//                                    """.trimIndent()
+//                                    view?.evaluateJavascript(script, null)
+//                                }
+//                            }
+//                        }
 
                         // WebChromeClient 설정하여 JavaScript 콘솔 로그 캡처
-                        webChromeClient = object : WebChromeClient() {
-                            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-                                Log.d("WebViewConsole", "${consoleMessage.messageLevel()}: ${consoleMessage.message()} -- From line ${consoleMessage.lineNumber()} of ${consoleMessage.sourceId()}")
-                                return true
-                            }
-                        }
+//                        webChromeClient = object : WebChromeClient() {
+//                            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+//                                Log.d("WebViewConsole", "${consoleMessage.messageLevel()}: ${consoleMessage.message()} -- From line ${consoleMessage.lineNumber()} of ${consoleMessage.sourceId()}")
+//                                return true
+//                            }
+//                        }
 
                         settings.javaScriptEnabled = true
                         settings.loadWithOverviewMode = true
