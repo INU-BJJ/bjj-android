@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -139,19 +141,47 @@ fun MainScreen(
                 item {
                     if (banners.isNotEmpty()) {
                         // 실제 배너 데이터가 있는 경우
-                        HorizontalPager(
-                            state = pagerState,
-                            pageSize = PageSize.Fill,
-                        ) { page ->
-                            AnimatedContent(
-                                targetState = page,
-                                label = ""
-                            ) { index ->
-                                if (index < banners.size) {
-                                    MainCardNews(
-                                        banner = banners[index],
-                                        innerPadding = innerPadding,
-                                        onBannerClick = handleBannerClick
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(148.dp)
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
+                                pageSize = PageSize.Fill,
+                            ) { page ->
+                                AnimatedContent(
+                                    targetState = page,
+                                    label = ""
+                                ) { index ->
+                                    if (index < banners.size) {
+                                        MainCardNews(
+                                            banner = banners[index],
+                                            innerPadding = innerPadding,
+                                            onBannerClick = handleBannerClick
+                                        )
+                                    }
+                                }
+                            }
+
+                            // 페이지 인디케이터 (우측 하단 고정)
+                            if (banners.size > 1) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(end = 12.dp, bottom = 8.dp)
+                                        .background(
+                                            color = Color.Black.copy(alpha = 0.5f),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "${pagerState.currentPage + 1}/${banners.size}",
+                                        style = LocalTypography.current.medium11.copy(
+                                            lineHeight = 15.sp
+                                        ),
+                                        color = Color.White
                                     )
                                 }
                             }
