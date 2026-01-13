@@ -82,7 +82,7 @@ fun RankingScreen(
         rankingViewModel.selectBestReviewId(bestReviewId)
     }
 
-    if (rankingUiState.selectedReviewId != null && rankingUiState.bestReview != null) {
+    if (rankingUiState.selectedReviewId != null) {
         BestReviewDialog(
             reviewId = rankingUiState.selectedReviewId!!,
             navController = navController,

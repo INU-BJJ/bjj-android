@@ -102,7 +102,8 @@ class RankingViewModel(
     fun selectBestReviewId(bestReviewId: Long) {
         _uiState.update {
             it.copy(
-                selectedReviewId = bestReviewId
+                selectedReviewId = bestReviewId,
+                bestReview = null  // 이전 데이터 초기화하여 이전 리뷰가 보이지 않도록 함
             )
         }
     }

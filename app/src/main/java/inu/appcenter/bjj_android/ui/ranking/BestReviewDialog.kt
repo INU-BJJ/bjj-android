@@ -53,16 +53,14 @@ fun BestReviewDialog(
         rankingViewModel.getBestReviewDetail(reviewId)
     }
 
-    val bestReview = uiState.bestReview ?: return
-
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
     ) {
-        if (uiState.isLoading) {
+        // bestReview가 null이면 로딩 중
+        if (uiState.bestReview == null) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,7 +71,9 @@ fun BestReviewDialog(
                 )
             ) {
                 Box(
-                    modifier = Modifier.padding(32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = Orange_FF7800)
@@ -82,10 +82,7 @@ fun BestReviewDialog(
             return@Dialog
         }
 
-        uiState.error?.let { error ->
-            // Show error message
-            return@Dialog
-        }
+        val bestReview = uiState.bestReview!!
 
         Card(
             modifier = Modifier
