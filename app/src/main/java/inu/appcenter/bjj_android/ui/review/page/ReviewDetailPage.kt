@@ -52,6 +52,7 @@ import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.Red_FF3916
 import inu.appcenter.bjj_android.ui.theme.paddings
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 private val ACTIONICONPADDING = 26.dp
 
@@ -162,11 +163,11 @@ fun ReviewDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 유저 프로필 (회색 동그라미)
-                    Box(
-                        modifier = Modifier
-                            .size(41.dp)
-                            .background(Gray_D9D9D9, shape = CircleShape)
+                    // 유저 프로필
+                    ImageLoader.ProfileImage(
+                        imageName = reviewDetail?.memberImageName,
+                        modifier = Modifier.size(41.dp),
+                        shape = CircleShape
                     )
 
                     Spacer(Modifier.width(10.dp))

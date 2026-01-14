@@ -120,7 +120,7 @@ object ImageLoader {
     }
 
     private fun getProfileImageUrl(imageName: String): String {
-        return BASE_URL + PROFILE_IMAGE_PATH + imageName
+        return BASE_URL + CHARACTER_IMAGE_PATH + "icon_" + imageName + ".svg"
     }
 
     /**

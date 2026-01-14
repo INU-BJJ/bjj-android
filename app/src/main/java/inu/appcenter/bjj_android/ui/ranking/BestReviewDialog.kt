@@ -39,6 +39,7 @@ import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
 import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 @Composable
 fun BestReviewDialog(
@@ -101,13 +102,11 @@ fun BestReviewDialog(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Surface(
-                        shape = CircleShape,
+                    ImageLoader.ProfileImage(
+                        imageName = bestReview.memberImageName,
                         modifier = Modifier.size(41.dp),
-                        color = Gray_D9D9D9
-                    ) {
-                        // 프로필 이미지 자리
-                    }
+                        shape = CircleShape
+                    )
 
                     Spacer(modifier = Modifier.width(10.dp))
 

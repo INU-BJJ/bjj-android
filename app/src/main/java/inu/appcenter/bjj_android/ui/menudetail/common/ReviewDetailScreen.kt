@@ -52,6 +52,7 @@ import inu.appcenter.bjj_android.ui.theme.Gray_999999
 import inu.appcenter.bjj_android.ui.theme.Gray_D9D9D9
 import inu.appcenter.bjj_android.ui.theme.Gray_F6F6F8
 import inu.appcenter.bjj_android.ui.theme.Orange_FF7800
+import inu.appcenter.bjj_android.utils.ImageLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,10 +165,10 @@ private fun ReviewContent(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(41.dp)
-                    .background(Gray_D9D9D9, shape = CircleShape)
+            ImageLoader.ProfileImage(
+                imageName = review.memberImageName,
+                modifier = Modifier.size(41.dp),
+                shape = CircleShape
             )
 
             Spacer(Modifier.width(10.dp))
