@@ -61,7 +61,6 @@
 
 # 모든 데이터 클래스 유지 (API 응답 모델)
 -keep class inu.appcenter.bjj_android.model.** { *; }
--keep class inu.appcenter.bjj_android.ui.**.model.** { *; }
 
 # ====================================
 # Koin (DI)
@@ -133,7 +132,7 @@
 
 # Firebase Messaging
 -keep class com.google.firebase.messaging.** { *; }
--keep class inu.appcenter.bjj_android.fcm.** { *; }
+-keep class inu.appcenter.bjj_android.core.notification.** { *; }
 
 # ====================================
 # WebView with JavaScript
@@ -185,23 +184,25 @@
 }
 
 # ====================================
-# 프로젝트별 규칙
+# 프로젝트별 규칙 (Google feature-based 아키텍처)
 # ====================================
 # Application 클래스 유지
 -keep class inu.appcenter.bjj_android.di.KoinApp { *; }
 
-# ViewModel 클래스들 유지
--keep class inu.appcenter.bjj_android.ui.**.viewmodel.** { *; }
--keep class inu.appcenter.bjj_android.ui.**.*ViewModel { *; }
+# Core 모듈 유지
+-keep class inu.appcenter.bjj_android.core.** { *; }
+-keep interface inu.appcenter.bjj_android.core.** { *; }
 
-# Repository 클래스들 유지
--keep class inu.appcenter.bjj_android.repository.** { *; }
+# Feature 모듈의 ViewModel 클래스들 유지
+-keep class inu.appcenter.bjj_android.feature.**.presentation.**.*ViewModel { *; }
+-keep class * extends inu.appcenter.bjj_android.core.presentation.BaseViewModel { *; }
 
-# Network 인터페이스 유지
--keep interface inu.appcenter.bjj_android.network.** { *; }
+# Feature 모듈의 Repository 클래스들 유지
+-keep class inu.appcenter.bjj_android.feature.**.data.**Repository* { *; }
+-keep interface inu.appcenter.bjj_android.feature.**.data.**Repository* { *; }
 
-# DataStore Manager 유지
--keep class inu.appcenter.bjj_android.local.DataStoreManager { *; }
+# Shared 모듈 유지
+-keep class inu.appcenter.bjj_android.shared.** { *; }
 
 # ====================================
 # 일반 경고 무시
