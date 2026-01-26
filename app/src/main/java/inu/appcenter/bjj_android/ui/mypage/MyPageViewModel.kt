@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.mypage
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
@@ -88,12 +87,10 @@ class MyPageViewModel(private val itemRepository: ItemRepository) : BaseViewMode
 
             itemRepository.wearItem(itemType = item.itemType.toItemType(), itemId = item.itemIdx).handleResponse(
                 onSuccess = {
-                    Log.d("WearItemSuccess", "아이템 장착 성공")
                     showToast("아이템이 장착되었습니다.")
                     getAllItemsInfo()
                 },
                 onError = { error ->
-                    Log.d("WearItemError", error.message.toString())
                     getMyPageInfo()  // 장착 실패 시 원래 상태로 복원
                     // 기본 오류 처리 외에도 상태 복원 로직 추가
                     handleError(error)

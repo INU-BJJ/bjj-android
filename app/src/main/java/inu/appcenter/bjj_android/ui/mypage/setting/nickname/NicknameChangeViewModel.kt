@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.mypage.setting.nickname
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.repository.member.MemberRepository
 import inu.appcenter.bjj_android.viewmodel.BaseViewModel
@@ -44,7 +43,6 @@ class NicknameChangeViewModel(
                     }
                 },
                 onError = { error ->
-                    Log.e("fetchCurrentNickname", error.message ?: UNKNOWN_ERROR)
                     emitError(error)
                 }
             )
@@ -76,7 +74,6 @@ class NicknameChangeViewModel(
                     }
                 },
                 onError = { error ->
-                    Log.e("checkNickname", error.message ?: UNKNOWN_ERROR)
                     _uiState.update {
                         it.copy(
                             checkNicknameState = NicknameState.Error(error.message ?: UNKNOWN_ERROR)
@@ -110,7 +107,6 @@ class NicknameChangeViewModel(
                     }
                 },
                 onError = { error ->
-                    Log.e("changeNickname", error.message ?: UNKNOWN_ERROR)
                     _uiState.update {
                         it.copy(
                             changeNicknameState = NicknameState.Error(error.message ?: UNKNOWN_ERROR)

@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.utils
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -172,10 +171,8 @@ object ImageLoader {
                 if (enableLogging) {
                     listener(
                         onError = { _, result ->
-                            Log.e("ImageLoading", "Error loading image: ${result.throwable.message}", result.throwable)
                         },
                         onSuccess = { _, _ ->
-                            Log.d("ImageLoading", "Successfully loaded image: $cacheKey")
                         }
                     )
                 }
@@ -428,7 +425,6 @@ object ImageLoader {
             val cacheKeySuffix = "_background"
             val imageRequest = buildImageRequest(context, imageName, imageUrl, cacheKeySuffix)
 
-            Log.d("BackgroundImageURL", imageUrl)
 
             SubcomposeAsyncImage(
                 model = imageRequest,

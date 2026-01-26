@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -77,8 +76,6 @@ class MainActivity : ComponentActivity() {
         // FCM 관리자 초기화
         fcmManager.initialize()
 
-        Log.d("MainActivity", "앱 초기화 완료")
-
         setContent {
             val authViewModel: AuthViewModel by viewModel()
             val mainViewModel: MainViewModel by viewModel()
@@ -141,11 +138,10 @@ class MainActivity : ComponentActivity() {
                 launch {
                     dataStoreManager.token.collect { newToken ->
                         ImageLoader.setAuthToken(newToken)
-                        Log.d("MainActivity", "토큰 업데이트: ${if (newToken != null) "설정됨" else "없음"}")
                     }
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "토큰 초기화 오류", e)
+                // 토큰 초기화 실패
             }
         }
     }

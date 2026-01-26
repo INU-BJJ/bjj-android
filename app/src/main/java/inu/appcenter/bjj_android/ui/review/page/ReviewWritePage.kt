@@ -3,7 +3,6 @@ package inu.appcenter.bjj_android.ui.review.page
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -116,7 +115,6 @@ fun ReviewWriteScreen(
         onDispose {
             reviewViewModel.resetSelectedReviewRestaurant()
             reviewViewModel.resetSelectedMenu()
-            Log.d("Disposable", "now")
         }
     }
 

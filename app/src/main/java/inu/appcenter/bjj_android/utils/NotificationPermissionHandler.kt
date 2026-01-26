@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -48,11 +47,7 @@ fun NotificationPermissionHandler() {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            Log.d("NotificationPermission", "권한 허용됨")
-        } else {
-            Log.d("NotificationPermission", "권한 거부됨")
-        }
+        // 권한 요청 결과 처리
     }
 
     // 알림 설정이 활성화된 경우에만 권한 확인 및 요청

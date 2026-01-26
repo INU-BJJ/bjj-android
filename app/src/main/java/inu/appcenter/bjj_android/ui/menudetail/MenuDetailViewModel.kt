@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.menudetail
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.model.review.ReportRequest
 import inu.appcenter.bjj_android.model.review.ReviewImageDetail
@@ -231,7 +230,6 @@ class MenuDetailViewModel(
         viewModelScope.launch {
             reviewRepository.toggleReviewLiked(reviewId = reviewId).handleResponse(
                 onSuccess = { isLiked ->
-                    Log.d("toggleReviewLiked", isLiked.toString())
                     _uiState.update { currentState ->
                         val updatedReviews = currentState.reviews?.copy(
                             reviewDetailList = currentState.reviews.reviewDetailList.map { review ->

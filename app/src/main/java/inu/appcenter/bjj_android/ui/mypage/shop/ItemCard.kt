@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.mypage.shop
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,7 +61,6 @@ fun ItemCard(
             )
             .clickable {
                 onItemClick(item)
-                Log.d("clickItem", item.toString())
             }
     ) {
         Column(

@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -27,8 +26,6 @@ class PermissionManager(
     private val context: Context,
     private val fcmManager: FcmManager? = null
 ) {
-    private val TAG = "PermissionManager"
-
     // 알림 권한 상태를 추적
     private val _notificationPermissionState = MutableStateFlow<Boolean?>(null)
     val notificationPermissionState: StateFlow<Boolean?> = _notificationPermissionState.asStateFlow()
@@ -60,7 +57,6 @@ class PermissionManager(
     fun onPermissionResult(permission: String, isGranted: Boolean) {
         when (permission) {
             Manifest.permission.POST_NOTIFICATIONS -> {
-                Log.d(TAG, "알림 권한 결과: $isGranted")
                 _notificationPermissionState.value = isGranted
 
                 // FCM 관리자에게 권한 변경 알림

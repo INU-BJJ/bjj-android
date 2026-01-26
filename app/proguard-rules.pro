@@ -5,17 +5,209 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# 디버깅을 위한 스택 트레이스 라인 정보 유지
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# ====================================
+# Retrofit & OkHttp
+# ====================================
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes *Annotation*
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Retrofit
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeInvisibleAnnotations
+-keepattributes RuntimeVisibleParameterAnnotations
+-keepattributes RuntimeInvisibleParameterAnnotations
+-keepattributes EnclosingMethod
+
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
+-keepclassmembernames interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# OkHttp Platform used only on JVM and when Conscrypt dependency is available.
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+
+# ====================================
+# Gson
+# ====================================
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn sun.misc.**
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Gson uses generic type information stored in a class file when working with fields.
+-keepattributes Signature
+
+# Gson specific classes
+-dontwarn com.google.gson.**
+
+# 모든 데이터 클래스 유지 (API 응답 모델)
+-keep class inu.appcenter.bjj_android.model.** { *; }
+-keep class inu.appcenter.bjj_android.ui.**.model.** { *; }
+
+# ====================================
+# Koin (DI)
+# ====================================
+-keep class org.koin.** { *; }
+-keep class org.koin.core.** { *; }
+-keep class org.koin.dsl.** { *; }
+-keepnames class * extends org.koin.core.module.Module
+-keepclassmembers class * {
+    public <init>(...);
+}
+
+# ====================================
+# Jetpack Compose
+# ====================================
+-keep class androidx.compose.** { *; }
+-keepclassmembers class androidx.compose.** { *; }
+-dontwarn androidx.compose.**
+
+# Compose Runtime
+-keep class androidx.compose.runtime.** { *; }
+-keep interface androidx.compose.runtime.** { *; }
+
+# ====================================
+# Kotlin
+# ====================================
+-keep class kotlin.** { *; }
+-keep class kotlin.Metadata { *; }
+-keepclassmembers class **$WhenMappings {
+    <fields>;
+}
+-keepclassmembers class kotlin.Metadata {
+    public <methods>;
+}
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+}
+
+# Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+-dontwarn kotlinx.coroutines.**
+
+# ====================================
+# AndroidX & DataStore
+# ====================================
+-keep class androidx.datastore.** { *; }
+-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+    <fields>;
+}
+
+# ====================================
+# Coil (이미지 로딩)
+# ====================================
+-keep class coil.** { *; }
+-keep interface coil.** { *; }
+-dontwarn coil.**
+
+# ====================================
+# Firebase
+# ====================================
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**
+
+# Firebase Messaging
+-keep class com.google.firebase.messaging.** { *; }
+-keep class inu.appcenter.bjj_android.fcm.** { *; }
+
+# ====================================
+# WebView with JavaScript
+# ====================================
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+   public *;
+}
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# ====================================
+# Parcelable
+# ====================================
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+# ====================================
+# Serializable
+# ====================================
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# ====================================
+# Navigation Component
+# ====================================
+-keep class androidx.navigation.** { *; }
+-keepnames class androidx.navigation.**
+-keepclassmembers class androidx.navigation.** {
+    *;
+}
+
+# ====================================
+# ViewModel
+# ====================================
+-keep class * extends androidx.lifecycle.ViewModel {
+    <init>();
+}
+-keep class * extends androidx.lifecycle.AndroidViewModel {
+    <init>(android.app.Application);
+}
+
+# ====================================
+# 프로젝트별 규칙
+# ====================================
+# Application 클래스 유지
+-keep class inu.appcenter.bjj_android.di.KoinApp { *; }
+
+# ViewModel 클래스들 유지
+-keep class inu.appcenter.bjj_android.ui.**.viewmodel.** { *; }
+-keep class inu.appcenter.bjj_android.ui.**.*ViewModel { *; }
+
+# Repository 클래스들 유지
+-keep class inu.appcenter.bjj_android.repository.** { *; }
+
+# Network 인터페이스 유지
+-keep interface inu.appcenter.bjj_android.network.** { *; }
+
+# DataStore Manager 유지
+-keep class inu.appcenter.bjj_android.local.DataStoreManager { *; }
+
+# ====================================
+# 일반 경고 무시
+# ====================================
+-dontwarn java.lang.instrument.ClassFileTransformer
+-dontwarn sun.misc.SignalHandler
+-dontwarn java.lang.management.**
+-dontwarn javax.lang.model.**
+-dontwarn org.jetbrains.annotations.**

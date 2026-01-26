@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.utils
 
-import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
@@ -8,11 +7,8 @@ import java.io.IOException
 
 
 object ErrorHandler {
-    private const val TAG = "ErrorHandler"
 
     fun handleApiError(response: Response<*>): AppError {
-        Log.e(TAG, "API 오류: ${response.code()} - ${response.message()}")
-
         return when (response.code()) {
             401 -> AppError.AuthError(isExpired = true)
             403 -> AppError.AuthError(message = "접근 권한이 없습니다.")
@@ -40,12 +36,10 @@ object ErrorHandler {
     }
 
     fun handleNetworkError(error: IOException): AppError.NetworkError {
-        Log.e(TAG, "네트워크 오류: ${error.message}", error)
         return AppError.NetworkError()
     }
 
     fun handleUnknownError(error: Throwable): AppError.GeneralError {
-        Log.e(TAG, "알 수 없는 오류: ${error.message}", error)
         return AppError.GeneralError(
             message = error.message ?: "알 수 없는 오류가 발생했습니다."
         )
@@ -72,7 +66,6 @@ object ErrorHandler {
                 "서버 오류가 발생했습니다"
             } ?: "서버 오류가 발생했습니다"
         } catch (e: Exception) {
-            Log.e(TAG, "에러 응답 파싱 오류: ${e.message}", e)
             "서버 오류가 발생했습니다"
         }
     }

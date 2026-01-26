@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -25,27 +24,21 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class FcmService : FirebaseMessagingService() {
-    private val TAG = "FcmService"
     private val dataStoreManager: DataStoreManager by inject()
     private val fcmManager: FcmManager by inject()
     private val permissionManager: PermissionManager by inject()
 
     // 서비스용 코루틴 스코프
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
-        Log.e(TAG, "코루틴 오류: ${throwable.message}", throwable)
-    })
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "새 FCM 토큰: $token")
-
         // FCM 관리자에게 새 토큰 전달
         fcmManager.onTokenRefresh(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Log.d(TAG, "FCM 메시지 수신됨")
 
         // 알림 권한 및 설정 확인을 위한 코루틴 실행
         serviceScope.launch {
@@ -72,11 +65,9 @@ class FcmService : FirebaseMessagingService() {
 
                         sendNotification(title, body, channelId)
                     }
-                } else {
-                    Log.d(TAG, "알림 설정 비활성화 또는 권한 없음")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "알림 처리 중 오류 발생: ${e.message}", e)
+                // 알림 처리 실패
             }
         }
     }
@@ -107,10 +98,8 @@ class FcmService : FirebaseMessagingService() {
 
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
-
-            Log.d(TAG, "알림이 성공적으로 표시됨")
         } catch (e: Exception) {
-            Log.e(TAG, "알림 표시 중 오류 발생: ${e.message}", e)
+            // 알림 표시 실패
         }
     }
 

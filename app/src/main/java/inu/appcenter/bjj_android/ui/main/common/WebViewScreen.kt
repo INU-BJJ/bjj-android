@@ -3,7 +3,6 @@ package inu.appcenter.bjj_android.ui.main.common
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -38,7 +37,6 @@ import inu.appcenter.bjj_android.ui.theme.White_FFFFFF
 class WebAppInterface(private val context: Context) {
     @JavascriptInterface
     fun showWelcomePointResult(success: Boolean) {
-        Log.d("WebAppInterface", "showWelcomePointResult called with success=$success")
 
         // UI 스레드에서 다이얼로그 표시
         (context as? android.app.Activity)?.runOnUiThread {
@@ -198,7 +196,6 @@ fun WebViewScreen(
                         // WebChromeClient 설정하여 JavaScript 콘솔 로그 캡처
 //                        webChromeClient = object : WebChromeClient() {
 //                            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-//                                Log.d("WebViewConsole", "${consoleMessage.messageLevel()}: ${consoleMessage.message()} -- From line ${consoleMessage.lineNumber()} of ${consoleMessage.sourceId()}")
 //                                return true
 //                            }
 //                        }

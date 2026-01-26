@@ -1,7 +1,6 @@
 package inu.appcenter.bjj_android.ui.login
 
 import android.net.Uri
-import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -89,19 +88,8 @@ fun SocialLoginDialog(
                             return false
                         }
 
-                        override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-                            super.onPageStarted(view, url, favicon)
-                            Log.d("WebView", "Page started loading: $url")
-                        }
-
-                        override fun onPageFinished(view: WebView?, url: String?) {
-                            super.onPageFinished(view, url)
-                            Log.d("WebView", "Page finished loading: $url")
-                        }
-
                         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                             super.onReceivedError(view, request, error)
-                            Log.e("WebView", "Error: ${error?.description}, Code: ${error?.errorCode}")
                             onLoginFailure()
                         }
                     }

@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.review
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import inu.appcenter.bjj_android.model.review.MyReviewDetailRes
@@ -228,7 +227,6 @@ class ReviewViewModel(
 
                 val gson = Gson()
                 val reviewPostJson = gson.toJson(reviewPost)
-                Log.d("ReviewViewModel", "ReviewPost JSON: $reviewPostJson")
 
                 // reviewPost를 RequestBody로 생성
                 val reviewPostRequestBody = reviewPostJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
@@ -242,7 +240,6 @@ class ReviewViewModel(
                                 val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
                                 MultipartBody.Part.createFormData("files", imageFile.name, requestFile)
                             } else {
-                                Log.e("ReviewViewModel", "Image file does not exist: $imagePath")
                                 null
                             }
                         }
@@ -280,7 +277,6 @@ class ReviewViewModel(
         viewModelScope.launch {
             reviewRepository.deleteReview(reviewId).handleResponse(
                 onSuccess = {
-                    Log.d("deleteReviewSuccess", "deleteReviewSuccess")
                     getMyReviews()
                     onSuccess()
                 }

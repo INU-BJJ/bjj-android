@@ -1,6 +1,7 @@
 package inu.appcenter.bjj_android.network
 
 import com.google.gson.GsonBuilder
+import inu.appcenter.bjj_android.BuildConfig
 import inu.appcenter.bjj_android.local.DataStoreManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,14 +16,17 @@ class RetrofitAPI(private val dataStoreManager: DataStoreManager) : KoinComponen
 
     private val BASE_URL = "https://bjj.inuappcenter.kr/"
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
-
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor(dataStoreManager))
-        .addInterceptor(loggingInterceptor)
+        .apply {
+            // 디버그 빌드에서만 HTTP 로깅 활성화
+            if (BuildConfig.DEBUG) {
+                val loggingInterceptor = HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+                addInterceptor(loggingInterceptor)
+            }
+        }
         .build()
 
     private val retrofit: Retrofit by lazy {

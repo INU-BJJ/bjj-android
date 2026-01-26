@@ -6,7 +6,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 
 /**
@@ -17,7 +16,6 @@ class NotificationManager(private val context: Context) {
     companion object {
         const val CHANNEL_ID_LIKED_MENU = "liked_menu_notifications"
         const val CHANNEL_ID_GENERAL = "general_notifications"
-        private const val TAG = "NotificationManager"
     }
 
     /**
@@ -25,8 +23,6 @@ class NotificationManager(private val context: Context) {
      */
     fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(TAG, "알림 채널 생성 중...")
-
             // 기본 알림음 설정
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val audioAttributes = AudioAttributes.Builder()
@@ -59,10 +55,6 @@ class NotificationManager(private val context: Context) {
             // 채널 등록
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
             notificationManager.createNotificationChannels(listOf(likedMenuChannel, generalChannel))
-
-            Log.d(TAG, "알림 채널이 성공적으로 생성되었습니다.")
-        } else {
-            Log.d(TAG, "Android O 미만 버전에서는 알림 채널을 생성할 필요가 없습니다.")
         }
     }
 

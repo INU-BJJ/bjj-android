@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.login
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -70,17 +69,14 @@ fun LoginScreen(
             onLoginSuccessAlreadySignup = {
                 onLoginSuccessAlreadySignup()
                 showLoginDialog = false
-                Log.e("LoginSuccessAlreadySignup", "LoginSuccessAlreadySignup")
             },
             onLoginSuccessFirst = {
                 onLoginSuccessFirst()
                 showLoginDialog = false
-                Log.e("LoginSuccessFirst", "LoginSuccessFirst")
             },
             onLoginFailure = {
                 onLoginFailure()
                 showLoginDialog = false
-                Log.e("LoginFailure", "Login failed")
             },
             authViewModel = authViewModel,
             authUiState = authUiState

@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.ranking
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -365,18 +364,6 @@ fun TopThreeRankingItem(
                     .memoryCacheKey(menu.reviewImageName)
                     .diskCacheKey(menu.reviewImageName)
                     .crossfade(true)
-                    .listener(
-                        onError = { _, result ->
-                            Log.e(
-                                "ImageLoading",
-                                "Error loading image: ${result.throwable.message}",
-                                result.throwable
-                            )
-                        },
-                        onSuccess = { _, _ ->
-                            Log.d("ImageLoading", "Successfully loaded image")
-                        }
-                    )
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder),
                 contentDescription = "메인 페이지 리뷰 이미지",

@@ -1,6 +1,5 @@
 package inu.appcenter.bjj_android.ui.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.fcm.FcmManager
 import inu.appcenter.bjj_android.local.DataStoreManager
@@ -113,7 +112,6 @@ class AuthViewModel(
                     fcmManager.onUserLogin()
                 },
                 onError = { error ->
-                    Log.e("signup", error.message ?: "Unknown error")
                     _uiState.update {
                         it.copy(
                             signupState = AuthState.Error(error.message ?: UNKNOWN_ERROR)
@@ -140,7 +138,6 @@ class AuthViewModel(
                     }
                 },
                 onError = { error ->
-                    Log.e("checkNickname", error.message ?: "Unknown error")
                     _uiState.update {
                         it.copy(
                             checkNicknameState = AuthState.Error(error.message ?: UNKNOWN_ERROR)
@@ -215,7 +212,6 @@ class AuthViewModel(
                     }
                 },
                 onError = { error ->
-                    Log.e("deleteAccount", error.message ?: "Unknown error")
                     _uiState.update {
                         it.copy(
                             deleteAccountState = AuthState.Error(error.message ?: UNKNOWN_ERROR)
@@ -245,7 +241,6 @@ class AuthViewModel(
                             clearTokenAndState()
                         } else {
                             // 네트워크 등 다른 오류 - 토큰은 유지하고 오류만 기록
-                            Log.e("AuthViewModel", "토큰 검증 중 오류: ${error.message}")
                         }
                     }
                 )
