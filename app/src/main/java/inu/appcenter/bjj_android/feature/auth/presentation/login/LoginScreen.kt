@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +47,7 @@ fun LoginScreen(
     onLoginFailure: () -> Unit,
     authViewModel: AuthViewModel
 ){
-    var showLoginDialog by remember { mutableStateOf(false) }
+    var showLoginDialog by rememberSaveable { mutableStateOf(false) }
 
     val authUiState by authViewModel.uiState.collectAsState()
 
