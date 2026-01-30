@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 프로덕션 환경: 기본 보안 설정 -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- 시스템 기본 CA 인증서 신뢰 -->
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- 개발/테스트 서버: bjj.inuappcenter.kr -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">bjj.inuappcenter.kr</domain>
+        <trust-anchors>
+            <!-- 시스템 CA + 사용자 설치 CA 인증서 모두 신뢰 -->
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
