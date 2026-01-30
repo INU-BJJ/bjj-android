@@ -134,6 +134,10 @@
 -keep class com.google.firebase.messaging.** { *; }
 -keep class inu.appcenter.bjj_android.core.notification.** { *; }
 
+# FCM Service - 반드시 유지해야 함
+-keep class inu.appcenter.bjj_android.core.notification.FcmService { *; }
+-keep class * extends com.google.firebase.messaging.FirebaseMessagingService { *; }
+
 # ====================================
 # WebView with JavaScript
 # ====================================

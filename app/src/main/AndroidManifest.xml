@@ -30,7 +30,7 @@
             android:theme="@style/Theme.OssLicenses" />
 
         <service
-            android:name=".fcm.FcmService"
+            android:name=".core.notification.FcmService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
