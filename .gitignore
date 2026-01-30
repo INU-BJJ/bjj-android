@@ -18,3 +18,13 @@ local.properties
 app/google-services.json
 
 .idea/
+
+# Keystore files - 절대 Git에 올리면 안됨!
+keystore.properties
+*.keystore
+*.jks
+
+# Release build outputs - 빌드 산출물
+app/release/
+*.apk
+*.aab
