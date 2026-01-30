@@ -137,6 +137,27 @@
 # ====================================
 # WebView with JavaScript
 # ====================================
+# WebView 클래스 유지
+-keep class android.webkit.WebView { *; }
+-keep class android.webkit.WebViewClient { *; }
+-keep class android.webkit.WebChromeClient { *; }
+-keep class android.webkit.WebSettings { *; }
+-keep class android.webkit.WebResourceRequest { *; }
+-keep class android.webkit.WebResourceError { *; }
+
+# WebViewClient 메서드 유지
+-keepclassmembers class * extends android.webkit.WebViewClient {
+    public void *(android.webkit.WebView, java.lang.String);
+    public boolean *(android.webkit.WebView, java.lang.String);
+    public void *(android.webkit.WebView, android.webkit.WebResourceRequest, android.webkit.WebResourceError);
+}
+
+# WebChromeClient 메서드 유지
+-keepclassmembers class * extends android.webkit.WebChromeClient {
+    public void *(android.webkit.WebView, java.lang.String);
+}
+
+# JavascriptInterface 유지
 -keepclassmembers class fqcn.of.javascript.interface.for.webview {
    public *;
 }
@@ -144,6 +165,9 @@
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
+
+# OAuth 로그인 Dialog 관련 클래스 유지
+-keep class inu.appcenter.bjj_android.feature.auth.presentation.login.SocialLoginDialog** { *; }
 
 # ====================================
 # Parcelable
