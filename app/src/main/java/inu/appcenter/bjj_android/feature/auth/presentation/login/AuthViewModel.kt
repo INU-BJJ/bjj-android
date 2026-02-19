@@ -14,7 +14,9 @@ import inu.appcenter.bjj_android.feature.ranking.presentation.RankingViewModel
 import inu.appcenter.bjj_android.feature.review.presentation.ReviewViewModel
 import inu.appcenter.bjj_android.core.util.AppError
 import inu.appcenter.bjj_android.core.presentation.BaseViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -30,6 +32,15 @@ sealed class AuthState {
     object Loading : AuthState()
     object Success : AuthState()
     data class Error(val message: String) : AuthState()
+}
+
+sealed class WebViewEvent {
+    data class PageStarted(val url: String) : WebViewEvent()
+    data class PageFinished(val url: String) : WebViewEvent()
+    data class LoginSuccess(val token: String) : WebViewEvent()
+    data class SignupSuccess(val email: String) : WebViewEvent()
+    data class Error(val message: String) : WebViewEvent()
+    object RenderProcessGone : WebViewEvent()
 }
 
 data class AuthUiState(
@@ -51,6 +62,9 @@ class AuthViewModel(
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _webViewEvents = MutableSharedFlow<WebViewEvent>()
+    val webViewEvents = _webViewEvents.asSharedFlow()
 
     init {
         observeToken()
@@ -305,5 +319,45 @@ class AuthViewModel(
 
     fun resetDeleteAccountState() {
         _uiState.update { it.copy(deleteAccountState = AuthState.Idle) }
+    }
+
+    // WebView 이벤트 처리 함수들
+    fun onWebViewPageStarted(url: String) {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.PageStarted(url))
+        }
+    }
+
+    fun onWebViewPageFinished(url: String) {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.PageFinished(url))
+        }
+    }
+
+    fun onWebViewLoginSuccess(token: String) {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.LoginSuccess(token))
+            saveToken(token)
+        }
+    }
+
+    fun onWebViewSignupSuccess(email: String) {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.SignupSuccess(email))
+            setSignupEmail(email)
+        }
+    }
+
+    fun onWebViewError(message: String) {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.Error(message))
+        }
+    }
+
+    fun onWebViewRenderProcessGone() {
+        viewModelScope.launch {
+            _webViewEvents.emit(WebViewEvent.RenderProcessGone)
+            showToast("로그인 중 오류가 발생했습니다. 다시 시도해주세요.")
+        }
     }
 }

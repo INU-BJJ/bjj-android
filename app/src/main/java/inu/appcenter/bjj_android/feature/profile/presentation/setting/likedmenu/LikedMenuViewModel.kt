@@ -37,6 +37,7 @@ class LikedMenuViewModel(
 
     init {
         getLikedMenus()
+        getNotificationSettings()
     }
 
     // 좋아요한 메뉴 목록 불러오기
@@ -109,7 +110,6 @@ class LikedMenuViewModel(
                 it.copy(notificationEnabled = enabled)
             }
         }
-        // TODO: 알림 설정 저장 로직 구현 (Repository 또는 DataStore 활용)
     }
 
     // 상태 초기화

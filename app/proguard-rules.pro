@@ -35,6 +35,22 @@
     @retrofit2.http.* <methods>;
 }
 
+# Retrofit API 인터페이스 명시적으로 유지
+-keep interface inu.appcenter.bjj_android.core.data.remote.APIService { *; }
+-keep interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# Retrofit Response 제네릭 타입 보존
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# 제네릭 시그니처 보존 (이미 있지만 강화)
+-keepattributes Signature
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+
 # OkHttp Platform used only on JVM and when Conscrypt dependency is available.
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.conscrypt.**
@@ -106,6 +122,12 @@
     volatile <fields>;
 }
 -dontwarn kotlinx.coroutines.**
+
+# Coroutines with Retrofit (suspend 함수 지원)
+-keepclassmembers class * {
+    @retrofit2.http.* <methods>;
+}
+-keep class kotlin.coroutines.Continuation
 
 # ====================================
 # AndroidX & DataStore
