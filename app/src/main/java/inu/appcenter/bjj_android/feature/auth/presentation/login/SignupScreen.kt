@@ -263,7 +263,8 @@ fun SignupScreen(
                                     signupReq = SignupReq(
                                         nickname = nickname,
                                         email = uiState.signupEmail,
-                                        provider = uiState.socialName
+                                        provider = uiState.socialName,
+                                        providerId = uiState.socialProviderId
                                     )
                                 )
                             }

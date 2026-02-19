@@ -14,6 +14,7 @@ import inu.appcenter.bjj_android.feature.ranking.presentation.RankingViewModel
 import inu.appcenter.bjj_android.feature.review.presentation.ReviewViewModel
 import inu.appcenter.bjj_android.core.util.AppError
 import inu.appcenter.bjj_android.core.presentation.BaseViewModel
+import inu.appcenter.bjj_android.model.member.LoginReq
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -50,6 +51,7 @@ data class AuthUiState(
     val deleteAccountState: AuthState = AuthState.Idle,
     val signupEmail: String = "",
     val socialName: String = "",
+    val socialProviderId: String = "",
     val saveTokenState: Boolean? = null,
     val hasToken: Boolean? = null
 )
@@ -95,6 +97,11 @@ class AuthViewModel(
         _uiState.update { it.copy(socialName = social) }
     }
 
+    fun setSocialProviderId(providerId: String) {
+        _uiState.update { it.copy(socialProviderId =
+            providerId) }
+    }
+
     fun saveToken(token: String) {
         viewModelScope.launch {
             try {
@@ -134,6 +141,32 @@ class AuthViewModel(
                     emitError(error)
                 }
             )
+        }
+    }
+
+    fun login(providerId: String, provider: String) {
+        viewModelScope.launch {
+            setLoading(true)
+            memberRepository.login(
+                LoginReq(
+                    providerId =
+                        providerId, provider = provider
+                )
+            ).handleResponse(
+                onSuccess = { tokenResponse ->
+
+                    dataStoreManager.saveToken(tokenResponse.token)
+                    fcmManager.onUserLogin()
+                    _uiState.update { it.copy(signupState =
+                        AuthState.Success) }
+                },
+                onError = { _ ->
+                    // 신규 회원 → 회원가입 화면으로 이동
+                    _uiState.update { it.copy(signupState =
+                        AuthState.Error("NEW_USER")) }
+                }
+            )
+            setLoading(false)
         }
     }
 

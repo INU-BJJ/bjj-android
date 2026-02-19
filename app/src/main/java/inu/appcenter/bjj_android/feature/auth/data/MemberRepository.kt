@@ -5,6 +5,7 @@ import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
 import inu.appcenter.bjj_android.core.data.BaseRepository
 import inu.appcenter.bjj_android.core.util.CustomResponse
+import inu.appcenter.bjj_android.model.member.LoginReq
 import kotlinx.coroutines.flow.Flow
 
 interface MemberRepository : BaseRepository {
@@ -13,4 +14,6 @@ interface MemberRepository : BaseRepository {
     suspend fun deleteAccount(): Flow<CustomResponse<Unit>>
     suspend fun checkNickname(nickname: String): Flow<CustomResponse<Boolean>>
     suspend fun modifyNickname(nickname: String): Flow<CustomResponse<Unit>>
+    suspend fun login(loginReq: LoginReq): Flow<CustomResponse<SignupRes>>
+
 }

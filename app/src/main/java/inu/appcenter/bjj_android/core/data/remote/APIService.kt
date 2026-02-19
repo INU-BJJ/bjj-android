@@ -7,6 +7,7 @@ import inu.appcenter.bjj_android.model.item.ItemResponse
 import inu.appcenter.bjj_android.model.item.ItemResponseItem
 import inu.appcenter.bjj_android.model.item.ItemType
 import inu.appcenter.bjj_android.model.item.MyPageResponse
+import inu.appcenter.bjj_android.model.member.LoginReq
 import inu.appcenter.bjj_android.model.member.MemberResponseDTO
 import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
@@ -128,6 +129,12 @@ interface APIService {
     suspend fun signup(
         @Body signupReq: SignupReq
     ) : Response<SignupRes>
+
+    @POST("/api/members/login")
+    suspend fun login(
+        @Body loginReq: LoginReq
+    ): Response<SignupRes>
+
 
     @POST("/api/members/check-nickname")
     suspend fun checkNickname(

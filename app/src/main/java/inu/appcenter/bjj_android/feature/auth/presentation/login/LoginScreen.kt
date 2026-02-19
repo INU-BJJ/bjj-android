@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.feature.auth.presentation.login
 
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +22,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import inu.appcenter.bjj_android.BuildConfig
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
 import inu.appcenter.bjj_android.feature.auth.presentation.login.common.SocialLoginButton
@@ -39,6 +48,8 @@ import inu.appcenter.bjj_android.shared.theme.Green_27D34A
 import inu.appcenter.bjj_android.shared.theme.Orange_FF7800
 import inu.appcenter.bjj_android.shared.theme.White_FFFFFF
 import inu.appcenter.bjj_android.shared.theme.Yellow_FFEB02
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @Composable
 fun LoginScreen(
@@ -47,6 +58,10 @@ fun LoginScreen(
     onLoginFailure: () -> Unit,
     authViewModel: AuthViewModel
 ){
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+
     var showLoginDialog by rememberSaveable { mutableStateOf(false) }
 
     val authUiState by authViewModel.uiState.collectAsState()
@@ -56,14 +71,19 @@ fun LoginScreen(
         when (authUiState.signupState) {
             is AuthState.Success -> {
                 onLoginSuccessAlreadySignup()
-                authViewModel.resetState() // 상태 초기화
+                authViewModel.resetState()
             }
             is AuthState.Error -> {
-                // 에러 처리 (예: 스낵바 표시)
+                if ((authUiState.signupState as
+                            AuthState.Error).message == "NEW_USER") {
+                    onLoginSuccessFirst()
+                    authViewModel.resetState()
+                }
             }
-            else -> {} // Loading 및 Idle 상태 처리
+            else -> {}
         }
     }
+
 
     if (showLoginDialog) {
         SocialLoginDialog(
@@ -180,9 +200,48 @@ fun LoginScreen(
             // 소셜 로그인 버튼들
 
             SocialLoginButton(
-                onClick = {
-                    authViewModel.setSocialName(it)
-                    showLoginDialog = true
+                onClick = { _ ->
+                    scope.launch {
+                        try {
+                            val credentialManager =
+                                CredentialManager.create(context)
+                            val googleIdOption =
+                                GetGoogleIdOption.Builder()
+                                    .setFilterByAuthorizedAccounts(false)
+                                    .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                                    .build()
+                            val request =
+                                GetCredentialRequest.Builder()
+                                    .addCredentialOption(googleIdOption)
+                                    .build()
+
+                            val result =
+                                credentialManager.getCredential(context, request)
+                            val googleCredential =
+                                GoogleIdTokenCredential.createFrom(result.credential.data)
+
+                            val email = googleCredential.id
+                            val idToken = googleCredential.idToken
+
+                            // idToken(JWT)에서 sub(providerId) 추출
+                            val parts = idToken.split(".")
+                            val padded =
+                                parts[1].padEnd((parts[1].length + 3) / 4 * 4, '=')
+                            val payload =
+                                JSONObject(String(Base64.decode(padded, Base64.URL_SAFE)))
+                            val providerId = payload.getString("sub")
+
+                            authViewModel.setSocialName("google")
+
+                            authViewModel.setSocialProviderId(providerId)
+                            authViewModel.setSignupEmail(email)
+                            authViewModel.login(providerId =
+                                providerId, provider = "google")
+
+                        } catch (e: GetCredentialException) {
+                            onLoginFailure()
+                        }
+                    }
                 },
                 socialLogin = "google",
                 background = White_FFFFFF,
@@ -190,6 +249,7 @@ fun LoginScreen(
                 text = "구글로 시작하기",
                 isBorderStroke = true
             )
+
 
             Spacer(modifier = Modifier.height(12.dp))
 

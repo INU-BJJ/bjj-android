@@ -5,6 +5,7 @@ import inu.appcenter.bjj_android.model.member.SignupReq
 import inu.appcenter.bjj_android.model.member.SignupRes
 import inu.appcenter.bjj_android.core.data.remote.APIService
 import inu.appcenter.bjj_android.core.util.CustomResponse
+import inu.appcenter.bjj_android.model.member.LoginReq
 import kotlinx.coroutines.flow.Flow
 
 class MemberRepositoryImpl(private val apiService: APIService) : MemberRepository {
@@ -26,5 +27,9 @@ class MemberRepositoryImpl(private val apiService: APIService) : MemberRepositor
 
     override suspend fun modifyNickname(nickname: String): Flow<CustomResponse<Unit>> = safeApiCall {
         apiService.modifyNickname(nickname = nickname)
+    }
+
+    override suspend fun login(loginReq: LoginReq): Flow<CustomResponse<SignupRes>> = safeApiCall {
+        apiService.login(loginReq = loginReq)
     }
 }

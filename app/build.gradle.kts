@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "inu.appcenter.bjj_android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "inu.appcenter.bjj_android"
@@ -22,6 +22,17 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val localProperties = Properties()
+        val localPropertiesFile =
+            rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+
+            localProperties.load(localPropertiesFile.inputStream())
+        }
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID",
+            "\"${localProperties["google_web_client_id"]}\"")
+
     }
 
     // 키스토어 설정 로드
@@ -131,6 +142,12 @@ dependencies {
 
     // opensource license
     implementation("com.google.android.gms:play-services-oss-licenses:17.2.1")
+
+    // Google Sign-In (Credential Manager)
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
 }
 
 apply(plugin = "com.google.android.gms.oss-licenses-plugin")
