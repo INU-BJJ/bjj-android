@@ -40,7 +40,7 @@
         <!-- 백그라운드 알림을 위한 메타데이터 추가 -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/filled_heart" />
+            android:resource="@drawable/bigstar" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/Orange_FF7800" />
@@ -57,6 +57,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 카카오 로그인 -->
+        <activity
+
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"
+                    />
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+                <category
+                    android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="oauth"
+
+                    android:scheme="kakao${kakaoNativeAppKey}"
+                    />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="${kakaoNativeAppKey}" />
 
     </application>
 

@@ -43,10 +43,10 @@ class FcmManager(
             dataStoreManager.saveFcmToken(token)
 
             // 사용자가 로그인되어 있는지 확인
-            val hasToken = dataStoreManager.token.first() != null
-            if (hasToken) {
-                registerTokenWithServer()
-            }
+//            val hasToken = dataStoreManager.token.first() != null
+//            if (hasToken) {
+//                registerTokenWithServer()
+//            }
         } catch (e: Exception) {
             // 지수 백오프로 다시 시도
             retryWithBackoff { retrieveAndSaveToken() }

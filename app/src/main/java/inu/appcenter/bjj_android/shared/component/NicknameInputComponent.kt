@@ -198,7 +198,7 @@ private fun NicknameInputComponent(
                     )
                 )
             }
-        } else if (isError && isDuplicate) {
+        } else if (isError || isDuplicate) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {

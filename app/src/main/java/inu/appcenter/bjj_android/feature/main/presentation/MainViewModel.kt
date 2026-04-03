@@ -1,6 +1,6 @@
 package inu.appcenter.bjj_android.feature.main.presentation
 import androidx.lifecycle.viewModelScope
-import inu.appcenter.bjj_android.model.banner.Banner
+import inu.appcenter.bjj_android.core.data.local.DataStoreManager
 import inu.appcenter.bjj_android.model.banner.BannerItem
 import inu.appcenter.bjj_android.model.cafeteria.CafeteriaInfoResponse
 import inu.appcenter.bjj_android.model.todaydiet.TodayDietRes
@@ -8,11 +8,11 @@ import inu.appcenter.bjj_android.feature.main.data.BannerRepository
 import inu.appcenter.bjj_android.feature.menudetail.data.CafeteriasRepository
 import inu.appcenter.bjj_android.feature.menudetail.data.MenuRepository
 import inu.appcenter.bjj_android.feature.main.data.TodayDietRepository
-import inu.appcenter.bjj_android.feature.auth.presentation.login.AuthViewModel
 import inu.appcenter.bjj_android.core.presentation.BaseViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -36,7 +36,7 @@ class MainViewModel(
     private val bannerRepository: BannerRepository,
     private val cafeteriasRepository: CafeteriasRepository,
     private val todayDietRepository: TodayDietRepository,
-    private val authViewModel: AuthViewModel,
+    private val dataStoreManager: DataStoreManager,
     private val menuRepository: MenuRepository
 ) : BaseViewModel() {
 
@@ -49,8 +49,9 @@ class MainViewModel(
 
     private fun observeAuthToken() {
         viewModelScope.launch {
-            authViewModel.uiState
-                .map { it.hasToken }
+            dataStoreManager.token
+                .map { !it.isNullOrEmpty() }
+                .distinctUntilChanged()
                 .filterNotNull()
                 .filter { it }
                 .onEach { delay(TOKEN_DELAY) }

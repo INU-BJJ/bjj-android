@@ -14,8 +14,8 @@ android {
     defaultConfig {
         applicationId = "inu.appcenter.bjj_android"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 2
+        targetSdk = 35
+        versionCode = 3
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -32,6 +32,18 @@ android {
         }
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID",
             "\"${localProperties["google_web_client_id"]}\"")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY",
+            "\"${localProperties["kakao_native_app_key"]}\"")
+        manifestPlaceholders["kakaoNativeAppKey"] =
+            localProperties["kakao_native_app_key"].toString()
+
+        buildConfigField("String", "NAVER_CLIENT_ID",
+            "\"${localProperties["naver_client_id"]}\"")
+        buildConfigField("String", "NAVER_CLIENT_SECRET",
+            "\"${localProperties["naver_client_secret"]}\"")
+        buildConfigField("String", "NAVER_CLIENT_NAME",
+            "\"${localProperties["naver_client_name"]}\"")
+
 
     }
 
@@ -147,6 +159,12 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+    // Kakao SDK
+    implementation("com.kakao.sdk:v2-user:2.20.6")
+
+    // Naver SDK
+    implementation("com.navercorp.nid:oauth:5.10.0")
 
 }
 

@@ -130,7 +130,7 @@ interface APIService {
         @Body signupReq: SignupReq
     ) : Response<SignupRes>
 
-    @POST("/api/members/login")
+    @POST("/api/members/socialLogin")
     suspend fun login(
         @Body loginReq: LoginReq
     ): Response<SignupRes>

@@ -1,10 +1,14 @@
 package inu.appcenter.bjj_android.di
 
 import android.app.Application
+import android.util.Log
 import coil.Coil
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
+import inu.appcenter.bjj_android.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -13,6 +17,10 @@ import org.koin.core.logger.Level
 class KoinApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+//        Log.d("KeyHash", Utility.getKeyHash(this))
+
+
         startKoin {
             // 로깅 레벨 설정 (개발 시에만 활성화하고 프로덕션에서는 Level.NONE으로 설정하세요)
             androidLogger(Level.ERROR)

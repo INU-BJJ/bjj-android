@@ -81,13 +81,13 @@ fun MainScreen(
     ErrorHandler(viewModel = mainViewModel, navController = navController)
 
     // hasToken 상태를 관찰하여 API 호출
-    LaunchedEffect(authUiState.hasToken) {
-        if (authUiState.hasToken == true) {
-            delay(300) // 토큰 저장이 완전히 완료될 때까지 잠시 대기
-            mainViewModel.getBanners() // 배너 로드 추가
-            mainViewModel.getCafeterias()
-        }
-    }
+//    LaunchedEffect(authUiState.hasToken) {
+//        if (authUiState.hasToken == true) {
+//            delay(300) // 토큰 저장이 완전히 완료될 때까지 잠시 대기
+//            mainViewModel.getBanners() // 배너 로드 추가
+//            mainViewModel.getCafeterias()
+//        }
+//    }
 
     var restaurantInfo by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()

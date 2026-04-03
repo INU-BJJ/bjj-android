@@ -40,6 +40,12 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import inu.appcenter.bjj_android.BuildConfig
 import inu.appcenter.bjj_android.LocalTypography
 import inu.appcenter.bjj_android.R
@@ -54,10 +60,10 @@ import org.json.JSONObject
 @Composable
 fun LoginScreen(
     onLoginSuccessAlreadySignup: () -> Unit,
-    onLoginSuccessFirst : () -> Unit,
+    onLoginSuccessFirst: () -> Unit,
     onLoginFailure: () -> Unit,
-    authViewModel: AuthViewModel
-){
+    authViewModel: AuthViewModel,
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -73,13 +79,16 @@ fun LoginScreen(
                 onLoginSuccessAlreadySignup()
                 authViewModel.resetState()
             }
+
             is AuthState.Error -> {
                 if ((authUiState.signupState as
-                            AuthState.Error).message == "NEW_USER") {
+                            AuthState.Error).message == "NEW_USER"
+                ) {
                     onLoginSuccessFirst()
                     authViewModel.resetState()
                 }
             }
+
             else -> {}
         }
     }
@@ -105,7 +114,8 @@ fun LoginScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(
                 White_FFFFFF
             )
@@ -155,7 +165,10 @@ fun LoginScreen(
                         letterSpacing = 0.13.sp,
                     ),
                     modifier = Modifier
-                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .background(
+                            color = Color(0xFFFFF4DF),
+                            shape = RoundedCornerShape(size = 10.dp)
+                        )
                         .padding(vertical = 4.dp, horizontal = 16.dp)
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -171,7 +184,10 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .padding(start = 139.dp)
-                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .background(
+                            color = Color(0xFFFFF4DF),
+                            shape = RoundedCornerShape(size = 10.dp)
+                        )
                         .padding(vertical = 4.dp, horizontal = 16.dp)
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -187,7 +203,10 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .padding(start = 16.dp)
-                        .background(color = Color(0xFFFFF4DF), shape = RoundedCornerShape(size = 10.dp))
+                        .background(
+                            color = Color(0xFFFFF4DF),
+                            shape = RoundedCornerShape(size = 10.dp)
+                        )
                         .padding(vertical = 4.dp, horizontal = 16.dp)
                 )
             }
@@ -231,12 +250,14 @@ fun LoginScreen(
                                 JSONObject(String(Base64.decode(padded, Base64.URL_SAFE)))
                             val providerId = payload.getString("sub")
 
-                            authViewModel.setSocialName("google")
+                            authViewModel.setSocialName("GOOGLE")
 
                             authViewModel.setSocialProviderId(providerId)
                             authViewModel.setSignupEmail(email)
-                            authViewModel.login(providerId =
-                                providerId, provider = "google")
+                            authViewModel.login(
+                                providerId =
+                                    providerId, provider = "GOOGLE"
+                            )
 
                         } catch (e: GetCredentialException) {
                             onLoginFailure()
@@ -253,11 +274,66 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
             SocialLoginButton(
-                onClick = {
-                    authViewModel.setSocialName(it)
-                    showLoginDialog = true
+                onClick = { _ ->
+                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                        // 카카오톡 앱으로 로그인
+
+                        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+                            if (error != null) {
+                                onLoginFailure()
+                                return@loginWithKakaoTalk
+                            }
+                            // 유저 정보 가져오기
+                            UserApiClient.instance.me {
+                                    user, meError,
+                                ->
+                                if (meError != null || user == null) {
+                                    onLoginFailure()
+                                    return@me
+                                }
+                                val email = user.kakaoAccount?.email
+                                    ?: ""
+                                val providerId = user.id.toString()
+                                authViewModel.setSocialName("KAKAO")
+
+                                authViewModel.setSocialProviderId(providerId)
+                                authViewModel.setSignupEmail(email)
+                                authViewModel.login(
+                                    providerId =
+                                        providerId, provider = "KAKAO"
+                                )
+                            }
+                        }
+                    } else {
+                        // 카카오 계정(웹)으로 로그인
+
+                        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
+                            if (error != null) {
+                                onLoginFailure()
+                                return@loginWithKakaoAccount
+                            }
+                            UserApiClient.instance.me {
+                                    user, meError,
+                                ->
+                                if (meError != null || user == null) {
+                                    onLoginFailure()
+                                    return@me
+                                }
+                                val email = user.kakaoAccount?.email
+                                    ?: ""
+                                val providerId = user.id.toString()
+                                authViewModel.setSocialName("kakao")
+
+                                authViewModel.setSocialProviderId(providerId)
+                                authViewModel.setSignupEmail(email)
+                                authViewModel.login(
+                                    providerId =
+                                        providerId, provider = "kakao"
+                                )
+                            }
+                        }
+                    }
                 },
                 socialLogin = "kakao",
                 background = Yellow_FFEB02,
@@ -265,12 +341,58 @@ fun LoginScreen(
                 text = "카카오로 시작하기",
             )
 
+
             Spacer(modifier = Modifier.height(12.dp))
 
             SocialLoginButton(
-                onClick = {
-                    authViewModel.setSocialName(it)
-                    showLoginDialog = true
+                onClick = { _ ->
+                    NaverIdLoginSDK.initialize(
+                        context,
+                        BuildConfig.NAVER_CLIENT_ID,
+                        BuildConfig.NAVER_CLIENT_SECRET,
+                        BuildConfig.NAVER_CLIENT_NAME
+                    )
+
+                    val callback = object : OAuthLoginCallback {
+                        override fun onSuccess() {
+                            // 로그인 성공 → 프로필 정보 요청
+                            NidOAuthLogin().callProfileApi(object :
+                                NidProfileCallback<NidProfileResponse> {
+                                override fun onSuccess(result:
+                                                       NidProfileResponse) {
+                                    val profile = result.profile
+                                    val email = profile?.email ?: ""
+                                    val providerId = profile?.id ?: ""
+
+                                    authViewModel.setSocialName("NAVER")
+
+                                    authViewModel.setSocialProviderId(providerId)
+
+                                    authViewModel.setSignupEmail(email)
+                                    authViewModel.login(providerId =
+                                        providerId, provider = "NAVER")
+                                }
+                                override fun onFailure(httpStatus:
+                                                       Int, message: String) {
+                                    onLoginFailure()
+                                }
+                                override fun onError(errorCode: Int,
+                                                     message: String) {
+                                    onLoginFailure()
+                                }
+                            })
+                        }
+                        override fun onFailure(httpStatus: Int,
+                                               message: String) {
+                            onLoginFailure()
+                        }
+                        override fun onError(errorCode: Int, message:
+                        String) {
+                            onLoginFailure()
+                        }
+                    }
+
+                    NaverIdLoginSDK.authenticate(context, callback)
                 },
                 socialLogin = "naver",
                 textColor = White_FFFFFF,
@@ -278,6 +400,7 @@ fun LoginScreen(
                 icon = painterResource(R.drawable.naver),
                 text = "네이버로 시작하기",
             )
+
 
             Spacer(modifier = Modifier.height(54.dp))
         }

@@ -96,7 +96,7 @@ class ReviewViewModel(
         }
     }
 
-    fun resetSelectedReviewRestaurant() {
+    fun resetSelectedReviewRestaurant()     {
         _uiState.update {
             it.copy(
                 selectedRestaurantAtReviewWrite = null

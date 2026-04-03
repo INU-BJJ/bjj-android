@@ -1,5 +1,6 @@
 package inu.appcenter.bjj_android.feature.auth.presentation.login
 
+import android.util.Base64
 import androidx.lifecycle.viewModelScope
 import inu.appcenter.bjj_android.core.notification.FcmManager
 import inu.appcenter.bjj_android.core.data.local.DataStoreManager
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import org.koin.mp.KoinPlatform.getKoin
 
 private const val UNKNOWN_ERROR = "Unknown error"
@@ -130,7 +132,7 @@ class AuthViewModel(
                     }
 
                     // 회원가입 성공 후 FCM 토큰 등록
-                    fcmManager.onUserLogin()
+//                    fcmManager.onUserLogin()
                 },
                 onError = { error ->
                     _uiState.update {
@@ -149,24 +151,39 @@ class AuthViewModel(
             setLoading(true)
             memberRepository.login(
                 LoginReq(
-                    providerId =
-                        providerId, provider = provider
+                    providerId = providerId, provider = provider
                 )
             ).handleResponse(
                 onSuccess = { tokenResponse ->
-
-                    dataStoreManager.saveToken(tokenResponse.token)
-                    fcmManager.onUserLogin()
-                    _uiState.update { it.copy(signupState =
-                        AuthState.Success) }
+                    // JWT auth 클레임 확인: GUEST면 회원가입 미완료 상태
+                    if (isGuestToken(tokenResponse.token)) {
+                        // GUEST 토큰은 저장하지 않음
+                        // sign-up API는 인증 없이 호출해야 하므로 기존 토큰도 클리어
+                        dataStoreManager.clearToken()
+                        _uiState.update { it.copy(signupState = AuthState.Error("NEW_USER")) }
+                    } else {
+                        dataStoreManager.saveToken(tokenResponse.token)
+                        resetAllViewModels()
+                        _uiState.update { it.copy(signupState = AuthState.Success) }
+                    }
                 },
                 onError = { _ ->
                     // 신규 회원 → 회원가입 화면으로 이동
-                    _uiState.update { it.copy(signupState =
-                        AuthState.Error("NEW_USER")) }
+                    _uiState.update { it.copy(signupState = AuthState.Error("NEW_USER")) }
                 }
             )
             setLoading(false)
+        }
+    }
+
+    private fun isGuestToken(token: String): Boolean {
+        return try {
+            val parts = token.split(".")
+            val padded = parts[1].padEnd((parts[1].length + 3) / 4 * 4, '=')
+            val payload = JSONObject(String(Base64.decode(padded, Base64.URL_SAFE)))
+            payload.getString("auth") == "GUEST"
+        } catch (e: Exception) {
+            false
         }
     }
 
@@ -203,15 +220,7 @@ class AuthViewModel(
 
             try {
                 dataStoreManager.clearToken()
-
-                // 다른 ViewModel 상태 초기화
-                getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
-                    when (it) {
-                        is MainViewModel -> it.resetState()
-                        is MenuDetailViewModel -> it.resetState()
-                        // 다른 ViewModel들도 필요에 따라 추가
-                    }
-                }
+                resetAllViewModels()
 
                 _uiState.update {
                     it.copy(
@@ -241,15 +250,7 @@ class AuthViewModel(
                 onSuccess = {
                     // 토큰 삭제 및 상태 초기화
                     dataStoreManager.clearToken()
-
-                    // 다른 ViewModel 상태 초기화
-                    getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
-                        when (it) {
-                            is MainViewModel -> it.resetState()
-                            is MenuDetailViewModel -> it.resetState()
-                            // 다른 ViewModel들도 필요에 따라 추가
-                        }
-                    }
+                    resetAllViewModels()
 
                     _uiState.update {
                         it.copy(
@@ -297,24 +298,25 @@ class AuthViewModel(
         }
     }
 
+    private fun resetAllViewModels() {
+        getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
+            when (it) {
+                is MainViewModel -> it.resetState()
+                is MenuDetailViewModel -> it.resetState()
+                is ReviewViewModel -> it.resetState()
+                is RankingViewModel -> it.resetState()
+                is LikedMenuViewModel -> it.resetState()
+                is NicknameChangeViewModel -> it.resetState()
+                is MyPageViewModel -> it.resetState()
+            }
+        }
+    }
+
     // 토큰 삭제 및 상태 초기화 함수
     private fun clearTokenAndState() {
         viewModelScope.launch {
             dataStoreManager.clearToken()
-
-            // 다른 ViewModel 상태 초기화
-            getKoin().getAll<androidx.lifecycle.ViewModel>().forEach {
-                when (it) {
-                    is MainViewModel -> it.resetState()
-                    is MenuDetailViewModel -> it.resetState()
-                    is ReviewViewModel -> it.resetState()
-                    is RankingViewModel -> it.resetState()
-                    is LikedMenuViewModel -> it.resetState()
-                    is NicknameChangeViewModel -> it.resetState()
-                    is MyPageViewModel -> it.resetState()
-                    // 다른 ViewModel들도 필요에 따라 추가
-                }
-            }
+            resetAllViewModels()
 
             _uiState.update {
                 it.copy(
