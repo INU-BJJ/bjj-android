@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.appcenter.bjj_android.LocalTypography
@@ -44,13 +45,13 @@ fun SocialLoginButton(
                 color = if (isBorderStroke) Color(0xFFB9B9B9) else Color.Transparent,
                 shape = RoundedCornerShape(10.dp)
             )
-            .clickable {
+            .clickable(role = Role.Button) {
                 onClick(socialLogin)
             },
     ){
         Icon(
             painter = icon,
-            contentDescription = "kakao login",
+            contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
                 .align(Alignment.CenterStart)

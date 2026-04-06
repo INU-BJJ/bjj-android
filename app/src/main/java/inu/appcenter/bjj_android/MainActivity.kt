@@ -39,6 +39,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.File
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -58,6 +60,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // 재설치 감지: noBackupFilesDir은 백업에서 제외되므로 재설치 시 항상 없음
+        val markerFile = File(noBackupFilesDir, "install_marker")
+        if (!markerFile.exists()) {
+            runBlocking { dataStoreManager.clearToken() }
+            markerFile.createNewFile()
+        }
 
         // Coil의 기본 ImageLoader 설정
         Coil.setImageLoader(

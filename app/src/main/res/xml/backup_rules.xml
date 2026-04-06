@@ -6,8 +6,6 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <!-- DataStore 파일 백업 제외: 인증 토큰이 복원되면 앱 삭제 후 재설치 시 자동 로그인됨 -->
+    <exclude domain="file" path="datastore/"/>
 </full-backup-content>
