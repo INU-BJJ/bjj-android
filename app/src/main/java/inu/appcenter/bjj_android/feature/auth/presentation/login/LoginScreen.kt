@@ -1,6 +1,8 @@
 package inu.appcenter.bjj_android.feature.auth.presentation.login
 
+import android.app.Activity
 import android.util.Base64
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -66,6 +68,7 @@ fun LoginScreen(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val activity = context as Activity
 
 
     var showLoginDialog by rememberSaveable { mutableStateOf(false) }
@@ -235,7 +238,7 @@ fun LoginScreen(
                                     .build()
 
                             val result =
-                                credentialManager.getCredential(context, request)
+                                credentialManager.getCredential(activity, request)
                             val googleCredential =
                                 GoogleIdTokenCredential.createFrom(result.credential.data)
 
@@ -260,7 +263,11 @@ fun LoginScreen(
                             )
 
                         } catch (e: GetCredentialException) {
-                            onLoginFailure()
+                            Toast.makeText(
+                                context,
+                                "구글 로그인을 사용할 수 없습니다. 기기에 구글 계정이 등록되어 있는지 확인해주세요.",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 },
